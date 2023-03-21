@@ -14,12 +14,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.lightBlue,
-        primaryColor: Colors.lightBlue,
+        primaryColor: Colors.white,
+        buttonTheme: const ButtonThemeData(
+          buttonColor: Colors.black,
+        ),
+        brightness: Brightness.dark,
       ),
       darkTheme: ThemeData(
-        primarySwatch: Colors.lightBlue,
-        primaryColor: Colors.lightBlue[900]
+        primaryColor: Colors.black,
+        buttonTheme: const ButtonThemeData(
+          buttonColor: Colors.white,
+        ),
+        brightness: Brightness.light,
       ),
       home: const CameraScreen(),
     );
