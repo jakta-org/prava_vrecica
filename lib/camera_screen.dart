@@ -84,12 +84,14 @@ class _CameraScreenState extends State<CameraScreen> {
                 children: [
                   Container(
                     margin:
-                        const EdgeInsetsDirectional.symmetric(horizontal: 20),
+                        const EdgeInsetsDirectional.symmetric(horizontal: 10),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         IconButton(
                           onPressed: () {},
+                          padding: EdgeInsets.zero,
+                          iconSize: 35,
                           icon: const Icon(
                             Icons.settings,
                             color: Colors.white,
@@ -97,8 +99,10 @@ class _CameraScreenState extends State<CameraScreen> {
                         ),
                         IconButton(
                           onPressed: () {},
+                          padding: EdgeInsets.zero,
+                          iconSize: 35,
                           icon: const Icon(
-                            Icons.verified_user,
+                            Icons.account_circle,
                             color: Colors.white,
                           ),
                         ),
@@ -108,18 +112,16 @@ class _CameraScreenState extends State<CameraScreen> {
                   Container(
                     margin:
                         const EdgeInsetsDirectional.symmetric(horizontal: 20),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      color: Colors.white,
+                    ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: 40,
-                          height: 30,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(12),
-                                bottomLeft: Radius.circular(12)),
-                            color: Colors.white,
-                          ),
+                          margin: const EdgeInsetsDirectional.symmetric(
+                              horizontal: 2),
                           child: const Center(
                             child: Icon(
                               Icons.recycling,
@@ -131,23 +133,14 @@ class _CameraScreenState extends State<CameraScreen> {
                           width: 90,
                           height: 30,
                           decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(12),
-                                bottomRight: Radius.circular(12)),
-                            color: Colors.white54,
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            color: Colors.black12,
                           ),
                           child: const Center(
                             child: Text(
                               "25001",
                               style: TextStyle(
                                 color: Colors.green,
-                                shadows: <Shadow>[
-                                  Shadow(
-                                    offset: Offset(1.0, 1.0),
-                                    blurRadius: 3.0,
-                                    color: Color.fromARGB(150, 0, 0, 0),
-                                  ),
-                                ],
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -169,29 +162,47 @@ class _CameraScreenState extends State<CameraScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                    margin: const EdgeInsetsDirectional.symmetric(vertical: 40),
+                    margin: const EdgeInsetsDirectional.only(bottom: 80),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.flash_on,
-                            color: Colors.white,
+                        Container(
+                          margin: const EdgeInsetsDirectional.symmetric(
+                              horizontal: 20),
+                          child: IconButton(
+                            onPressed: () {},
+                            padding: EdgeInsets.zero,
+                            iconSize: 30,
+                            icon: const Icon(
+                              Icons.add_circle,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.camera,
-                            color: Colors.white,
+                        Container(
+                          margin: const EdgeInsetsDirectional.symmetric(
+                              horizontal: 20),
+                          child: IconButton(
+                            onPressed: () {},
+                            padding: EdgeInsets.zero,
+                            iconSize: 80,
+                            icon: const Icon(
+                              Icons.circle_outlined,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.flip_camera_android,
-                            color: Colors.white,
+                        Container(
+                          margin: const EdgeInsetsDirectional.symmetric(
+                              horizontal: 20),
+                          child: IconButton(
+                            onPressed: () {},
+                            padding: EdgeInsets.zero,
+                            iconSize: 30,
+                            icon: const Icon(
+                              Icons.flashlight_off,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ],
@@ -225,7 +236,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         IconButton(
                           onPressed: () {},
                           icon: const Icon(
-                            Icons.money,
+                            Icons.map,
                             color: Colors.black,
                           ),
                         ),
