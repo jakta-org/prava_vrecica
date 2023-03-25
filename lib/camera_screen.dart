@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter/services.dart';
+import 'package:prava_vrecica/settings_screen.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key}) : super();
@@ -22,7 +22,9 @@ class _CameraScreenState extends State<CameraScreen> {
 
   void startCamera() async {
     cameras = await availableCameras();
-    controller = CameraController(cameras[0], ResolutionPreset.veryHigh,
+    controller = CameraController(
+        cameras[0],
+        ResolutionPreset.veryHigh,
         enableAudio: false);
     await controller.initialize().then((value) {
       if (!mounted) {
@@ -50,14 +52,6 @@ class _CameraScreenState extends State<CameraScreen> {
     if (scale < 1) {
       scale = 1 / scale;
     }
-
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: Theme.of(context).primaryColor,
-      systemNavigationBarIconBrightness: Theme.of(context).brightness,
-      systemNavigationBarDividerColor: Colors.transparent,
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ));
 
     if (!controller.value.isInitialized) {
       return const Scaffold(
@@ -89,7 +83,12 @@ class _CameraScreenState extends State<CameraScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                            );
+                          },
                           padding: EdgeInsets.zero,
                           iconSize: 35,
                           icon: const Icon(
@@ -112,9 +111,9 @@ class _CameraScreenState extends State<CameraScreen> {
                   Container(
                     margin:
                         const EdgeInsetsDirectional.symmetric(horizontal: 20),
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      color: Colors.white,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(12)),
+                      color: Theme.of(context).colorScheme.background,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -134,7 +133,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           height: 30,
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(12)),
-                            color: Colors.black12,
+                            color: Colors.grey,
                           ),
                           child: const Center(
                             child: Text(
@@ -213,7 +212,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(25),
                           topRight: Radius.circular(25)),
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.background,
                     ),
                     height: 60,
                     child: Row(
@@ -221,23 +220,23 @@ class _CameraScreenState extends State<CameraScreen> {
                       children: [
                         IconButton(
                           onPressed: () {},
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.bar_chart,
-                            color: Colors.black,
+                            color: Theme.of(context).colorScheme.onBackground,
                           ),
                         ),
                         IconButton(
                           onPressed: () {},
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.home,
-                            color: Colors.black,
+                            color: Theme.of(context).colorScheme.onBackground,
                           ),
                         ),
                         IconButton(
                           onPressed: () {},
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.map,
-                            color: Colors.black,
+                            color: Theme.of(context).colorScheme.onBackground,
                           ),
                         ),
                       ],
