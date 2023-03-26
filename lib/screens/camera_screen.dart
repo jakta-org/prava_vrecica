@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:prava_vrecica/settings_screen.dart';
+import 'package:provider/provider.dart';
+import '../providers/theme_provider.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key}) : super();
@@ -60,6 +61,10 @@ class _CameraScreenState extends State<CameraScreen> {
         ),
       );
     }
+
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    themeProvider.toggleNavigationBar(true);
+
     return Scaffold(
       body: Stack(
         children: [
@@ -84,9 +89,9 @@ class _CameraScreenState extends State<CameraScreen> {
                       children: [
                         IconButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushNamed(
                               context,
-                              MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                              'Settings',
                             );
                           },
                           padding: EdgeInsets.zero,
@@ -113,7 +118,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         const EdgeInsetsDirectional.symmetric(horizontal: 20),
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(12)),
-                      color: Theme.of(context).colorScheme.background,
+                      color: Theme.of(context).colorScheme.surface,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -212,14 +217,19 @@ class _CameraScreenState extends State<CameraScreen> {
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(25),
                           topRight: Radius.circular(25)),
-                      color: Theme.of(context).colorScheme.background,
+                      color: Theme.of(context).colorScheme.surface,
                     ),
                     height: 60,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              'Statistics',
+                            );
+                          },
                           icon: Icon(
                             Icons.bar_chart,
                             color: Theme.of(context).colorScheme.onBackground,

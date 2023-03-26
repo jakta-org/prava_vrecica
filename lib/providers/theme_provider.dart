@@ -23,12 +23,20 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleNavigationBar(bool value) {
+    ThemeData theme = isDarkMode ? Themes.darkTheme : Themes.lightTheme;
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: value ? theme.colorScheme.surface : theme.colorScheme.background,
+    ));
+  }
+
   void updateSystemUI() {
     ThemeData theme = isDarkMode ? Themes.darkTheme : Themes.lightTheme;
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: theme.colorScheme.background,
-      systemNavigationBarIconBrightness: theme.colorScheme.brightness,
+      systemNavigationBarColor: theme.colorScheme.surface,
+      systemNavigationBarIconBrightness: Brightness.light,
       systemNavigationBarDividerColor: Colors.transparent,
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: theme.colorScheme.brightness,
@@ -40,7 +48,11 @@ class Themes {
   static final lightTheme = ThemeData(
     primarySwatch: Colors.blue,
     primaryColor: Colors.blue,
-    colorScheme: const ColorScheme.light(),
+    colorScheme: ColorScheme.light(
+      primary: Colors.blue,
+      surface: Colors.white,
+      background: Colors.grey.shade200,
+    ),
     scrollbarTheme: ScrollbarThemeData(
       thumbColor: MaterialStateProperty.all(Colors.blue),
     ),
@@ -53,8 +65,10 @@ class Themes {
   static final darkTheme = ThemeData(
     primarySwatch: Colors.blue,
     primaryColor: Colors.blue,
-    colorScheme: const ColorScheme.dark(
-      onBackground: Colors.grey,
+    colorScheme: ColorScheme.dark(
+      primary: Colors.blue,
+      surface: Colors.grey.shade800,
+      background: Colors.grey.shade900,
     ),
     buttonTheme: const ButtonThemeData(
       buttonColor: Colors.white,
