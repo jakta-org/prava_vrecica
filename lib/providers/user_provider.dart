@@ -1,39 +1,32 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/user_model.dart';
 
 class UserProvider extends ChangeNotifier {
-  User? _user;
-  User? get user {
-    return _user;
+  int _userId = -1;
+  int get userId {
+    return _userId;
   }
 
-  UserProvider(User? user) {
-    _user = user;
+  UserProvider(int userId) {
+    _userId = userId;
   }
 
-  Future<void> setUser(User user) async {
+  Future<void> setUser(int userId) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-    _user = user;
-    sharedPreferences.setString('user', jsonEncode(user));
-    notifyListeners();
+    _userId = userId;
+    sharedPreferences.setInt('user_id', userId);
 
-    if (kDebugMode) {
-      print("User set called!");
-    }
+    notifyListeners();
   }
 
-  void clearUser(BuildContext context) {
-    _user = null;
-    notifyListeners();
+  void clearUser() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-    Navigator.pushNamed(
-      context,
-      'Account',
-    );
+    _userId = -1;
+    sharedPreferences.setInt('user_id', -1);
+
+    notifyListeners();
   }
 }

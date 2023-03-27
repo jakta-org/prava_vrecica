@@ -7,7 +7,7 @@ abstract class DatabaseInterface {
   int getNewUserId();
 
   User? getUserById(int id);
-  User? authenticateUser(String mail, int passwordHash);
+  int authenticateUser(String mail, int passwordHash);
 
   bool updateUserInfo(int id, User user);
   bool updateUserStats(int id, Map<int, ObjectCount> objectCountList);

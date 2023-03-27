@@ -16,13 +16,13 @@ class Database implements DatabaseInterface {
   Database(this.objectTypes, this.usersTable, this.rulesStructures);
 
   @override
-  User? authenticateUser(String mail, int passwordHash) {
+  int authenticateUser(String mail, int passwordHash) {
     for (User dbUser in usersTable) {
-      if (dbUser.mail == mail) {
-        return dbUser;
+      if (dbUser.mail == mail && dbUser.passwordHash == passwordHash) {
+        return dbUser.id;
       }
     }
-    return null;
+    return -1;
   }
 
   @override

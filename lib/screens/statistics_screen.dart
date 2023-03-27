@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:prava_vrecica/widgets/normal_appbar.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -13,7 +12,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
     List<Widget> widgetList = <Widget>[];
 
     for (int i = 0; i < 15; i++) {
-      widgetList.add(materialStats(context));
+      widgetList.add(testWidget(context));
     }
 
     return widgetList;
@@ -22,20 +21,14 @@ class StatisticsScreenState extends State<StatisticsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: normalAppBar(context),
-        backgroundColor: Theme.of(context).colorScheme.background,
-        body: Stack(
-          children: [
-            SafeArea(
-              child: Container(
-                padding: const EdgeInsetsDirectional.all(10),
-                child: ListView(
-                  children: _createChildren(context),
-                ),
-              ),
-            ),
-          ],
-        ));
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: Container(
+        padding: const EdgeInsetsDirectional.symmetric(horizontal: 10),
+        child: ListView(
+          children: _createChildren(context),
+        ),
+      ),
+    );
   }
 
   Widget materialStats(BuildContext context) {

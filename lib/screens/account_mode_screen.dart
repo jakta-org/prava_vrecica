@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prava_vrecica/providers/theme_provider.dart';
+import 'package:prava_vrecica/screens/login_screen.dart';
 import 'package:provider/provider.dart';
-import '../providers/user_provider.dart';
 
 class AccountModeScreen extends StatefulWidget {
   const AccountModeScreen({super.key});
@@ -13,16 +13,8 @@ class AccountModeScreen extends StatefulWidget {
 class AccountModeScreenState extends State<AccountModeScreen> {
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final themeProvider = Provider.of<ThemeProvider>(context);
     themeProvider.toggleNavigationBar(false);
-
-    if (userProvider.user != null) {
-      Navigator.pushNamed(
-        context,
-        'Camera',
-      );
-    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -32,10 +24,9 @@ class AccountModeScreenState extends State<AccountModeScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                userButton('Login', 'Personal',
-                    Theme.of(context).colorScheme.surface),
-                userButton(null, 'Education', Colors.teal.shade300),
-                userButton(null, 'Business', Colors.blueGrey.shade300),
+                userButton(const LoginScreen(), 'Login', 'Personal', Theme.of(context).colorScheme.primary),
+                userButton(const AccountModeScreen(), 'Account', 'Education', Colors.teal.shade300),
+                userButton(const AccountModeScreen(), 'Account', 'Business', Colors.blueGrey.shade300),
               ],
             ),
           ),
@@ -44,12 +35,15 @@ class AccountModeScreenState extends State<AccountModeScreen> {
     );
   }
 
-  Widget userButton(String? routeName, String text, Color backgroundColor) {
+  Widget userButton(Widget route, String routeName, String text, Color backgroundColor) {
     return TextButton(
       onPressed: () {
-        Navigator.pushNamed(
+        Navigator.push(
           context,
-          routeName ?? 'Account',
+          MaterialPageRoute(
+            builder: (context) => route,
+            settings: RouteSettings(name: routeName),
+          ),
         );
       },
       child: Container(

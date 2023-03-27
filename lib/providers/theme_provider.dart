@@ -17,7 +17,7 @@ class ThemeProvider extends ChangeNotifier {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
     themeMode = value ? ThemeMode.dark : ThemeMode.light;
-    sharedPreferences.setBool('is_dark', value);
+    await sharedPreferences.setBool('is_dark', value);
     updateSystemUI();
 
     notifyListeners();
@@ -48,10 +48,14 @@ class Themes {
   static final lightTheme = ThemeData(
     primarySwatch: Colors.blue,
     primaryColor: Colors.blue,
+    canvasColor: Colors.transparent,
     colorScheme: ColorScheme.light(
       primary: Colors.blue,
       surface: Colors.white,
       background: Colors.grey.shade200,
+      surfaceTint: Colors.black12,
+      surfaceVariant: Colors.white,
+      onSurface: Colors.black,
     ),
     scrollbarTheme: ScrollbarThemeData(
       thumbColor: MaterialStateProperty.all(Colors.blue),
@@ -65,10 +69,14 @@ class Themes {
   static final darkTheme = ThemeData(
     primarySwatch: Colors.blue,
     primaryColor: Colors.blue,
+    canvasColor: Colors.transparent,
     colorScheme: ColorScheme.dark(
       primary: Colors.blue,
       surface: Colors.grey.shade800,
       background: Colors.grey.shade900,
+      surfaceTint: Colors.white12,
+      surfaceVariant: Colors.grey.shade300,
+      onSurface: Colors.grey.shade300,
     ),
     buttonTheme: const ButtonThemeData(
       buttonColor: Colors.white,

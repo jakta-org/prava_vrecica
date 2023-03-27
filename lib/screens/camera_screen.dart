@@ -1,6 +1,9 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:prava_vrecica/screens/settings_screen.dart';
+import 'package:prava_vrecica/screens/user_info_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
 
@@ -23,9 +26,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   void startCamera() async {
     cameras = await availableCameras();
-    controller = CameraController(
-        cameras[0],
-        ResolutionPreset.veryHigh,
+    controller = CameraController(cameras[0], ResolutionPreset.veryHigh,
         enableAudio: false);
     await controller.initialize().then((value) {
       if (!mounted) {
@@ -65,6 +66,8 @@ class _CameraScreenState extends State<CameraScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     themeProvider.toggleNavigationBar(true);
 
+    int userScore = 53001;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -87,27 +90,40 @@ class _CameraScreenState extends State<CameraScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              'Settings',
-                            );
-                          },
-                          padding: EdgeInsets.zero,
-                          iconSize: 35,
-                          icon: const Icon(
-                            Icons.settings,
-                            color: Colors.white,
+                        OpenContainer(
+                          closedElevation: 0,
+                          openElevation: 0,
+                          transitionType: ContainerTransitionType.fadeThrough,
+                          closedColor: Colors.transparent,
+                          transitionDuration: const Duration(seconds: 1),
+                          routeSettings: const RouteSettings(name: 'Settings'),
+                          openBuilder: (context, action) => const SettingsScreen(),
+                          closedBuilder: (context, VoidCallback openContainer) => IconButton(
+                            onPressed: openContainer,
+                            padding: EdgeInsets.zero,
+                            iconSize: 35,
+                            icon: Icon(
+                              Icons.settings,
+                              color: Theme.of(context).colorScheme.surfaceVariant,
+                            ),
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          padding: EdgeInsets.zero,
-                          iconSize: 35,
-                          icon: const Icon(
-                            Icons.account_circle,
-                            color: Colors.white,
+                        OpenContainer(
+                          closedElevation: 0,
+                          openElevation: 0,
+                          transitionType: ContainerTransitionType.fadeThrough,
+                          closedColor: Colors.transparent,
+                          transitionDuration: const Duration(seconds: 1),
+                          routeSettings: const RouteSettings(name: 'User'),
+                          openBuilder: (context, action) => const UserInfoScreen(),
+                          closedBuilder: (context, VoidCallback openContainer) => IconButton(
+                            onPressed: openContainer,
+                            padding: EdgeInsets.zero,
+                            iconSize: 35,
+                            icon: Icon(
+                              Icons.account_circle,
+                              color: Theme.of(context).colorScheme.surfaceVariant,
+                            ),
                           ),
                         ),
                       ],
@@ -126,25 +142,26 @@ class _CameraScreenState extends State<CameraScreen> {
                         Container(
                           margin: const EdgeInsetsDirectional.symmetric(
                               horizontal: 2),
-                          child: const Center(
+                          child: Center(
                             child: Icon(
                               Icons.recycling,
-                              color: Colors.green,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                         ),
                         Container(
                           width: 90,
                           height: 30,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                            color: Colors.grey,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(Radius.circular(12)),
+                            border: Border.all(width: 2, color: Theme.of(context).colorScheme.surface),
+                            color: Theme.of(context).colorScheme.surfaceTint,
                           ),
-                          child: const Center(
+                          child: Center(
                             child: Text(
-                              "25001",
+                              userScore.toString(),
                               style: TextStyle(
-                                color: Colors.green,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -177,9 +194,9 @@ class _CameraScreenState extends State<CameraScreen> {
                             onPressed: () {},
                             padding: EdgeInsets.zero,
                             iconSize: 30,
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.add_circle,
-                              color: Colors.white,
+                              color: Theme.of(context).colorScheme.surfaceVariant,
                             ),
                           ),
                         ),
@@ -190,9 +207,9 @@ class _CameraScreenState extends State<CameraScreen> {
                             onPressed: () {},
                             padding: EdgeInsets.zero,
                             iconSize: 80,
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.circle_outlined,
-                              color: Colors.white,
+                              color: Theme.of(context).colorScheme.surfaceVariant,
                             ),
                           ),
                         ),
@@ -203,50 +220,10 @@ class _CameraScreenState extends State<CameraScreen> {
                             onPressed: () {},
                             padding: EdgeInsets.zero,
                             iconSize: 30,
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.flashlight_off,
-                              color: Colors.white,
+                              color: Theme.of(context).colorScheme.surfaceVariant,
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(25),
-                          topRight: Radius.circular(25)),
-                      color: Theme.of(context).colorScheme.surface,
-                    ),
-                    height: 60,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              'Statistics',
-                            );
-                          },
-                          icon: Icon(
-                            Icons.bar_chart,
-                            color: Theme.of(context).colorScheme.onBackground,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.home,
-                            color: Theme.of(context).colorScheme.onBackground,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.map,
-                            color: Theme.of(context).colorScheme.onBackground,
                           ),
                         ),
                       ],
