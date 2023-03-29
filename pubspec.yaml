@@ -13,23 +13,36 @@ dependencies:
   flutter:
     sdk: flutter
 
-  camera: ^0.10.3+2
-
+  camera: ^0.9.4+5
   cupertino_icons: ^1.0.2
   provider: ^6.0.5
   shared_preferences: ^2.0.20
   animations: ^2.0.7
+  tflite_flutter: ^0.9.0
+  tflite_flutter_helper: ^0.3.1
+  image: ^3.0.2
+
+dependency_overrides:
+  camera_android:
+    git:
+      url: https://github.com/bottlepay/plugins.git
+      path: packages/camera/camera_android
+      ref: e1a4dba770da9bc3cf9f858bac6837083f8b9059
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^2.0.0
-  flutter_native_splash: ^2.2.19
+  flutter_native_splash: ^1.2.1
 
 flutter:
 
   uses-material-design: true
+
+  assets:
+    - assets/model.tflite
+    - assets/labels.txt
 
 flutter_native_splash:
   color: "#03a9f4"

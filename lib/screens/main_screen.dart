@@ -24,7 +24,7 @@ class MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageTransitionSwitcher(
-        duration: const Duration(milliseconds: 700),
+        duration: const Duration(milliseconds: 300),
         reverse: transitionOrientation(oldPageIndex, pageIndex),
         transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
             SharedAxisTransition(
