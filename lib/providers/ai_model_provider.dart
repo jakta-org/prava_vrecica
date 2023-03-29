@@ -1,0 +1,171 @@
+import 'dart:math';
+import 'dart:ui';
+import 'package:flutter/foundation.dart';
+import 'package:image/image.dart' as img;
+import 'package:tflite_flutter/tflite_flutter.dart';
+import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
+
+class AiModelProvider extends ChangeNotifier {
+  Interpreter interpreter;
+  List<String> labels;
+  late Classifier classifier;
+
+  AiModelProvider(this.interpreter, this.labels) {
+    classifier = Classifier(interpreter, labels);
+  }
+}
+
+class Classifier {
+  Interpreter _interpreter;
+
+  List<String> _labels;
+
+  static const int INPUT_SIZE = 300;
+
+  static const double THRESHOLD = 0;
+
+  late List<List<int>> _outputShapes;
+
+  late List<TfLiteType> _outputTypes;
+
+  static const int NUM_RESULTS = 10;
+
+  Classifier(this._interpreter, this._labels) {
+    _outputShapes = [];
+    _outputTypes = [];
+
+
+    var outputTensors = _interpreter.getOutputTensors();
+    _outputShapes = [];
+    _outputTypes = [];
+    for (var tensor in outputTensors) {
+      _outputShapes.add(tensor.shape);
+      _outputTypes.add(tensor.type);
+    }
+
+
+  }
+
+  TensorImage getProcessedImage(TensorImage inputImage) {
+    var padSize = max(inputImage.height, inputImage.width);
+    var imageProcessor = ImageProcessorBuilder()
+        .add(ResizeWithCropOrPadOp(padSize, padSize))
+        .add(ResizeOp(INPUT_SIZE, INPUT_SIZE, ResizeMethod.BILINEAR))
+        .build();
+    inputImage = imageProcessor.process(inputImage);
+    return inputImage;
+  }
+
+  List<Recognition> predict(img.Image image) {
+    TensorImage inputImage = TensorImage.fromImage(image);
+    var padSize = max(inputImage.height, inputImage.width);
+
+    inputImage = getProcessedImage(inputImage);
+
+    TensorBuffer outputLocations = TensorBufferFloat(_outputShapes[0]);
+    TensorBuffer outputClasses = TensorBufferFloat(_outputShapes[1]);
+    TensorBuffer outputScores = TensorBufferFloat(_outputShapes[2]);
+    TensorBuffer numLocations = TensorBufferFloat(_outputShapes[3]);
+
+    List<Object> inputs = [inputImage.buffer];
+
+    Map<int, Object> outputs = {
+      0: outputLocations.buffer,
+      1: outputClasses.buffer,
+      2: outputScores.buffer,
+      3: numLocations.buffer,
+    };
+
+    _interpreter.runForMultipleInputs(inputs, outputs);
+    if (kDebugMode) {
+      print(outputs);
+    }
+
+    int resultsCount = min(NUM_RESULTS, numLocations.getIntValue(0));
+
+    int labelOffset = 1;
+
+    List<Rect> locations = BoundingBoxUtils.convert(
+      tensor: outputLocations,
+      valueIndex: [1, 0, 3, 2],
+      boundingBoxAxis: 2,
+      boundingBoxType: BoundingBoxType.BOUNDARIES,
+      coordinateType: CoordinateType.RATIO,
+      height: INPUT_SIZE,
+      width: INPUT_SIZE,
+    );
+
+    if (kDebugMode) {
+      print(locations);
+    }
+
+    List<Recognition> recognitions = [];
+
+    for (int i = 0; i < resultsCount; i++) {
+      var score = outputScores.getDoubleValue(i);
+
+      var labelIndex = outputClasses.getIntValue(i) + labelOffset;
+      var label = _labels.elementAt(labelIndex);
+
+      if (kDebugMode) {
+        print ({'label': label, 'score': score, 'location': locations[i]});
+      }
+
+      var imageProcessor = ImageProcessorBuilder()
+          .add(ResizeWithCropOrPadOp(padSize, padSize))
+          .add(ResizeOp(INPUT_SIZE, INPUT_SIZE, ResizeMethod.BILINEAR))
+          .build();
+
+      if (score > THRESHOLD) {
+        Rect transformedRect = imageProcessor.inverseTransformRect(
+            locations[i], image.height, image.width);
+
+        recognitions.add(
+          Recognition(i, label, score, transformedRect),
+        );
+      }
+    }
+
+    if (kDebugMode) {
+      print(recognitions);
+    }
+
+    return recognitions;
+  }
+}
+
+class Recognition {
+  int id;
+
+  String label;
+
+  double score;
+
+  Rect location;
+
+  Recognition(this.id, this.label, this.score, this.location);
+
+  Rect get renderLocation {
+    // ratioX = screenWidth / imageInputWidth
+    // ratioY = ratioX if image fits screenWidth with aspectRatio = constant
+
+    double ratioX = 1;
+    double ratioY = ratioX;
+
+    double transLeft = max(0.1, location.left * ratioX);
+    double transTop = max(0.1, location.top * ratioY);
+    double transWidth = min(
+        location.width * ratioX, 10000);
+    double transHeight = min(
+        location.height * ratioY, 10000);
+
+    Rect transformedRect =
+    Rect.fromLTWH(transLeft, transTop, transWidth, transHeight);
+    return transformedRect;
+  }
+
+  @override
+  String toString() {
+    return 'Recognition(id: $id, label: $label, score: $score, location: $location)';
+  }
+}

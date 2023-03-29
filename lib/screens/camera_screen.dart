@@ -1,10 +1,14 @@
+import 'dart:io';
 import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/services.dart';
 import 'package:prava_vrecica/screens/settings_screen.dart';
 import 'package:prava_vrecica/screens/user_info_screen.dart';
 import 'package:provider/provider.dart';
+import '../providers/camera_provider.dart';
+import 'preview_screen.dart';
 import '../providers/theme_provider.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -15,56 +19,102 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
-  List<CameraDescription> cameras = [];
-  late CameraController controller;
+  late CameraController cameraController;
+  late Widget preview;
+  late CameraProvider cameraProvider;
+  late ThemeProvider themeProvider;
+  late Size size;
+  late double scale;
+  bool previewOn = false;
 
   @override
   void initState() {
-    startCamera();
+    preview = Container();
+
     super.initState();
   }
 
-  void startCamera() async {
-    cameras = await availableCameras();
-    controller = CameraController(cameras[0], ResolutionPreset.veryHigh,
-        enableAudio: false);
-    await controller.initialize().then((value) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {});
-    }).catchError((error) {
-      if (kDebugMode) {
-        print(error);
-      }
-    });
+  Widget buildImagePreview() {
+    return FutureBuilder(
+      future: cameraController.takePicture(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.transparent,
+            ),
+          );
+        }
+        if (snapshot.hasError) {
+          return const Scaffold(
+            body: Center(
+              child: Text('Error initializing camera'),
+            ),
+          );
+        }
+
+        return imagePreview(snapshot.data!.path);
+      },
+    );
   }
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
+  Widget imagePreview(String path) {
+    File file = File(path);
+    Image image = Image.file(file);
+
+    return Center(
+      child: Stack(
+        children: [
+          image,
+          Positioned(
+            bottom: 0,
+            child: Container(
+              width: 400,
+              height: 40,
+              color: Theme.of(context).colorScheme.surfaceTint,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Did you take a good photo :)?",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.surface,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => PreviewScreen(imagePath: path)),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.check_box,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    var scale = size.aspectRatio * controller.value.aspectRatio;
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    cameraProvider = Provider.of<CameraProvider>(context, listen: false);
+    cameraController = cameraProvider.cameraController;
 
+    size = MediaQuery.of(context).size;
+    var scale = size.aspectRatio * cameraController.value.aspectRatio;
     if (scale < 1) {
       scale = 1 / scale;
     }
-
-    if (!controller.value.isInitialized) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    themeProvider.toggleNavigationBar(true);
 
     int userScore = 53001;
 
@@ -74,7 +124,7 @@ class _CameraScreenState extends State<CameraScreen> {
           Transform.scale(
             scale: scale,
             child: Center(
-              child: CameraPreview(controller),
+              child: CameraPreview(cameraController),
             ),
           ),
           Positioned(
@@ -95,7 +145,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           openElevation: 0,
                           transitionType: ContainerTransitionType.fadeThrough,
                           closedColor: Colors.transparent,
-                          transitionDuration: const Duration(seconds: 1),
+                          transitionDuration: const Duration(milliseconds: 300),
                           routeSettings: const RouteSettings(name: 'Settings'),
                           openBuilder: (context, action) => const SettingsScreen(),
                           closedBuilder: (context, VoidCallback openContainer) => IconButton(
@@ -113,7 +163,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           openElevation: 0,
                           transitionType: ContainerTransitionType.fadeThrough,
                           closedColor: Colors.transparent,
-                          transitionDuration: const Duration(seconds: 1),
+                          transitionDuration: const Duration(milliseconds: 300),
                           routeSettings: const RouteSettings(name: 'User'),
                           openBuilder: (context, action) => const UserInfoScreen(),
                           closedBuilder: (context, VoidCallback openContainer) => IconButton(
@@ -204,7 +254,11 @@ class _CameraScreenState extends State<CameraScreen> {
                           margin: const EdgeInsetsDirectional.symmetric(
                               horizontal: 20),
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              setState(() {
+                                preview = buildImagePreview();
+                              });
+                            },
                             padding: EdgeInsets.zero,
                             iconSize: 80,
                             icon: Icon(
@@ -233,6 +287,7 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
             ),
           ),
+          preview,
         ],
       ),
     );
