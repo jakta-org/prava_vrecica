@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:prava_vrecica/screens/camera_screen.dart';
 import 'package:prava_vrecica/screens/info_screen.dart';
 import 'package:prava_vrecica/screens/statistics_screen.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/theme_provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key}) : super();
@@ -22,6 +25,10 @@ class MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    themeProvider.toggleNavigationBar(true);
+    themeProvider.updateSystemUI();
+
     return Scaffold(
       body: PageTransitionSwitcher(
         duration: const Duration(milliseconds: 300),

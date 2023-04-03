@@ -152,8 +152,20 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   Widget guestModeButton() {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        userProvider.setUser(-1);
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const MainScreen(),
+            settings: const RouteSettings(name: 'Main'),
+          ),
+        );
+      },
       child: Container(
         alignment: Alignment.center,
         width: 300,

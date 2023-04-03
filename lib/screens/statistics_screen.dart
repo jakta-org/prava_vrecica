@@ -1,4 +1,8 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../models/user_model.dart';
+import '../providers/user_provider.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -11,15 +15,17 @@ class StatisticsScreenState extends State<StatisticsScreen> {
   List<Widget> _createChildren(BuildContext context) {
     List<Widget> widgetList = <Widget>[];
 
-    for (int i = 0; i < 15; i++) {
-      widgetList.add(testWidget(context));
-    }
+    widgetList.add(categoriesMassChart());
+    widgetList.add(testWidget(context));
 
     return widgetList;
   }
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    User user;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Container(
@@ -28,6 +34,14 @@ class StatisticsScreenState extends State<StatisticsScreen> {
           children: _createChildren(context),
         ),
       ),
+    );
+  }
+
+  Decoration childDecoration() {
+    return BoxDecoration(
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
+      color: Theme.of(context).colorScheme.surface,
+      boxShadow: const <BoxShadow>[],
     );
   }
 
@@ -62,11 +76,89 @@ class StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
-  Decoration childDecoration() {
-    return BoxDecoration(
-      borderRadius: const BorderRadius.all(Radius.circular(10)),
-      color: Theme.of(context).colorScheme.surface,
-      boxShadow: const <BoxShadow>[],
+  Widget categoriesMassChart() {
+    // test data
+    var categories = <String>[
+      "mixed",
+      "plastics",
+      "paper",
+      "glass",
+      "textile",
+      "batteries"
+    ];
+    var colors = <Color>[
+      Colors.green,
+      Colors.yellow,
+      Colors.blue,
+      Colors.lightBlue,
+      Colors.redAccent,
+      Colors.orangeAccent,
+    ];
+    var totalMass = <double>[5.613, 4.189, 2.056, 1.379, 0.405, 0.132];
+
+    var chartGroupsData = <BarChartGroupData>[];
+    for (int i = 0; i < categories.length; i++) {
+      BarChartGroupData currentGroupData = BarChartGroupData(
+        x: i,
+        barRods: [
+          BarChartRodData(
+            backDrawRodData: BackgroundBarChartRodData(
+              show: true,
+              color: Theme.of(context).colorScheme.surfaceTint,
+              fromY: 0,
+              toY: 10,
+            ),
+            borderRadius: const BorderRadius.all(Radius.circular(0)),
+            toY: totalMass[i],
+            width: 30,
+            color: colors[i],
+          ),
+        ],
+      );
+      chartGroupsData.add(currentGroupData);
+    }
+
+    Widget getTitleData(double d, TitleMeta m) {
+      int i = d.toInt();
+
+      return Text(
+        categories[i],
+        style: TextStyle(
+          color: colors[i],
+          fontSize: 10,
+        ),
+      );
+    }
+
+    return Container(
+      decoration: childDecoration(),
+      height: 250,
+      padding: const EdgeInsetsDirectional.only(top: 20, end: 40),
+      child: BarChart(
+        BarChartData(
+          groupsSpace: 10,
+          backgroundColor: Colors.transparent,
+          titlesData: FlTitlesData(
+            show: true,
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                reservedSize: 20,
+                showTitles: true,
+                getTitlesWidget: getTitleData,
+              ),
+            ),
+            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            leftTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: true, reservedSize: 40)),
+          ),
+          borderData: FlBorderData(show: false),
+          barGroups: chartGroupsData,
+          gridData: FlGridData(show: false),
+          alignment: BarChartAlignment.spaceBetween,
+          maxY: 10,
+        ),
+      ),
     );
   }
 }

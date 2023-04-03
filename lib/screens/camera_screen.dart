@@ -29,9 +29,8 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   void initState() {
-    preview = Container();
-
     super.initState();
+    preview = Container();
   }
 
   Widget buildImagePreview() {
@@ -86,8 +85,14 @@ class _CameraScreenState extends State<CameraScreen> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => PreviewScreen(imagePath: path)),
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                PreviewScreen(imagePath: path),
+                            settings: const RouteSettings(name: 'Preview'),
+                          ),
                         );
+
+                        setState(() => preview = Container());
                       },
                       icon: Icon(
                         Icons.check_box,
@@ -116,7 +121,7 @@ class _CameraScreenState extends State<CameraScreen> {
       scale = 1 / scale;
     }
 
-    int userScore = 53001;
+    int userScore = 0;
 
     return Scaffold(
       body: Stack(
@@ -147,14 +152,18 @@ class _CameraScreenState extends State<CameraScreen> {
                           closedColor: Colors.transparent,
                           transitionDuration: const Duration(milliseconds: 300),
                           routeSettings: const RouteSettings(name: 'Settings'),
-                          openBuilder: (context, action) => const SettingsScreen(),
-                          closedBuilder: (context, VoidCallback openContainer) => IconButton(
+                          openBuilder: (context, action) =>
+                              const SettingsScreen(),
+                          closedBuilder:
+                              (context, VoidCallback openContainer) =>
+                                  IconButton(
                             onPressed: openContainer,
                             padding: EdgeInsets.zero,
                             iconSize: 35,
                             icon: Icon(
                               Icons.settings,
-                              color: Theme.of(context).colorScheme.surfaceVariant,
+                              color:
+                                  Theme.of(context).colorScheme.surfaceVariant,
                             ),
                           ),
                         ),
@@ -165,14 +174,18 @@ class _CameraScreenState extends State<CameraScreen> {
                           closedColor: Colors.transparent,
                           transitionDuration: const Duration(milliseconds: 300),
                           routeSettings: const RouteSettings(name: 'User'),
-                          openBuilder: (context, action) => const UserInfoScreen(),
-                          closedBuilder: (context, VoidCallback openContainer) => IconButton(
+                          openBuilder: (context, action) =>
+                              const UserInfoScreen(),
+                          closedBuilder:
+                              (context, VoidCallback openContainer) =>
+                                  IconButton(
                             onPressed: openContainer,
                             padding: EdgeInsets.zero,
                             iconSize: 35,
                             icon: Icon(
                               Icons.account_circle,
-                              color: Theme.of(context).colorScheme.surfaceVariant,
+                              color:
+                                  Theme.of(context).colorScheme.surfaceVariant,
                             ),
                           ),
                         ),
@@ -203,8 +216,11 @@ class _CameraScreenState extends State<CameraScreen> {
                           width: 90,
                           height: 30,
                           decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(12)),
-                            border: Border.all(width: 2, color: Theme.of(context).colorScheme.surface),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(12)),
+                            border: Border.all(
+                                width: 2,
+                                color: Theme.of(context).colorScheme.surface),
                             color: Theme.of(context).colorScheme.surfaceTint,
                           ),
                           child: Center(
@@ -246,7 +262,8 @@ class _CameraScreenState extends State<CameraScreen> {
                             iconSize: 30,
                             icon: Icon(
                               Icons.add_circle,
-                              color: Theme.of(context).colorScheme.surfaceVariant,
+                              color:
+                                  Theme.of(context).colorScheme.surfaceVariant,
                             ),
                           ),
                         ),
@@ -263,7 +280,8 @@ class _CameraScreenState extends State<CameraScreen> {
                             iconSize: 80,
                             icon: Icon(
                               Icons.circle_outlined,
-                              color: Theme.of(context).colorScheme.surfaceVariant,
+                              color:
+                                  Theme.of(context).colorScheme.surfaceVariant,
                             ),
                           ),
                         ),
@@ -276,7 +294,8 @@ class _CameraScreenState extends State<CameraScreen> {
                             iconSize: 30,
                             icon: Icon(
                               Icons.flashlight_off,
-                              color: Theme.of(context).colorScheme.surfaceVariant,
+                              color:
+                                  Theme.of(context).colorScheme.surfaceVariant,
                             ),
                           ),
                         ),

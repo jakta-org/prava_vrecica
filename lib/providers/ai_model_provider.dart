@@ -2,35 +2,47 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
 class AiModelProvider extends ChangeNotifier {
   Interpreter interpreter;
   List<String> labels;
-  late Classifier classifier;
+  double threshold = 0.5;
 
-  AiModelProvider(this.interpreter, this.labels) {
-    classifier = Classifier(interpreter, labels);
+  Classifier get classifier {
+    return Classifier(interpreter, labels, threshold);
+  }
+
+  AiModelProvider(this.interpreter, this.labels, this.threshold);
+
+  Future<void> setThreshold(double threshold) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    this.threshold = threshold;
+    sharedPreferences.setDouble('threshold', threshold);
+
+    notifyListeners();
   }
 }
 
 class Classifier {
-  Interpreter _interpreter;
+  final Interpreter _interpreter;
 
-  List<String> _labels;
+  final List<String> _labels;
 
-  static const int INPUT_SIZE = 300;
+  static const int inputSize = 300;
 
-  static const double THRESHOLD = 0;
+  late double threshold = 0;
 
   late List<List<int>> _outputShapes;
 
   late List<TfLiteType> _outputTypes;
 
-  static const int NUM_RESULTS = 10;
+  static const int numResults = 10;
 
-  Classifier(this._interpreter, this._labels) {
+  Classifier(this._interpreter, this._labels, this.threshold) {
     _outputShapes = [];
     _outputTypes = [];
 
@@ -43,14 +55,13 @@ class Classifier {
       _outputTypes.add(tensor.type);
     }
 
-
   }
 
   TensorImage getProcessedImage(TensorImage inputImage) {
     var padSize = max(inputImage.height, inputImage.width);
     var imageProcessor = ImageProcessorBuilder()
         .add(ResizeWithCropOrPadOp(padSize, padSize))
-        .add(ResizeOp(INPUT_SIZE, INPUT_SIZE, ResizeMethod.BILINEAR))
+        .add(ResizeOp(inputSize, inputSize, ResizeMethod.BILINEAR))
         .build();
     inputImage = imageProcessor.process(inputImage);
     return inputImage;
@@ -81,7 +92,7 @@ class Classifier {
       print(outputs);
     }
 
-    int resultsCount = min(NUM_RESULTS, numLocations.getIntValue(0));
+    int resultsCount = min(numResults, numLocations.getIntValue(0));
 
     int labelOffset = 1;
 
@@ -91,8 +102,8 @@ class Classifier {
       boundingBoxAxis: 2,
       boundingBoxType: BoundingBoxType.BOUNDARIES,
       coordinateType: CoordinateType.RATIO,
-      height: INPUT_SIZE,
-      width: INPUT_SIZE,
+      height: inputSize,
+      width: inputSize,
     );
 
     if (kDebugMode) {
@@ -113,10 +124,10 @@ class Classifier {
 
       var imageProcessor = ImageProcessorBuilder()
           .add(ResizeWithCropOrPadOp(padSize, padSize))
-          .add(ResizeOp(INPUT_SIZE, INPUT_SIZE, ResizeMethod.BILINEAR))
+          .add(ResizeOp(inputSize, inputSize, ResizeMethod.BILINEAR))
           .build();
 
-      if (score > THRESHOLD) {
+      if (score > threshold) {
         Rect transformedRect = imageProcessor.inverseTransformRect(
             locations[i], image.height, image.width);
 
