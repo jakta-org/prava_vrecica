@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prava_vrecica/providers/database_provider.dart';
 import 'package:prava_vrecica/providers/user_provider.dart';
 import 'package:prava_vrecica/screens/main_screen.dart';
+import 'package:prava_vrecica/widgets/or_divider.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
 
@@ -32,13 +33,21 @@ class LoginScreenState extends State<LoginScreen> {
               children: [
                 loginForm(),
                 loginButton(),
-                const Divider(
-                  thickness: 2,
-                  height: 40,
-                  indent: 40,
-                  endIndent: 40,
-                ),
-                guestModeButton(),
+                orDivider(context),
+                userButton(
+                    const LoginScreen(),
+                    'Account',
+                    'Continue with Google',
+                    Theme.of(context).colorScheme.surface,
+                    Icons.g_mobiledata,
+                    Colors.black),
+                userButton(
+                    const LoginScreen(),
+                    'Account',
+                    'Continue with AppleId',
+                    Theme.of(context).colorScheme.surface,
+                    Icons.apple,
+                    Colors.black),
               ],
             ),
           ),
@@ -51,7 +60,7 @@ class LoginScreenState extends State<LoginScreen> {
     return Container(
       width: 300,
       padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 40),
-      margin: const EdgeInsetsDirectional.symmetric(vertical: 20),
+      margin: const EdgeInsetsDirectional.symmetric(vertical: 5),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: const BorderRadius.all(Radius.circular(50)),
@@ -107,68 +116,88 @@ class LoginScreenState extends State<LoginScreen> {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final db = Provider.of<DatabaseProvider>(context, listen: false).database;
 
-    return TextButton(
-      onPressed: () {
-        if (loginFormKey.currentState!.validate()) {
-          loginFormKey.currentState!.save();
-        } else {
-          return;
-        }
+    return Container(
+      alignment: Alignment.center,
+      width: 300,
+      height: 60,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary,
+        borderRadius: const BorderRadius.all(Radius.circular(50)),
+      ),
+      margin: const EdgeInsetsDirectional.symmetric(vertical: 10),
+      child: TextButton(
+        onPressed: () {
+          if (loginFormKey.currentState!.validate()) {
+            loginFormKey.currentState!.save();
+          } else {
+            return;
+          }
 
-        int userId = db.authenticateUser(mail!, passwordHash!);
-        if (userId == -1) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Mail or password not right."),
-          ));
-        } else {
-          userProvider.setUser(userId);
+          int userId = db.authenticateUser(mail!, passwordHash!);
+          if (userId == -1) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Mail or password not right."),
+            ));
+          } else {
+            userProvider.setUser(userId);
 
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const MainScreen(),
-              settings: const RouteSettings(name: 'Main'),
-            ),
-          );
-        }
-      },
-      child: Container(
-        alignment: Alignment.center,
-        width: 300,
-        height: 60,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
-          borderRadius: const BorderRadius.all(Radius.circular(50)),
-        ),
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MainScreen(),
+                settings: const RouteSettings(name: 'Main'),
+              ),
+            );
+          }
+        },
         child: Text(
           'Sign in',
           style: TextStyle(
             color: Theme.of(context).colorScheme.onBackground,
-            fontSize: 20,
+            fontSize: 18,
           ),
         ),
       ),
     );
   }
 
-  Widget guestModeButton() {
-    return TextButton(
-      onPressed: () {},
-      child: Container(
-        alignment: Alignment.center,
-        width: 300,
-        height: 60,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
-          borderRadius: const BorderRadius.all(Radius.circular(50)),
-        ),
-        child: Text(
-          'Continue as guest',
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onBackground,
-            fontSize: 20,
+  Widget userButton(Widget route, String routeName, String text,
+      Color backgroundColor, IconData iconData, Color iconColor) {
+    return Container(
+      alignment: Alignment.center,
+      width: 300,
+      height: 60,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: const BorderRadius.all(Radius.circular(50)),
+      ),
+      margin: const EdgeInsetsDirectional.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            iconData,
+            color: iconColor,
           ),
-        ),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => route,
+                  settings: RouteSettings(name: routeName),
+                ),
+              );
+            },
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

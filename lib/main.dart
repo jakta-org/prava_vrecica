@@ -21,8 +21,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-  final isDark = sharedPreferences.getBool('is_dark') ?? false;
-  final userId = sharedPreferences.getInt('user_id') ?? -1;
+  final isDark = sharedPreferences.getBool('is_dark') ?? (ThemeMode.system == ThemeMode.dark);
+  final userId = sharedPreferences.getInt('user_id') ?? -2;
 
   final cameras = await availableCameras();
   final cameraController = CameraController(
@@ -34,8 +34,9 @@ void main() async {
 
   final interpreter = await Interpreter.fromAsset("model.tflite", options: InterpreterOptions()..threads = 4);
   final labels = await FileUtil.loadLabels("assets/labels.txt");
+  final threshold = sharedPreferences.getDouble('threshold') ?? 0.5;
 
-  runApp(App(isDark: isDark, userId: userId, cameras: cameras, cameraController: cameraController, interpreter: interpreter, labels: labels));
+  runApp(App(isDark: isDark, userId: userId, cameras: cameras, cameraController: cameraController, interpreter: interpreter, labels: labels, threshold: threshold));
 }
 
 class App extends StatelessWidget {
@@ -45,8 +46,9 @@ class App extends StatelessWidget {
   final CameraController cameraController;
   final Interpreter interpreter;
   final List<String> labels;
+  final double threshold;
 
-  const App({super.key, required this.isDark, required this.userId, required this.cameras, required this.cameraController, required this.interpreter, required this.labels});
+  const App({super.key, required this.isDark, required this.userId, required this.cameras, required this.cameraController, required this.interpreter, required this.labels, required this.threshold});
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +61,7 @@ class App extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => UserProvider(userId)),
         ChangeNotifierProvider(create: (context) => ThemeProvider(isDark)),
         ChangeNotifierProvider(create: (context) => DatabaseProvider()),
-        ChangeNotifierProvider(create: (context) => AiModelProvider(interpreter, labels)),
+        ChangeNotifierProvider(create: (context) => AiModelProvider(interpreter, labels, threshold)),
         ChangeNotifierProvider(create: (context) => CameraProvider(cameras, cameraController)),
       ],
       builder: (context, _) {

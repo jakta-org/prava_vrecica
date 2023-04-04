@@ -12,44 +12,20 @@ class ModeStatus extends StatefulWidget {
 }
 
 class ModeStatusState extends State<ModeStatus> {
-  bool isAuth = false;
-  late Future<bool> userStatus;
-
-  @override
-  void initState() {
-    super.initState();
-    userStatus = checkUserStatus();
-  }
-
-  Future<bool> checkUserStatus() async {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    int userId = userProvider.userId;
-    return (userId != -1);
-  }
-
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
     Widget child;
-    return FutureBuilder(
-        future: checkUserStatus(),
-        builder: (context, snapshot){
 
-          if(snapshot.hasData){
-            if(snapshot.data == true){
-              child = const MainScreen();
-            } else {
-              child = const AccountModeScreen();
-            }
-          } else{
-            child = const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+    if (userProvider.userId == -2) {
+      child = const AccountModeScreen();
+    } else {
+      child = const MainScreen();
+    }
 
-          return Scaffold(
-            body: child,
-          );
-        }
+    return Scaffold(
+      body: child,
     );
   }
 }
