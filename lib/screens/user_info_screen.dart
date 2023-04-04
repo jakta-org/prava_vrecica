@@ -25,7 +25,7 @@ class UserInfoScreenState extends State<UserInfoScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.account_circle),
-              title: const Text("Title"),
+              title: const Text("Guest"),
               trailing: logoutButton(),
             ),
           ],
@@ -35,37 +35,47 @@ class UserInfoScreenState extends State<UserInfoScreen> {
   }
 
   Widget logoutButton() {
-    return TextButton(
-      onPressed: () {
-        final userProvider = Provider.of<UserProvider>(context, listen: false);
-        userProvider.clearUser();
-
-        final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-        themeProvider.toggleNavigationBar(false);
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const AccountModeScreen(),
-            settings: const RouteSettings(name: 'Account'),
-          ),
-        );
-      },
-      child: Container(
-        alignment: Alignment.center,
-        width: 120,
-        height: 40,
-        padding: const EdgeInsetsDirectional.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
-          borderRadius: const BorderRadius.all(Radius.circular(50)),
-        ),
-        child: Text(
-          "Sign out",
-          style: TextStyle(
+    return Container(
+      alignment: Alignment.center,
+      width: 140,
+      height: 40,
+      padding: const EdgeInsetsDirectional.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary,
+        borderRadius: const BorderRadius.all(Radius.circular(50)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.logout,
             color: Theme.of(context).colorScheme.onBackground,
           ),
-        ),
+          TextButton(
+            onPressed: () {
+              final userProvider = Provider.of<UserProvider>(context, listen: false);
+              userProvider.clearUser();
+
+              final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+              themeProvider.toggleNavigationBar(false);
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AccountModeScreen(),
+                  settings: const RouteSettings(name: 'Account'),
+                ),
+              );
+            },
+            child: Text(
+              "Sign out",
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onBackground,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

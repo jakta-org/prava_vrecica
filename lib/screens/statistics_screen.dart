@@ -79,22 +79,22 @@ class StatisticsScreenState extends State<StatisticsScreen> {
   Widget categoriesMassChart() {
     // test data
     var categories = <String>[
-      "mixed",
-      "plastics",
-      "paper",
-      "glass",
-      "textile",
-      "batteries"
+      "MIXED",
+      "PLASTIC",
+      "PAPER",
+      "GLASS",
+      "TEXTILE",
+      //"BATTERIES"
     ];
     var colors = <Color>[
-      Colors.green,
-      Colors.yellow,
+      Colors.blueGrey.shade300,
+      Colors.yellow.shade700,
       Colors.blue,
-      Colors.lightBlue,
+      Colors.green,
       Colors.redAccent,
-      Colors.orangeAccent,
+      //Colors.orangeAccent.shade400,
     ];
-    var totalMass = <double>[5.613, 4.189, 2.056, 1.379, 0.405, 0.132];
+    var totalMass = <double>[5.613, 4.189, 2.056, 1.379, 0.405];
 
     var chartGroupsData = <BarChartGroupData>[];
     for (int i = 0; i < categories.length; i++) {
@@ -106,11 +106,11 @@ class StatisticsScreenState extends State<StatisticsScreen> {
               show: true,
               color: Theme.of(context).colorScheme.surfaceTint,
               fromY: 0,
-              toY: 10,
+              toY: totalMass[0],
             ),
-            borderRadius: const BorderRadius.all(Radius.circular(0)),
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
             toY: totalMass[i],
-            width: 30,
+            width: 50,
             color: colors[i],
           ),
         ],
@@ -120,12 +120,24 @@ class StatisticsScreenState extends State<StatisticsScreen> {
 
     Widget getTitleData(double d, TitleMeta m) {
       int i = d.toInt();
-
-      return Text(
-        categories[i],
-        style: TextStyle(
+      return Container(
+        width: 50,
+        height: 15,
+        margin: const EdgeInsetsDirectional.only(top: 5, bottom: 10),
+        decoration: BoxDecoration(
           color: colors[i],
-          fontSize: 10,
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Center(
+          child: Text(
+            categories[i],
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.surface,
+              fontSize: 9,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ),
       );
     }
@@ -142,7 +154,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
             show: true,
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
-                reservedSize: 20,
+                reservedSize: 30,
                 showTitles: true,
                 getTitlesWidget: getTitleData,
               ),
@@ -156,7 +168,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
           barGroups: chartGroupsData,
           gridData: FlGridData(show: false),
           alignment: BarChartAlignment.spaceBetween,
-          maxY: 10,
+          maxY: totalMass[0],
         ),
       ),
     );
