@@ -4,8 +4,9 @@ import 'package:prava_vrecica/providers/ai_model_provider.dart';
 class RecognitionWidget extends StatelessWidget {
   final Recognition recognition;
   final num factor;
+  final bool selected;
 
-  const RecognitionWidget({Key? key, required this.recognition, required this.factor}) : super(key: key);
+  const RecognitionWidget({Key? key, required this.recognition, required this.factor, required this.selected}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     Color color = Colors.primaries[
@@ -21,7 +22,7 @@ class RecognitionWidget extends StatelessWidget {
         width: recognition.renderLocation.width * factor,
         height: recognition.renderLocation.height * factor,
         decoration: BoxDecoration(
-            border: Border.all(color: color, width: 3),
+            border: Border.all(color: color, width: selected ? 5 : 1),
             borderRadius: const BorderRadius.all(Radius.circular(2))),
         child: Align(
           alignment: Alignment.topLeft,
