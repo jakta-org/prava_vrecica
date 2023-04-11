@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'package:animations/animations.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter/services.dart';
 import 'package:prava_vrecica/screens/settings_screen.dart';
 import 'package:prava_vrecica/screens/user_info_screen.dart';
 import 'package:provider/provider.dart';
