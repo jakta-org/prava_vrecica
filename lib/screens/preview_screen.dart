@@ -16,29 +16,98 @@ class PreviewScreen extends StatefulWidget {
 }
 
 class _PreviewScreenState extends State<PreviewScreen> {
+  List<Recognition> recognitions = [];
+  int selected = 0;
+  double iconSize = 50;
+
   @override
   Widget build(BuildContext context) {
-    final aiModelProvider = Provider.of<AiModelProvider>(context, listen: false);
+    final aiModelProvider =
+        Provider.of<AiModelProvider>(context, listen: false);
     final classifier = aiModelProvider.classifier;
     List<int> imageBytes = File(widget.imagePath).readAsBytesSync();
     final image = img.decodeImage(imageBytes);
-    List <Recognition> recognitions = classifier.predict(image!);
+    recognitions = classifier.predict(image!);
+    recognitions.sort((a, b) => a.location.left.compareTo(b.location.left));
     final factor = MediaQuery.of(context).size.width / image.width;
 
     return Scaffold(
       appBar: normalAppBar(context),
-      body: Stack(children: <Widget> [
-        Image.file(File(widget.imagePath)),
-        boundingBoxes(recognitions, factor),
-      ]),
+      body: Stack(
+        children: <Widget>[
+          Image.file(File(widget.imagePath)),
+          boundingBoxes(recognitions, factor, selected),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: IconButton(
+              icon: const Icon(Icons.chevron_left),
+              onPressed: () {
+                changeSelected((selected - 1) % recognitions.length);
+              },
+              iconSize: iconSize,
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: const Icon(Icons.chevron_right),
+              onPressed: () {
+                changeSelected((selected + 1) % recognitions.length);
+              },
+              iconSize: iconSize,
+            ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              margin: const EdgeInsetsDirectional.only(top: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: recognitions
+                    .map((recognition) => GestureDetector(
+                          onTap: () {
+                            changeSelected(recognitions.indexOf(recognition));
+                          },
+                          child: Container(
+                            width: 15,
+                            height: 15,
+                            margin: const EdgeInsets.symmetric(horizontal: 2),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color:
+                                  recognitions.indexOf(recognition) == selected
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context).colorScheme.surfaceTint,
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void changeSelected(int index) {
+    setState(() {
+      selected = index;
+    });
+  }
+
+  Widget boundingBoxes(List<Recognition> recognitions, num factor, int selected) {
+    return Stack(
+      children: recognitions
+          .map((recognition) => RecognitionWidget(
+        recognition: recognition,
+        factor: factor,
+        selected: recognition == recognitions[selected],
+        func: () => changeSelected(selected),
+      ))
+          .toList(),
     );
   }
 }
 
-Widget boundingBoxes(List<Recognition> recognitions, num factor) {
-  return Stack(
-    children: recognitions
-        .map((recognition) => RecognitionWidget(recognition: recognition, factor: factor)
-    ).toList(),
-  );
-}
+

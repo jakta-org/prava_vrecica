@@ -69,7 +69,7 @@ class AccountModeScreenState extends State<AccountModeScreen> {
         color: backgroundColor,
         borderRadius: const BorderRadius.all(Radius.circular(50)),
       ),
-      margin: EdgeInsetsDirectional.symmetric(vertical: 10),
+      margin: const EdgeInsetsDirectional.symmetric(vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
