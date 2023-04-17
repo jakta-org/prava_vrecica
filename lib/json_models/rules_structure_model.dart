@@ -77,7 +77,7 @@ class RuleInfo {
 
 abstract class SortingCategory {
 
-  String getName();
+  String getName(BuildContext context);
   Color getColor();
   List<Widget> getDisplayable(TextStyle style, BuildContext context, String label);
   List<AttributeType> objectAttributes(RulesStructure rulesStructure, String label);
@@ -152,7 +152,7 @@ class ObjectCategory implements SortingCategory {
   }
 
   @override
-  String getName() {
+  String getName(BuildContext context) {
     return name;
   }
 
@@ -248,8 +248,9 @@ class SpecialObjectType implements SortingCategory {
   }
 
   @override
-  String getName() {
-    return "Poseban otpad";
+  String getName(BuildContext context) {
+    final categorizationProvider = Provider.of<CategorizationProvider>(context, listen: false);
+    return categorizationProvider.objectsList.objects.firstWhere((obj) => obj.label == label).name;
   }
 
   @override

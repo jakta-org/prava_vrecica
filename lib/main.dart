@@ -5,6 +5,7 @@ import 'package:prava_vrecica/mode_status.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
 import 'package:prava_vrecica/providers/categorization_provider.dart';
 import 'package:prava_vrecica/providers/database_provider.dart';
+import 'package:prava_vrecica/statistics/statistics_provider.dart';
 import 'package:prava_vrecica/providers/localization_provider.dart';
 import 'package:prava_vrecica/providers/user_provider.dart';
 import 'package:prava_vrecica/providers/theme_provider.dart';
@@ -89,7 +90,10 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => UserProvider(userId)),
+        ChangeNotifierProvider(
+            create: (context) => CategorizationProvider(objectsListsSrc, ruleSrc, locale)),
+        ChangeNotifierProvider(create: (context) => StatisticsProvider(userId, Provider.of<CategorizationProvider>(context, listen: false))),
+        ChangeNotifierProvider(create: (context) => UserProvider(userId, Provider.of<StatisticsProvider>(context, listen: false))),
         ChangeNotifierProvider(create: (context) => ThemeProvider(isDark)),
         ChangeNotifierProvider(create: (context) => DatabaseProvider()),
         ChangeNotifierProvider(
@@ -97,8 +101,6 @@ class App extends StatelessWidget {
                 AiModelProvider(interpreter, labels, threshold)),
         ChangeNotifierProvider(
             create: (context) => CameraProvider(cameras, cameraController)),
-        ChangeNotifierProvider(
-            create: (context) => CategorizationProvider(objectsListsSrc, ruleSrc, locale)),
         ChangeNotifierProvider(
             create: (context) => LocalizationProvider(locale)),
       ],
