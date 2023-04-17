@@ -32,7 +32,7 @@ class Classifier {
 
   final List<String> _labels;
 
-  static const int inputSize = 300;
+  static const int inputSize = 320;
 
   late double threshold = 0;
 
@@ -73,18 +73,18 @@ class Classifier {
 
     inputImage = getProcessedImage(inputImage);
 
-    TensorBuffer outputLocations = TensorBufferFloat(_outputShapes[0]);
-    TensorBuffer outputClasses = TensorBufferFloat(_outputShapes[1]);
-    TensorBuffer outputScores = TensorBufferFloat(_outputShapes[2]);
-    TensorBuffer numLocations = TensorBufferFloat(_outputShapes[3]);
+    TensorBuffer outputScores = TensorBufferFloat(_outputShapes[0]);
+    TensorBuffer outputLocations = TensorBufferFloat(_outputShapes[1]);
+    TensorBuffer numLocations = TensorBufferFloat(_outputShapes[2]);
+    TensorBuffer outputClasses = TensorBufferFloat(_outputShapes[3]);
 
     List<Object> inputs = [inputImage.buffer];
 
     Map<int, Object> outputs = {
-      0: outputLocations.buffer,
-      1: outputClasses.buffer,
-      2: outputScores.buffer,
-      3: numLocations.buffer,
+      0: outputScores.buffer,
+      1: outputLocations.buffer,
+      2: numLocations.buffer,
+      3: outputClasses.buffer,
     };
 
     _interpreter.runForMultipleInputs(inputs, outputs);
@@ -93,8 +93,6 @@ class Classifier {
     }
 
     int resultsCount = min(numResults, numLocations.getIntValue(0));
-
-    int labelOffset = 1;
 
     List<Rect> locations = BoundingBoxUtils.convert(
       tensor: outputLocations,
@@ -115,7 +113,7 @@ class Classifier {
     for (int i = 0; i < resultsCount; i++) {
       var score = outputScores.getDoubleValue(i);
 
-      var labelIndex = outputClasses.getIntValue(i) + labelOffset;
+      var labelIndex = outputClasses.getIntValue(i);
       var label = _labels.elementAt(labelIndex);
 
       if (kDebugMode) {

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
+import 'package:prava_vrecica/providers/categorization_provider.dart';
 import 'package:prava_vrecica/widgets/normal_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:image/image.dart' as img;
@@ -19,6 +20,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
   List<Recognition> recognitions = [];
   int selected = 0;
   double iconSize = 50;
+  double h = 50;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
 
     return Scaffold(
       appBar: normalAppBar(context),
+      bottomSheet: previewSheet(context, recognitions[selected]),
       body: Stack(
         children: <Widget>[
           Image.file(File(widget.imagePath)),
@@ -74,10 +77,10 @@ class _PreviewScreenState extends State<PreviewScreen> {
                             margin: const EdgeInsets.symmetric(horizontal: 2),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color:
-                                  recognitions.indexOf(recognition) == selected
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(context).colorScheme.surfaceTint,
+                              color: recognitions.indexOf(recognition) ==
+                                      selected
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).colorScheme.surfaceTint,
                             ),
                           ),
                         ))
@@ -96,18 +99,49 @@ class _PreviewScreenState extends State<PreviewScreen> {
     });
   }
 
-  Widget boundingBoxes(List<Recognition> recognitions, num factor, int selected) {
+  Widget boundingBoxes(
+      List<Recognition> recognitions, num factor, int selected) {
     return Stack(
       children: recognitions
           .map((recognition) => RecognitionWidget(
-        recognition: recognition,
-        factor: factor,
-        selected: recognition == recognitions[selected],
-        func: () => changeSelected(selected),
-      ))
+                recognition: recognition,
+                factor: factor,
+                selected: recognition == recognitions[selected],
+                func: () => changeSelected(selected),
+              ))
           .toList(),
     );
   }
+
+  Widget previewSheet(BuildContext context, Recognition recognition) {
+    final categorizationProvider =
+        Provider.of<CategorizationProvider>(context, listen: false);
+
+    if (recognitions.isEmpty) {
+      return Container();
+    }
+
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 100),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        color: Theme.of(context).colorScheme.surface,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(categorizationProvider.getNameByLabel(recognition.label)),
+              Text(categorizationProvider.getCategoryByLabel(recognition.label)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
-
-

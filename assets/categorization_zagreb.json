@@ -1,0 +1,86 @@
+{
+  "id": 1,
+  "language": "HR/hr",
+  "name": "Pravila odlaganja grada Zagreba",
+  "author": "Zagrebački Holding - Podružnica Čistoća",
+  "author-info": {
+    "Opis": "Podružnica Zagrebačkog Holdinga zadužena za gospodarenje otpadom.",
+    "Kontakt": {
+      "Mail": "cistoca@zgh.hr",
+      "Telefon": "+385 1 6146 400"
+    }
+  },
+  "info-list": [
+    {
+      "type": "infoBox",
+      "meta": {
+        "name": "Pravila odlaganja",
+        "info": "U Zagrebu se može odložiti tako i tako..."
+      }
+    },
+    {
+      "type": "infoBox",
+      "meta": {
+        "name": "Bolje pokloniti",
+        "info": "Određeni predmeti mogu se pokloniti..."
+      }
+    }
+  ],
+  "categories-list": [
+    {
+      "name": "Plastika i metal",
+      "color": "0xFFEB3BFF",
+      "info": {},
+      "where": {
+        "0": "Vrećice za plastiku i metalnu ambalažu u kućanstvu",
+        "1": "Žuti spremnici",
+        "2": "Odlagališta otpada"
+      },
+      "objects": [
+        {
+          "label": "plastic bottle",
+          "attributes": {
+            "returnable": {
+              "money": "10c",
+              "info": "Moguće je da plastičnu ambalažu možete vratiti."
+            }
+          }
+        },
+        {
+          "label": "tetrapak",
+          "attributes": {}
+        }
+      ]
+    },
+    {
+      "name": "Staklo",
+      "color": "0x8BC34AFF",
+      "info": {},
+      "where": {
+        "0": "Zeleni spremnici",
+        "1": "Odlagališta otpada"
+      },
+      "objects": [
+        {
+          "label": "glass bottle",
+          "attributes": {
+            "returnable": {
+              "money": "10c",
+              "info": "Moguće je da staklenu ambalažu možete vratiti."
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "special": [
+    {
+      "label": "battery",
+      "color": "0x000000FF",
+      "info": {},
+      "where": {
+        "0": "Odlagališta otpada"
+      }
+    }
+  ]
+}

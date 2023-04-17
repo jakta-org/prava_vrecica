@@ -1,11 +1,17 @@
-import 'package:flutter/cupertino.dart';
-
-@immutable
 class ObjectType {
-  final int id;
+  final String label;
   final String name;
-  final String? description;
-  final Icon? icon;
+  final String desc;
+  final Map<String, dynamic> attributes;
 
-  const ObjectType(this.id, this.name, this.description, this.icon);
+  ObjectType({required this.label, required this.name, required this.desc, required this.attributes});
+
+  factory ObjectType.fromJson(Map<String, dynamic> json) {
+    return ObjectType(
+      label: json["label"] as String,
+      name: json["name"] as String,
+      desc: json["desc"] as String,
+      attributes: json["attributes"] as Map<String, dynamic>,
+    );
+  }
 }

@@ -44,6 +44,10 @@ flutter:
   assets:
     - assets/model.tflite
     - assets/labels.txt
+    - assets/model_v1.tflite
+    - assets/labels_v1.txt
+    - assets/objects_hr.json
+    - assets/categorization_zagreb.json
 
 flutter_native_splash:
   color: "#03a9f4"
