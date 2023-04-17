@@ -1,8 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:prava_vrecica/mode_status.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
+import 'package:prava_vrecica/providers/categorization_provider.dart';
 import 'package:prava_vrecica/providers/database_provider.dart';
 import 'package:prava_vrecica/providers/user_provider.dart';
 import 'package:prava_vrecica/screens/account_mode_screen.dart';
@@ -32,11 +34,14 @@ void main() async {
   );
   await cameraController.initialize();
 
-  final interpreter = await Interpreter.fromAsset("model.tflite", options: InterpreterOptions()..threads = 4);
-  final labels = await FileUtil.loadLabels("assets/labels.txt");
+  final interpreter = await Interpreter.fromAsset("model_v1.tflite", options: InterpreterOptions()..threads = 4);
+  final labels = await FileUtil.loadLabels("assets/labels_v1.txt");
   final threshold = sharedPreferences.getDouble('threshold') ?? 0.5;
 
-  runApp(App(isDark: isDark, userId: userId, cameras: cameras, cameraController: cameraController, interpreter: interpreter, labels: labels, threshold: threshold));
+  final objectsSrc = await rootBundle.loadString("assets/objects_hr.json");
+  final rulesSrc = await rootBundle.loadString("assets/categorization_zagreb.json");
+
+  runApp(App(isDark: isDark, userId: userId, cameras: cameras, cameraController: cameraController, interpreter: interpreter, labels: labels, threshold: threshold, objectsSrc: objectsSrc, ruleSrc: rulesSrc));
 }
 
 class App extends StatelessWidget {
@@ -47,8 +52,10 @@ class App extends StatelessWidget {
   final Interpreter interpreter;
   final List<String> labels;
   final double threshold;
+  final String objectsSrc;
+  final String ruleSrc;
 
-  const App({super.key, required this.isDark, required this.userId, required this.cameras, required this.cameraController, required this.interpreter, required this.labels, required this.threshold});
+  const App({super.key, required this.isDark, required this.userId, required this.cameras, required this.cameraController, required this.interpreter, required this.labels, required this.threshold, required this.objectsSrc, required this.ruleSrc});
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +70,7 @@ class App extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => DatabaseProvider()),
         ChangeNotifierProvider(create: (context) => AiModelProvider(interpreter, labels, threshold)),
         ChangeNotifierProvider(create: (context) => CameraProvider(cameras, cameraController)),
+        ChangeNotifierProvider(create: (context) => CategorizationProvider(objectsSrc, ruleSrc)),
       ],
       builder: (context, _) {
         final themeProvider = Provider.of<ThemeProvider>(context);

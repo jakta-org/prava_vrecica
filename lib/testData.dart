@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:prava_vrecica/enums.dart';
 import 'package:prava_vrecica/helping_classes.dart';
 import 'package:prava_vrecica/interfaces/database_interface.dart';
 import 'package:prava_vrecica/models/object_type_model.dart';
-import 'package:prava_vrecica/models/rules_structure_model.dart';
+import 'package:prava_vrecica/json_models/rules_structure_model.dart';
 import 'package:prava_vrecica/models/user_model.dart';
 
 class Database implements DatabaseInterface {
@@ -75,17 +74,19 @@ class Database implements DatabaseInterface {
   static Database testDb = Database(
     [TestObjectTypes().plasticnaBoca],
     [
-      User(0, 123, AccountType.guest, DateTime(2022, 11, 3), null, null, null, {TestObjectTypes().plasticnaBoca.id : ObjectCount(10, 3)}),
-      User(1, 1066, AccountType.personal, DateTime(2023, 1, 1), null, null, null, {TestObjectTypes().plasticnaBoca.id : ObjectCount(5, 1)}),
-      User(1, 1066, AccountType.personal, DateTime(2024, 1, 1), 'a', 'a', '1'.hashCode, {TestObjectTypes().plasticnaBoca.id : ObjectCount(5, 1)}),
+      //User(0, 123, AccountType.guest, DateTime(2022, 11, 3), null, null, null, {TestObjectTypes().plasticnaBoca.label : ObjectCount(10, 3)}),
+      //User(1, 1066, AccountType.personal, DateTime(2023, 1, 1), null, null, null, {TestObjectTypes().plasticnaBoca.label : ObjectCount(5, 1)}),
+      //User(1, 1066, AccountType.personal, DateTime(2024, 1, 1), 'a', 'a', '1'.hashCode, {TestObjectTypes().plasticnaBoca.label : ObjectCount(5, 1)}),
     ],
-    [RulesStructure(0, "Grad Zagreb", "Pravila reciklaže u gradu Zagrebu", [ObjectCategory("Plastika", "Plastični otpad", [TestObjectTypes().plasticnaBoca])])],
+    [
+      //RulesStructure(0, "Grad Zagreb", "Pravila reciklaže u gradu Zagrebu", [ObjectCategory("Plastika", "Plastični otpad", [TestObjectTypes().plasticnaBoca])])
+    ],
   );
 }
 
 @immutable
 class TestObjectTypes {
-  final ObjectType plasticnaBoca = const ObjectType(0, "Plastična boca", "Obična plastična boca", null);
+  final ObjectType plasticnaBoca = ObjectType(label: "plasticna boca", name: "Plastična boca", desc: "Obična plastična boca", attributes: <String, dynamic>{});
 }
 
 

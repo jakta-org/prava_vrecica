@@ -1,0 +1,36 @@
+{
+  "id": 1,
+  "language": "HR/hr",
+  "objects": [
+    {
+      "label": "glass bottle",
+      "name": "Staklena boca",
+      "desc": "Staklene boce podrazumijevaju staklenu ambalažu, raznih vrsta tekućina, u obliku boce.",
+      "attributes": {
+        "container": true
+      }
+    },
+    {
+      "label": "battery",
+      "name": "Baterija",
+      "desc": "Kupovne baterija svih oblika, veličina i kapaciteta.",
+      "attributes": {}
+    },
+    {
+      "label": "plastic bottle",
+      "name": "Plastična boca",
+      "desc": "Staklene boce podrazumijevaju plastičnu ambalažu, raznih vrsta tekućina, u obliku boce.",
+      "attributes": {
+        "container": true
+      }
+    },
+    {
+      "label": "tetrapak",
+      "name": "Tetrapak",
+      "desc": "Tetrapaci su najčešće plastična ambalaža, obložena kartonom, u kojoj se pohranjuju prehrambeni proizvodi.",
+      "attributes": {
+        "container": true
+      }
+    }
+  ]
+}
