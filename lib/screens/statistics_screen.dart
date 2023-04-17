@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/user_model.dart';
 import '../providers/user_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../widgets/stats_widgets.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -24,6 +25,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     User user;
 
     return Scaffold(
@@ -76,48 +78,6 @@ class StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
-  Widget categoriesMassChart() {
-    // test data
-    var categories = <String>[
-      "MIXED",
-      "PLASTIC",
-      "PAPER",
-      "GLASS",
-      "TEXTILE",
-      //"BATTERIES"
-    ];
-    var colors = <Color>[
-      Colors.blueGrey.shade300,
-      Colors.yellow.shade700,
-      Colors.blue,
-      Colors.green,
-      Colors.redAccent,
-      //Colors.orangeAccent.shade400,
-    ];
-    var totalMass = <double>[5.613, 4.189, 2.056, 1.379, 0.405];
-
-    var chartGroupsData = <BarChartGroupData>[];
-    for (int i = 0; i < categories.length; i++) {
-      BarChartGroupData currentGroupData = BarChartGroupData(
-        x: i,
-        barRods: [
-          BarChartRodData(
-            backDrawRodData: BackgroundBarChartRodData(
-              show: true,
-              color: Theme.of(context).colorScheme.surfaceTint,
-              fromY: 0,
-              toY: totalMass[0],
-            ),
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-            toY: totalMass[i],
-            width: 50,
-            color: colors[i],
-          ),
-        ],
-      );
-      chartGroupsData.add(currentGroupData);
-    }
-
     Widget getTitleData(double d, TitleMeta m) {
       int i = d.toInt();
       return Container(
@@ -141,36 +101,4 @@ class StatisticsScreenState extends State<StatisticsScreen> {
         ),
       );
     }
-
-    return Container(
-      decoration: childDecoration(),
-      height: 250,
-      padding: const EdgeInsetsDirectional.only(top: 20, end: 40),
-      child: BarChart(
-        BarChartData(
-          groupsSpace: 10,
-          backgroundColor: Colors.transparent,
-          titlesData: FlTitlesData(
-            show: true,
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                reservedSize: 30,
-                showTitles: true,
-                getTitlesWidget: getTitleData,
-              ),
-            ),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            leftTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: true, reservedSize: 40)),
-          ),
-          borderData: FlBorderData(show: false),
-          barGroups: chartGroupsData,
-          gridData: FlGridData(show: false),
-          alignment: BarChartAlignment.spaceBetween,
-          maxY: totalMass[0],
-        ),
-      ),
-    );
-  }
 }
