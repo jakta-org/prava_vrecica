@@ -6,6 +6,7 @@ import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 import '../models/user_model.dart';
 import '../providers/user_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../widgets/stats_widgets.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -26,6 +27,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     User user;
 
     return Scaffold(
