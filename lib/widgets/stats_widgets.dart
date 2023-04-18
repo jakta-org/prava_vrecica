@@ -1,11 +1,12 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import '../models/object_stats_model.dart';
 
-Widget categoriesCountChart(List<ObjectCategory> categories, List<ObjectWithCategoryStats> objects) {
-  // test data
+Widget barChart(BuildContext context, List<ChartData> chartData) {
+  double maxY = chartData.map((e) => e.value).reduce(max);
   var chartGroupsData = <BarChartGroupData>[];
-  for (int i = 0; i < categoriesData.length; i++) {
+  for (int i = 0; i < chartData.length; i++) {
     BarChartGroupData currentGroupData = BarChartGroupData(
       x: i,
       barRods: [
@@ -14,20 +15,44 @@ Widget categoriesCountChart(List<ObjectCategory> categories, List<ObjectWithCate
             show: true,
             color: Theme.of(context).colorScheme.surfaceTint,
             fromY: 0,
-            toY: totalMass[0],
+            toY: maxY,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(10)),
-          toY: totalMass[i],
+          toY: chartData[i].value,
           width: 50,
-          color: colors[i],
+          color: chartData[i].color,
         ),
       ],
     );
     chartGroupsData.add(currentGroupData);
   }
 
+  Widget getTitleData(double d, TitleMeta m) {
+    int i = d.toInt();
+    return Container(
+      width: 50,
+      height: 20,
+      margin: const EdgeInsetsDirectional.only(top: 5, bottom: 10),
+      decoration: BoxDecoration(
+        color: chartData[i].color,
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+      ),
+      child: Center(
+        child: Text(
+          chartData[i].name,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.surface,
+            fontSize: 9,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
   return Container(
-    decoration: childDecoration(),
+    decoration: childDecoration(context),
     height: 250,
     padding: const EdgeInsetsDirectional.only(top: 20, end: 40),
     child: BarChart(
@@ -38,7 +63,7 @@ Widget categoriesCountChart(List<ObjectCategory> categories, List<ObjectWithCate
           show: true,
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
-              reservedSize: 30,
+              reservedSize: 40,
               showTitles: true,
               getTitlesWidget: getTitleData,
             ),
@@ -52,10 +77,31 @@ Widget categoriesCountChart(List<ObjectCategory> categories, List<ObjectWithCate
         barGroups: chartGroupsData,
         gridData: FlGridData(show: false),
         alignment: BarChartAlignment.spaceBetween,
-        maxY: totalMass[0],
+        maxY: maxY,
       ),
     ),
   );
+}
+
+Decoration childDecoration(BuildContext context) {
+  return BoxDecoration(
+    borderRadius: const BorderRadius.all(Radius.circular(10)),
+    color: Theme.of(context).colorScheme.surface,
+    boxShadow: const <BoxShadow>[],
+  );
+}
+
+class ChartData {
+  String name;
+  double value;
+  Color color;
+
+  ChartData(this.name, this.value, this.color);
+
+  @override
+  String toString() {
+    return 'ChartData{name: $name, value: $value, color: $color}';
+  }
 }
 
 

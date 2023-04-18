@@ -180,7 +180,7 @@
   "special": [
     {
       "label": "battery",
-      "color": "0xFF000000",
+      "color": "0xA10303FF",
       "info": {},
       "where": {
         "settings": {

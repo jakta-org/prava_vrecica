@@ -5,6 +5,7 @@ import 'package:prava_vrecica/mode_status.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
 import 'package:prava_vrecica/providers/categorization_provider.dart';
 import 'package:prava_vrecica/providers/database_provider.dart';
+import 'package:prava_vrecica/providers/statistics_provider.dart';
 import 'package:prava_vrecica/providers/localization_provider.dart';
 import 'package:prava_vrecica/providers/user_provider.dart';
 import 'package:prava_vrecica/providers/theme_provider.dart';
@@ -89,7 +90,8 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => UserProvider(userId)),
+        ChangeNotifierProvider(create: (context) => StatisticsProvider()),
+        ChangeNotifierProvider(create: (context) => UserProvider(userId, Provider.of<StatisticsProvider>(context, listen: false))),
         ChangeNotifierProvider(create: (context) => ThemeProvider(isDark)),
         ChangeNotifierProvider(create: (context) => DatabaseProvider()),
         ChangeNotifierProvider(
