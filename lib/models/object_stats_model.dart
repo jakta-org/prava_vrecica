@@ -1,18 +1,25 @@
 class ObjectStats {
-  final int recycledCount;
-  final int recycledCountFromPhoto;
+  int recycledCount;
+  int recycledCountFromPhoto;
 
   ObjectStats({required this.recycledCount, required this.recycledCountFromPhoto});
-}
 
-class ObjectWithCategoryStats extends ObjectStats {
-  final String category;
+  factory ObjectStats.fromJson(Map<String, dynamic> json) {
+    return ObjectStats(
+      recycledCount: json['recycledCount'] as int,
+      recycledCountFromPhoto: json['recycledCountFromPhoto'] as int,
+    );
+  }
 
-  ObjectWithCategoryStats(
-      {required this.category,
-        required int recycledCount,
-        required int recycledCountFromPhoto})
-      : super(
-      recycledCount: recycledCount,
-      recycledCountFromPhoto: recycledCountFromPhoto);
+  Map<String, dynamic> toJson() {
+    return {
+      'recycledCount': recycledCount,
+      'recycledCountFromPhoto': recycledCountFromPhoto,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'ObjectStats{recycledCount: $recycledCount, recycledCountFromPhoto: $recycledCountFromPhoto}';
+  }
 }
