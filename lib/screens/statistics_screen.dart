@@ -43,15 +43,12 @@ class StatisticsScreenState extends State<StatisticsScreen> {
         0.0,
         category.color,
       );
-    }).toList()
-    +
-    special.map((specialObject) {
-      return ChartData(
-        "Specijalni otpad",
-        0.0,
-        specialObject.color,
-      );
     }).toList();
+    categoriesCount.add(ChartData(
+      "Specijalni otpad",
+      0.0,
+      special.first.color,
+    ));
     for (var object in objectCounts.entries) {
       categoriesCount.firstWhere((category) => category.name == categorizationProvider.getCategoryByLabel(object.key)).value += object.value.recycledCount;
     }
