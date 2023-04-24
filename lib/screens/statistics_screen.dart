@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/user_model.dart';
 import '../providers/user_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -16,7 +17,6 @@ class StatisticsScreenState extends State<StatisticsScreen> {
     List<Widget> widgetList = <Widget>[];
 
     widgetList.add(categoriesMassChart());
-    widgetList.add(testWidget(context));
 
     return widgetList;
   }

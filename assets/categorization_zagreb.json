@@ -1,13 +1,34 @@
 {
   "id": 1,
-  "language": "HR/hr",
+  "language": "hr",
   "name": "Pravila odlaganja grada Zagreba",
   "author": "Zagrebački Holding - Podružnica Čistoća",
   "author-info": {
-    "Opis": "Podružnica Zagrebačkog Holdinga zadužena za gospodarenje otpadom.",
+    "settings": {
+      "showKey": true,
+      "prefix": " ",
+      "separator": ": "
+    },
+    "Opis" : {
+      "final": true,
+      "data": "Podružnica Zagrebačkog Holdinga zadužena za gospodarenje otpadom."
+    },
     "Kontakt": {
-      "Mail": "cistoca@zgh.hr",
-      "Telefon": "+385 1 6146 400"
+      "final": false,
+      "data": "",
+      "settings": {
+        "showKey": true,
+        "prefix": "   ",
+        "separator": ": "
+      },
+      "Mail": {
+        "final": true,
+        "data": "cistoca@zgh.hr"
+      },
+      "Telefon": {
+        "final": true,
+        "data": "+385 1 6146 400"
+      }
     }
   },
   "info-list": [
@@ -29,46 +50,129 @@
   "categories-list": [
     {
       "name": "Plastika i metal",
-      "color": "0xFFEB3BFF",
+      "color": "0xFFFFEB3B",
       "info": {},
       "where": {
-        "0": "Vrećice za plastiku i metalnu ambalažu u kućanstvu",
-        "1": "Žuti spremnici",
-        "2": "Odlagališta otpada"
+        "settings": {
+          "showKey": false,
+          "prefix": " ",
+          "separator": ""
+        },
+        "0": {
+          "final": true,
+          "data": "Vrećice za plastiku i metalnu ambalažu u kućanstvu"
+        },
+        "1": {
+          "final": true,
+          "data": "Žuti spremnici"
+        },
+        "2": {
+          "final": true,
+          "data": "Odlagališta otpada"
+        }
       },
       "objects": [
         {
           "label": "plastic bottle",
           "attributes": {
             "returnable": {
-              "money": "10c",
-              "info": "Moguće je da plastičnu ambalažu možete vratiti."
+              "money": "7c"
             }
           }
         },
         {
           "label": "tetrapak",
           "attributes": {}
+        },
+        {
+          "label": "limenka",
+          "attributes": {
+            "returnable": {
+              "money": "7c"
+            }
+          }
         }
       ]
     },
     {
       "name": "Staklo",
-      "color": "0x8BC34AFF",
+      "color": "0xFF8BC34A",
       "info": {},
       "where": {
-        "0": "Zeleni spremnici",
-        "1": "Odlagališta otpada"
+        "settings": {
+          "showKey": false,
+          "prefix": " ",
+          "separator": ""
+        },
+        "0": {
+          "final": true,
+          "data": "Zeleni spremnici"
+        },
+        "1": {
+          "final": true,
+          "data": "Odlagališta otpada"
+        }
       },
       "objects": [
         {
-          "label": "glass bottle",
+          "label": "Glass bottle",
           "attributes": {
             "returnable": {
-              "money": "10c",
-              "info": "Moguće je da staklenu ambalažu možete vratiti."
+              "money": "7c"
             }
           }
+        }
+      ]
+    },
+    {
+      "name": "Biootpad",
+      "color": "0xFF795548",
+      "info": {},
+      "where": {
+        "settings": {
+          "showKey": false,
+          "prefix": " ",
+          "separator": ""
+        },
+        "0": {
+          "final": true,
+          "data": "Smeđi spremnici"
+        },
+        "1": {
+          "final": true,
+          "data": "Odlagališta otpada"
+        }
+      },
+      "objects": [
+        {
+          "label": "biljni ostaci",
+          "attributes": {}
+        }
+      ]
+    },
+    {
+      "name": "Papir",
+      "color": "0xFF3F51B5",
+      "info": {},
+      "where": {
+        "settings": {
+          "showKey": false,
+          "prefix": " ",
+          "separator": ""
+        },
+        "0": {
+          "final": true,
+          "data": "Plavi spremnici"
+        },
+        "1": {
+          "final": true,
+          "data": "Odlagališta otpada"
+        }
+      },
+      "objects": [
+        {
+          "label": "carton box",
+          "attributes": {}
         }
       ]
     }
@@ -76,11 +180,77 @@
   "special": [
     {
       "label": "battery",
-      "color": "0x000000FF",
+      "color": "0xFF000000",
       "info": {},
       "where": {
-        "0": "Odlagališta otpada"
+        "settings": {
+          "showKey": false,
+          "prefix": " ",
+          "separator": ""
+        },
+        "0": {
+          "final": true,
+          "data": "Odlagališta otpada"
+        }
+      },
+      "attributes": {}
+    },
+    {
+      "label": "elektronika",
+      "color": "0xFF9E9E9E",
+      "info": {},
+      "where": {
+        "settings": {
+          "showKey": false,
+          "prefix": " ",
+          "separator": ""
+        },
+        "0": {
+          "final": true,
+          "data": "Odlagališta otpada"
+        }
       }
+    },
+    {
+      "label": "zarulja",
+      "color": "0xFF607D8B",
+      "info": {},
+      "where": {
+        "settings": {
+          "showKey": false,
+          "prefix": " ",
+          "separator": ""
+        },
+        "0": {
+          "final": true,
+          "data": "Odlagališta otpada"
+        }
+      },
+      "attributes": {}
+    },
+    {
+      "label": "obuca",
+      "color": "0xFFFF4081",
+      "info": {},
+      "where": {
+        "settings": {
+          "showKey": false,
+          "prefix": " ",
+          "separator": ""
+        },
+        "0": {
+          "final": true,
+          "data": "Odlagališta otpada"
+        }
+      },
+      "attributes": {}
+    }
+  ],
+  "attribute-info": [
+    {
+      "name": "returnable",
+      "importance": 2,
+      "info": "Ovaj predmet je povratna ambalaža za koju možete dobiti %money%."
     }
   ]
 }

@@ -32,7 +32,7 @@ class Classifier {
 
   final List<String> _labels;
 
-  static const int inputSize = 320;
+  static const int inputSize = 448;
 
   late double threshold = 0;
 
@@ -88,9 +88,6 @@ class Classifier {
     };
 
     _interpreter.runForMultipleInputs(inputs, outputs);
-    if (kDebugMode) {
-      print(outputs);
-    }
 
     int resultsCount = min(numResults, numLocations.getIntValue(0));
 
@@ -104,10 +101,6 @@ class Classifier {
       width: inputSize,
     );
 
-    if (kDebugMode) {
-      print(locations);
-    }
-
     List<Recognition> recognitions = [];
 
     for (int i = 0; i < resultsCount; i++) {
@@ -115,10 +108,6 @@ class Classifier {
 
       var labelIndex = outputClasses.getIntValue(i);
       var label = _labels.elementAt(labelIndex);
-
-      if (kDebugMode) {
-        print ({'label': label, 'score': score, 'location': locations[i]});
-      }
 
       var imageProcessor = ImageProcessorBuilder()
           .add(ResizeWithCropOrPadOp(padSize, padSize))
@@ -135,10 +124,6 @@ class Classifier {
       }
     }
 
-    if (kDebugMode) {
-      print(recognitions);
-    }
-
     return recognitions;
   }
 }
@@ -148,11 +133,17 @@ class Recognition {
 
   String label;
 
+  late String recognizedLabel;
+
   double score;
 
   Rect location;
 
-  Recognition(this.id, this.label, this.score, this.location);
+  bool valid = false;
+
+  Recognition(this.id, this.label, this.score, this.location) {
+    recognizedLabel = label;
+  }
 
   Rect get renderLocation {
     // ratioX = screenWidth / imageInputWidth

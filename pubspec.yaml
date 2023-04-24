@@ -12,6 +12,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
   camera: ^0.9.4+5
   cupertino_icons: ^1.0.2
@@ -36,8 +39,10 @@ dev_dependencies:
 
   flutter_lints: ^2.0.0
   flutter_native_splash: ^1.2.1
+  flutter_launcher_icons: ^0.11.0
 
 flutter:
+  generate: true
 
   uses-material-design: true
 
@@ -46,11 +51,21 @@ flutter:
     - assets/labels.txt
     - assets/model_v1.tflite
     - assets/labels_v1.txt
-    - assets/objects_hr.json
+    - assets/model_v2.tflite
+    - assets/labels_v2.txt
+    - assets/locale_objects/
     - assets/categorization_zagreb.json
 
 flutter_native_splash:
-  color: "#03a9f4"
-  color_dark: "#0d47a1"
+  color: "#FFFFFF"
+  color_dark: "#424242"
+  image: "assets/images/V_logo_s_splash.png"
   android: true
   ios: true
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/V_logo_background_s.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true

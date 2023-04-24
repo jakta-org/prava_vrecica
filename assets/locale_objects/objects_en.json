@@ -1,0 +1,104 @@
+{
+  "id": 2,
+  "language": "en",
+  "objects": [
+    {
+      "label": "Glass bottle",
+      "name": "Glass Bottle",
+      "desc": "Glass bottles are containers made out of glass that are used for storing, preserving, and transporting various liquids and beverages such as wine, juice, oil, or milk. They are sturdy, durable, and do not react with food.",
+      "attributes": {
+        "container": {}
+      }
+    },
+    {
+      "label": "battery",
+      "name": "Battery",
+      "desc": "Household batteries are small electrical cells used to power various household devices such as remote controls, watches, toys, and other electronic devices. They come in various sizes and shapes, from AA and AAA to rectangular 9V batteries.",
+      "attributes": {
+        "danger": {}
+      }
+    },
+    {
+      "label": "plastic bottle",
+      "name": "Plastic Bottle",
+      "desc": "Plastic bottles are made of polymer materials and are used for storing various drinks and liquids. They are highly resistant to breakage.",
+      "attributes": {
+        "container": {}
+      }
+    },
+    {
+      "label": "tetrapak",
+      "name": "Carton",
+      "desc": "A carton is a multilayer container used for packaging various liquid products such as milk, juice or alcohol. It is usually made out of paper, plastic, and aluminum foil.",
+      "attributes": {
+        "container": {}
+      }
+    },
+    {
+      "label": "carton box",
+      "name": "Carton Box",
+      "desc": "A cardboard box is a durable packaging used to pack various items. They are recyclable and are often used to pack food, electronics, heavy items, and other products.",
+      "attributes": {
+        "container": {}
+      }
+    },
+    {
+      "label": "elektronika",
+      "name": "Electronic Waste",
+      "desc": "Electronic waste is a category of waste that includes various types of electronic devices that are no longer in use. They contain many different materials, some of which can be hazardous, and should be disposed of carefully.",
+      "attributes": {
+        "danger": {}
+      }
+    },
+    {
+      "label": "limenka",
+      "name": "Can",
+      "desc": "A can is a multilayer container used for storing food and drinks.",
+      "attributes": {
+        "container": {}
+      }
+    },
+    {
+      "label": "obuca",
+      "name": "Footwear",
+      "desc": "Footwear is a garment item worn on the feet for protection and walking. It can be produced from a variety of materials such as leather, textile, rubber or synthetic fabrics.",
+      "attributes": {
+        "donate": {}
+      }
+    },
+    {
+      "label": "biljni ostaci",
+      "name": "Plant Waste",
+      "desc": "Plant waste is organic waste that is generated as a result of food production and other agricultural activities. It can be used to create fertilizer or as a source of energy in biofuel production.",
+      "attributes": {}
+    },
+    {
+      "label": "zarulja",
+      "name": "Light Bulb",
+      "desc": "light bulbs are electrical devices used to illuminate spaces. Improper disposal of light bulbs can cause environmental pollution, so they should be carefully disposed of.",
+      "attributes": {}
+    }
+  ],
+  "attribute-info": [
+    {
+      "name": "container",
+      "importance": 2,
+      "info": "This object is a container and as such should be emptied beforehand."
+    },
+    {
+      "name": "danger",
+      "importance": 3,
+      "info": "This object may contain dangerous materials, or ones not suitable for recycling, handle with care!"
+    },
+    {
+      "name": "donate",
+      "importance": 1,
+      "info": "This object may be useful to someone else, you can look into donating it."
+    },
+    {
+      "name": "compost",
+      "importance": 1,
+      "info": "This object is easily bio biodegradable and can be used as composting material."
+    }
+  ]
+}

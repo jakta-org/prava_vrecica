@@ -1,0 +1,106 @@
+{
+  "id": 1,
+  "language": "hr",
+  "objects": [
+    {
+      "label": "Glass bottle",
+      "name": "Staklena boca",
+      "desc": "Staklene boce su posude sačinjene od stakla koje se koriste za skladištenje, čuvanje i transport različitih tekućina i pića poput vina, sokova, ulja ili mlijeka. One su čvrste, izdržljive te ne reagiraju s hranom.",
+      "attributes": {
+        "container": {}
+      }
+    },
+    {
+      "label": "battery",
+      "name": "Baterija",
+      "desc": "Kućanske baterije su male električne ćelije koje se koriste za napajanje različitih uređaja u kućanstvu poput daljinskih upravljača, satova, igračaka i drugih elektroničkih uređaja. One dolaze u različitim veličinama i oblicima, od AA i AAA do duguljastih 9V baterija.",
+      "attributes": {
+        "danger": {}
+      }
+    },
+    {
+      "label": "plastic bottle",
+      "name": "Plastična boca",
+      "desc": "Plastične boce su napravljene od polimernih materijala i koriste se za pohranjivanje različitih pića i tekućina.",
+      "attributes": {
+        "container": {}
+      }
+    },
+    {
+      "label": "tetrapak",
+      "name": "Tetrapak",
+      "desc": "Tetrapak je višeslojni materijal koji se koristi za pakiranje različitih tekućih proizvoda kao što su mlijeko ili sokovi. Oni su najčešće izrađeni od papira, plastike i aluminijske folije.",
+      "attributes": {
+        "container": {}
+      }
+    },
+    {
+      "label": "carton box",
+      "name": "Kartonska kutija",
+      "desc": "Kartonska kutija je izdržljiva ambalaža koja se koristi za pakiranje različitih predmeta. Često se koriste za pakiranje hrane, elektronike, teških predmeta i drugih proizvoda.",
+      "attributes": {
+        "container": {}
+      }
+    },
+    {
+      "label": "elektronika",
+      "name": "Elektronički otpad",
+      "desc": "Elektronički otpad je kategorija otpada koja uključuje različite vrste elektroničkih uređaja koji se više ne koriste. Oni sadrže mnogo različitih materijala, neke od kojih je teško ili opasno reciklirati.",
+      "attributes": {
+        "danger": {}
+      }
+    },
+    {
+      "label": "limenka",
+      "name": "Limenka",
+      "desc": "Limenke su višeslojna ambalaža najčešće pokrivena metalom, najčešće služe za pakiranje pića.",
+      "attributes": {
+        "container": {}
+      }
+    },
+    {
+      "label": "obuca",
+      "name": "Obuća",
+      "desc": "Obuća može biti raznovrsna, sačinjena od brojnih, različitih materijala.",
+      "attributes": {
+        "donate": {}
+      }
+    },
+    {
+      "label": "biljni ostaci",
+      "name": "Biljni ostaci",
+      "desc": "Biljni ostaci su organski otpad koji nastaje nakon upotrebe voća, povrća i drugih biljnih proizvoda. Oni se mogu koristiti za stvaranje gnojiva ili kao izvor energije u proizvodnji biogoriva.",
+      "attributes": {
+        "compost": {}
+      }
+    },
+    {
+      "label": "zarulja",
+      "name": "Žarulja",
+      "desc": "Kućanske žarulje su električni uređaji koji se koriste za osvjetljavanje prostora. Nepravilno odlaganje žarulja može uzrokovati zagađenje okoliša te stoga treba biti pažljiv pri njihovom odlaganju.",
+      "attributes": {}
+    }
+  ],
+  "attribute-info": [
+    {
+      "name": "container",
+      "importance": 2,
+      "info": "Ovaj predmet potrebno je isprazniti prije odlaganja!"
+    },
+    {
+      "name": "danger",
+      "importance": 3,
+      "info": "Ovaj predmet može sadržavati opasne ili za odlaganje nepogodne materijale, budite oprezni!"
+    },
+    {
+      "name": "donate",
+      "importance": 1,
+      "info": "Ovaj je predmet možda moguće darovati u dobrotvorne svrhe."
+    },
+    {
+      "name": "compost",
+      "importance": 1,
+      "info": "Ovaj predmet je lako biološki razgradiv, moguće ga je kompostirati."
+    }
+  ]
+}

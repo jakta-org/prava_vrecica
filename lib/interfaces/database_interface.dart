@@ -1,6 +1,6 @@
 import 'package:prava_vrecica/json_models/rules_structure_model.dart';
 import '../helping_classes.dart';
-import '../models/object_type_model.dart';
+import '../json_models/object_list_model.dart';
 import '../models/user_model.dart';
 
 abstract class DatabaseInterface {

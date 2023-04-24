@@ -1,0 +1,40 @@
+{
+  "camera_screen": "Camera",
+  "statistics_screen": "Statistics",
+  "info_screen": "Info",
+  "settings_screen": "Settings",
+  "user_screen": "User",
+
+  "register": "Sign up",
+  "login": "Sign in",
+  "guestmode": "Continue as Guest",
+
+  "valid_var": "Mail/Phone number",
+  "valid_prompt": "Your e-mail address or phone number",
+  "password": "Password",
+  "password_prompt": "Your password",
+  "confirm_pass": "Confirm password",
+  "confirm_pass_prompt": "Repeat your password",
+  "entrance_key": "Entrance key",
+  "entr_key_prompt": "Provide an entrance key",
+  "continue_google": "Continue with Google",
+  "continue_apple": "Continue with Apple",
+
+  "guestmode_name": "Guest",
+  "logout": "Sign out",
+
+  "photo_prompt": "Did you take a good photo? :)",
+
+  "wrong_object": "This isn't the right object",
+
+  "recycle_where": "This object can be left in:",
+  "object_info_title": "Additional info:",
+  "attributes_title": "Additional guidelines:",
+
+  "objects_info_list": "Objects info",
+
+  "light_mode": "Light mode",
+  "dark_mode": "Dark mode",
+  "detection_sensitivity": "Detection sensitivity",
+  "language": "Language"
+}

@@ -2,50 +2,43 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
 import 'package:prava_vrecica/providers/categorization_provider.dart';
-import 'package:prava_vrecica/widgets/normal_appbar.dart';
+import 'package:prava_vrecica/widgets/preview_bottom_sheet.dart';
 import 'package:provider/provider.dart';
-import 'package:image/image.dart' as img;
 import '../widgets/recognition_widget.dart';
 
 class PreviewScreen extends StatefulWidget {
-  const PreviewScreen({super.key, required this.imagePath}) : super();
+  const PreviewScreen({super.key, required this.imagePath, required this.recognitions, required this.factor}) : super();
 
   final String imagePath;
+  final List<Recognition> recognitions;
+  final double factor;
 
   @override
   State<PreviewScreen> createState() => _PreviewScreenState();
 }
 
 class _PreviewScreenState extends State<PreviewScreen> {
-  List<Recognition> recognitions = [];
   int selected = 0;
   double iconSize = 50;
   double h = 50;
 
   @override
   Widget build(BuildContext context) {
-    final aiModelProvider =
-        Provider.of<AiModelProvider>(context, listen: false);
-    final classifier = aiModelProvider.classifier;
-    List<int> imageBytes = File(widget.imagePath).readAsBytesSync();
-    final image = img.decodeImage(imageBytes);
-    recognitions = classifier.predict(image!);
-    recognitions.sort((a, b) => a.location.left.compareTo(b.location.left));
-    final factor = MediaQuery.of(context).size.width / image.width;
+    final categorizationProvider = Provider.of<CategorizationProvider>(context, listen: false);
 
     return Scaffold(
-      appBar: normalAppBar(context),
-      bottomSheet: previewSheet(context, recognitions[selected]),
+      bottomSheet: PreviewSheet(context, widget.recognitions[selected], refreshState),
       body: Stack(
         children: <Widget>[
           Image.file(File(widget.imagePath)),
-          boundingBoxes(recognitions, factor, selected),
+          boundingBoxes(widget.recognitions, widget.factor, selected),
           Align(
             alignment: Alignment.centerLeft,
             child: IconButton(
               icon: const Icon(Icons.chevron_left),
+              color: Theme.of(context).colorScheme.surfaceVariant,
               onPressed: () {
-                changeSelected((selected - 1) % recognitions.length);
+                changeSelected((selected - 1) % widget.recognitions.length);
               },
               iconSize: iconSize,
             ),
@@ -54,8 +47,9 @@ class _PreviewScreenState extends State<PreviewScreen> {
             alignment: Alignment.centerRight,
             child: IconButton(
               icon: const Icon(Icons.chevron_right),
+              color: Theme.of(context).colorScheme.surfaceVariant,
               onPressed: () {
-                changeSelected((selected + 1) % recognitions.length);
+                changeSelected((selected + 1) % widget.recognitions.length);
               },
               iconSize: iconSize,
             ),
@@ -63,25 +57,27 @@ class _PreviewScreenState extends State<PreviewScreen> {
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              margin: const EdgeInsetsDirectional.only(top: 10),
+              margin: const EdgeInsetsDirectional.only(top: 50),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: recognitions
+                children: widget.recognitions
                     .map((recognition) => GestureDetector(
                           onTap: () {
-                            changeSelected(recognitions.indexOf(recognition));
+                            changeSelected(widget.recognitions.indexOf(recognition));
                           },
-                          child: Container(
+                          child: AnimatedContainer(
                             width: 15,
                             height: 15,
                             margin: const EdgeInsets.symmetric(horizontal: 2),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: recognitions.indexOf(recognition) ==
+                              color: widget.recognitions.indexOf(recognition) ==
                                       selected
-                                  ? Theme.of(context).colorScheme.primary
+                                  ? categorizationProvider.getCategoryByLabel(recognition.label)!.getColor()
                                   : Theme.of(context).colorScheme.surfaceTint,
+                              border: recognition.valid ? (recognition.label == recognition.recognizedLabel ? Border.all(color: Theme.of(context).colorScheme.primary) : Border.all(color: Colors.red)) : Border.all(color: Theme.of(context).colorScheme.surfaceVariant),
                             ),
+                            duration: const Duration(milliseconds: 300),
                           ),
                         ))
                     .toList(),
@@ -99,6 +95,10 @@ class _PreviewScreenState extends State<PreviewScreen> {
     });
   }
 
+  void refreshState() {
+    setState(() {});
+  }
+
   Widget boundingBoxes(
       List<Recognition> recognitions, num factor, int selected) {
     return Stack(
@@ -107,41 +107,8 @@ class _PreviewScreenState extends State<PreviewScreen> {
                 recognition: recognition,
                 factor: factor,
                 selected: recognition == recognitions[selected],
-                func: () => changeSelected(selected),
               ))
           .toList(),
-    );
-  }
-
-  Widget previewSheet(BuildContext context, Recognition recognition) {
-    final categorizationProvider =
-        Provider.of<CategorizationProvider>(context, listen: false);
-
-    if (recognitions.isEmpty) {
-      return Container();
-    }
-
-    return Container(
-      width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 100),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        color: Theme.of(context).colorScheme.surface,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(categorizationProvider.getNameByLabel(recognition.label)),
-              Text(categorizationProvider.getCategoryByLabel(recognition.label)),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }

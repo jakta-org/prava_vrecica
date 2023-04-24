@@ -1,29 +1,26 @@
 import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:prava_vrecica/mode_status.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
 import 'package:prava_vrecica/providers/categorization_provider.dart';
 import 'package:prava_vrecica/providers/database_provider.dart';
+import 'package:prava_vrecica/providers/localization_provider.dart';
 import 'package:prava_vrecica/providers/user_provider.dart';
-import 'package:prava_vrecica/screens/account_mode_screen.dart';
-import 'package:prava_vrecica/screens/login_screen.dart';
-import 'package:prava_vrecica/screens/settings_screen.dart';
-import 'package:prava_vrecica/screens/statistics_screen.dart';
 import 'package:prava_vrecica/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 import 'providers/camera_provider.dart';
-import 'screens/camera_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-  final isDark = sharedPreferences.getBool('is_dark') ?? (ThemeMode.system == ThemeMode.dark);
+  final isDark = sharedPreferences.getBool('is_dark') ??
+      (ThemeMode.system == ThemeMode.dark);
   final userId = sharedPreferences.getInt('user_id') ?? -2;
 
   final cameras = await availableCameras();
@@ -34,14 +31,33 @@ void main() async {
   );
   await cameraController.initialize();
 
-  final interpreter = await Interpreter.fromAsset("model_v1.tflite", options: InterpreterOptions()..threads = 4);
-  final labels = await FileUtil.loadLabels("assets/labels_v1.txt");
+  final interpreter = await Interpreter.fromAsset("model_v2.tflite",
+      options: InterpreterOptions()..threads = 4);
+  final labels = await FileUtil.loadLabels("assets/labels_v2.txt");
   final threshold = sharedPreferences.getDouble('threshold') ?? 0.5;
 
-  final objectsSrc = await rootBundle.loadString("assets/objects_hr.json");
-  final rulesSrc = await rootBundle.loadString("assets/categorization_zagreb.json");
+  final List<String> objectsListsSrc = [];
+  for (String cLocale in Language.languageList().map((lang) => lang.languageCode)) {
+    objectsListsSrc.add(await rootBundle.loadString("assets/locale_objects/objects_$cLocale.json"));
+  }
 
-  runApp(App(isDark: isDark, userId: userId, cameras: cameras, cameraController: cameraController, interpreter: interpreter, labels: labels, threshold: threshold, objectsSrc: objectsSrc, ruleSrc: rulesSrc));
+  final rulesSrc =
+      await rootBundle.loadString("assets/categorization_zagreb.json");
+
+  final locale = sharedPreferences.getString('locale') ?? "hr";
+
+  runApp(App(
+    isDark: isDark,
+    userId: userId,
+    cameras: cameras,
+    cameraController: cameraController,
+    interpreter: interpreter,
+    labels: labels,
+    threshold: threshold,
+    objectsListsSrc: objectsListsSrc,
+    ruleSrc: rulesSrc,
+    locale: locale,
+  ));
 }
 
 class App extends StatelessWidget {
@@ -52,29 +68,45 @@ class App extends StatelessWidget {
   final Interpreter interpreter;
   final List<String> labels;
   final double threshold;
-  final String objectsSrc;
+  final List<String> objectsListsSrc;
   final String ruleSrc;
+  final String locale;
 
-  const App({super.key, required this.isDark, required this.userId, required this.cameras, required this.cameraController, required this.interpreter, required this.labels, required this.threshold, required this.objectsSrc, required this.ruleSrc});
+  const App(
+      {super.key,
+      required this.isDark,
+      required this.userId,
+      required this.cameras,
+      required this.cameraController,
+      required this.interpreter,
+      required this.labels,
+      required this.threshold,
+      required this.objectsListsSrc,
+      required this.ruleSrc,
+      required this.locale});
 
   @override
   Widget build(BuildContext context) {
-    if (kDebugMode) {
-      String userPrint = userId.toString();
-      print("User is: $userPrint");
-    }
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider(userId)),
         ChangeNotifierProvider(create: (context) => ThemeProvider(isDark)),
         ChangeNotifierProvider(create: (context) => DatabaseProvider()),
-        ChangeNotifierProvider(create: (context) => AiModelProvider(interpreter, labels, threshold)),
-        ChangeNotifierProvider(create: (context) => CameraProvider(cameras, cameraController)),
-        ChangeNotifierProvider(create: (context) => CategorizationProvider(objectsSrc, ruleSrc)),
+        ChangeNotifierProvider(
+            create: (context) =>
+                AiModelProvider(interpreter, labels, threshold)),
+        ChangeNotifierProvider(
+            create: (context) => CameraProvider(cameras, cameraController)),
+        ChangeNotifierProvider(
+            create: (context) => CategorizationProvider(objectsListsSrc, ruleSrc, locale)),
+        ChangeNotifierProvider(
+            create: (context) => LocalizationProvider(locale)),
       ],
       builder: (context, _) {
         final themeProvider = Provider.of<ThemeProvider>(context);
-        themeProvider.updateSystemUI();
+        themeProvider.updateSystemUI(false);
+
+        final localizationProvider = Provider.of<LocalizationProvider>(context);
 
         return MaterialApp(
           title: 'Prava Vrećica',
@@ -82,13 +114,9 @@ class App extends StatelessWidget {
           theme: Themes.lightTheme,
           darkTheme: Themes.darkTheme,
           home: const ModeStatus(),
-          routes: {
-            'Camera': (BuildContext context) => const CameraScreen(),
-            'Settings': (BuildContext context) => const SettingsScreen(),
-            'Statistics': (BuildContext context) => const StatisticsScreen(),
-            'Account': (BuildContext context) => const AccountModeScreen(),
-            'Login': (BuildContext context) => const LoginScreen(),
-          },
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: Locale(localizationProvider.locale),
         );
       },
     );

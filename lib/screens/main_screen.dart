@@ -4,8 +4,8 @@ import 'package:prava_vrecica/screens/camera_screen.dart';
 import 'package:prava_vrecica/screens/info_screen.dart';
 import 'package:prava_vrecica/screens/statistics_screen.dart';
 import 'package:provider/provider.dart';
-
 import '../providers/theme_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key}) : super();
@@ -26,8 +26,7 @@ class MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    themeProvider.toggleNavigationBar(true);
-    themeProvider.updateSystemUI();
+    themeProvider.updateSystemUI(true);
 
     return Scaffold(
       body: PageTransitionSwitcher(
@@ -79,22 +78,22 @@ class MainScreenState extends State<MainScreen> {
           pageIndex = value;
         });
       },
-      items: const [
+      items: [
         BottomNavigationBarItem(
-          label: 'Statistics',
-          icon: Icon(
+          label: AppLocalizations.of(context)!.statistics_screen,
+          icon: const Icon(
             Icons.bar_chart,
           ),
         ),
         BottomNavigationBarItem(
-          label: 'Camera',
-          icon: Icon(
+          label: AppLocalizations.of(context)!.camera_screen,
+          icon: const Icon(
             Icons.camera_alt,
           ),
         ),
         BottomNavigationBarItem(
-          label: 'Info',
-          icon: Icon(
+          label: AppLocalizations.of(context)!.statistics_screen,
+          icon: const Icon(
             Icons.info,
           ),
         ),
