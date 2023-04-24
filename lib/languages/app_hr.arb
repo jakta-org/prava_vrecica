@@ -1,0 +1,40 @@
+{
+    "camera_screen": "Kamera",
+    "statistics_screen": "Statistika",
+    "info_screen": "Informacije",
+    "settings_screen": "Postavke",
+    "user_screen": "Korisnički račun",
+
+    "register": "Učlani se",
+    "login": "Prijavi se",
+    "guestmode": "Nastavi bez računa",
+
+    "valid_var": "Mejl/Broj mobitela",
+    "valid_prompt": "Vaša mejl adresa ili broj mobitela",
+    "password": "Zaporka",
+    "password_prompt": "Vaša zaporka",
+    "confirm_pass": "Potvrdite zaporku",
+    "confirm_pass_prompt": "Ponovite Vašu zaporku",
+    "entrance_key": "Ulazni ključ",
+    "entr_key_prompt": "Upišite ulazni ključ",
+    "continue_google": "Nastavi s Google računom",
+    "continue_apple": "Nastavi s AppleId računom",
+
+    "guestmode_name": "Gost",
+    "logout": "Odjavi se",
+
+    "photo_prompt": "Jeste li dobro fotografirali? :)",
+
+    "wrong_object": "Ovo nije taj objekt",
+
+    "recycle_where": "Ovdje možete odložiti otpad:",
+    "object_info_title": "Informacije o objektu:",
+    "attributes_title": "Posebni naputci:",
+
+    "objects_info_list": "Informacije o objektima",
+
+    "light_mode": "Svijetli način",
+    "dark_mode": "Tamni način",
+    "detection_sensitivity": "Precioznost prepoznavanja",
+    "language": "Jezik"
+}

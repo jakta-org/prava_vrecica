@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prava_vrecica/providers/theme_provider.dart';
 import 'package:prava_vrecica/providers/user_provider.dart';
 import 'package:prava_vrecica/screens/account_mode_screen.dart';
 import 'package:prava_vrecica/screens/main_screen.dart';
@@ -15,6 +16,9 @@ class ModeStatusState extends State<ModeStatus> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    themeProvider.updateSystemUI(false);
 
     Widget child;
 

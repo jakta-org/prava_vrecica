@@ -4,6 +4,7 @@ import 'package:prava_vrecica/screens/account_mode_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/normal_appbar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserInfoScreen extends StatefulWidget {
   const UserInfoScreen({super.key});
@@ -19,13 +20,13 @@ class UserInfoScreenState extends State<UserInfoScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: normalAppBar(context),
+      appBar: normalAppBar(context, AppLocalizations.of(context)!.user_screen),
       body: SafeArea(
         child: ListView(
           children: [
             ListTile(
               leading: const Icon(Icons.account_circle),
-              title: const Text("Guest"),
+              title: Text(AppLocalizations.of(context)!.guestmode_name),
               trailing: logoutButton(),
             ),
           ],
@@ -57,18 +58,17 @@ class UserInfoScreenState extends State<UserInfoScreen> {
               userProvider.clearUser();
 
               final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-              themeProvider.toggleNavigationBar(false);
+              themeProvider.updateSystemUI(false);
 
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const AccountModeScreen(),
-                  settings: const RouteSettings(name: 'Account'),
                 ),
               );
             },
             child: Text(
-              "Sign out",
+                AppLocalizations.of(context)!.logout,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onBackground,
                 fontSize: 16,

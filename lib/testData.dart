@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:prava_vrecica/helping_classes.dart';
 import 'package:prava_vrecica/interfaces/database_interface.dart';
-import 'package:prava_vrecica/models/object_type_model.dart';
 import 'package:prava_vrecica/json_models/rules_structure_model.dart';
 import 'package:prava_vrecica/models/user_model.dart';
+
+import 'json_models/object_list_model.dart';
 
 class Database implements DatabaseInterface {
   List<ObjectType> objectTypes;

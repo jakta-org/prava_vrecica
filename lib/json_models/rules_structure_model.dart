@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:prava_vrecica/providers/categorization_provider.dart';
+import 'package:provider/provider.dart';
+import '../helping_classes.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'object_list_model.dart';
 
 class RulesStructure {
   final int id;
@@ -13,6 +19,8 @@ class RulesStructure {
 
   final List<SpecialObjectType> special;
 
+  final List<AttributeType> attributes;
+
   RulesStructure({
     required this.id,
     required this.language,
@@ -22,6 +30,7 @@ class RulesStructure {
     required this.infoList,
     required this.categories,
     required this.special,
+    required this.attributes,
   });
 
   factory RulesStructure.fromJson(Map<String, dynamic> json) {
@@ -34,7 +43,18 @@ class RulesStructure {
       infoList: (json["info-list"] as List).map<RuleInfo>((json) => RuleInfo.fromJson(json)).toList(),
       categories: (json["categories-list"] as List).map<ObjectCategory>((json) => ObjectCategory.fromJson(json)).toList(),
       special: (json["special"] as List).map<SpecialObjectType>((json) => SpecialObjectType.fromJson(json)).toList(),
+      attributes: (json["attribute-info"] as List).map<AttributeType>((json) => AttributeType.fromJson(json)).toList(),
     );
+  }
+
+  SortingCategory? getCategoryByLabel(String label) {
+    if(categories.any((category) => category.objects.any((object) => object.label == label))) {
+      return categories.firstWhere((category) => category.objects.any((object) => object.label == label));
+    } else if (special.any((specialCategory) => specialCategory.label == label)) {
+      return special.firstWhere((specialCategory) => specialCategory.label == label);
+    } else {
+      return null;
+    }
   }
 }
 
@@ -55,7 +75,15 @@ class RuleInfo {
   }
 }
 
-class ObjectCategory {
+abstract class SortingCategory {
+
+  String getName();
+  Color getColor();
+  List<Widget> getDisplayable(TextStyle style, BuildContext context, String label);
+  List<AttributeType> objectAttributes(RulesStructure rulesStructure, String label);
+}
+
+class ObjectCategory implements SortingCategory {
   final String name;
   final Color color;
   final Map<String, dynamic> info;
@@ -79,6 +107,59 @@ class ObjectCategory {
       objects: (json["objects"] as List).map<CategoryObjectType>((json) => CategoryObjectType.fromJson(json)).toList(),
     );
   }
+
+  @override
+  Color getColor() {
+    return color;
+  }
+
+  @override
+  List<Widget> getDisplayable(TextStyle style, BuildContext context, String label) {
+    final categorizationProvider = Provider.of<CategorizationProvider>(context, listen: false);
+
+    List<Widget> wList = <Widget>[];
+    wList.add(
+      Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[Text(AppLocalizations.of(context)!.recycle_where, style: style.copyWith(fontWeight: FontWeight.bold))] + parseInfo(where, style, 0),
+      ),
+    );
+
+    wList.add(
+      Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[Text(AppLocalizations.of(context)!.object_info_title, style: style.copyWith(fontWeight: FontWeight.bold)), Text(categorizationProvider.getObjectByLabel(label)!.desc, textAlign: TextAlign.justify ,style: style)],
+      ),
+    );
+
+    Map<String, dynamic> mergeMap = {};
+    mergeMap.addAll(objects.firstWhere((obj) => obj.label == label).attributes);
+    mergeMap.addAll(categorizationProvider.objectsList.objects.firstWhere((obj) => obj.label == label).attributes);
+    List<AttributeType> displayAttributes = categorizationProvider.objectsList.attributes.where((attr) => mergeMap.keys.contains(attr.name)).toList() + categorizationProvider.rulesStructure.attributes.where((attr) => mergeMap.keys.contains(attr.name)).toList();
+    if (displayAttributes.isNotEmpty) {
+      wList.add(
+          Column(
+            children: <Widget>[
+              Text(AppLocalizations.of(context)!.attributes_title,
+                  style: style.copyWith(fontWeight: FontWeight.bold))
+            ] + displayAttributes.map((attr) =>
+                attr.getDisplayable(context, style, mergeMap[attr.name])).toList(),
+          )
+      );
+    }
+
+    return wList;
+  }
+
+  @override
+  String getName() {
+    return name;
+  }
+
+  @override
+  List<AttributeType> objectAttributes(RulesStructure rulesStructure, String label) {
+    return rulesStructure.attributes.where((attr) => objects.firstWhere((obj) => obj.label == label).attributes.keys.contains(attr.name)).toList();
+  }
 }
 
 class CategoryObjectType {
@@ -93,22 +174,24 @@ class CategoryObjectType {
   factory CategoryObjectType.fromJson(Map<String, dynamic> json) {
     return CategoryObjectType(
       label: json["label"] as String,
-      attributes: json["attributes"] as Map<String, dynamic>,
+      attributes: json["attributes"] == null ? {} : json["attributes"] as Map<String, dynamic>,
     );
   }
 }
 
-class SpecialObjectType {
+class SpecialObjectType implements SortingCategory {
   final String label;
   final Color color;
   final Map<String, dynamic> info;
   final Map<String, dynamic> where;
+  final Map<String, dynamic> attributes;
 
   SpecialObjectType({
     required this.label,
     required this.color,
     required this.info,
     required this.where,
+    required this.attributes,
   });
 
   factory SpecialObjectType.fromJson(Map<String, dynamic> json) {
@@ -117,6 +200,60 @@ class SpecialObjectType {
       color: Color(int.parse(json["color"])),
       info: json["info"] as Map<String, dynamic>,
       where: json["where"] as Map<String, dynamic>,
+      attributes: json["attributes"] == null ? {} : json["attributes"] as Map<String, dynamic>,
     );
+  }
+
+  @override
+  Color getColor() {
+    return color;
+  }
+
+  @override
+  List<Widget> getDisplayable(TextStyle style, BuildContext context, String label) {
+    final categorizationProvider = Provider.of<CategorizationProvider>(context, listen: false);
+
+    List<Widget> wList = <Widget>[];
+    wList.add(
+      Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[Text(AppLocalizations.of(context)!.recycle_where, style: style.copyWith(fontWeight: FontWeight.bold))] + parseInfo(where, style, 0),
+      ),
+    );
+
+    wList.add(
+      Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[Text(AppLocalizations.of(context)!.object_info_title, style: style.copyWith(fontWeight: FontWeight.bold)), Text(categorizationProvider.getObjectByLabel(label)!.desc, textAlign: TextAlign.justify, style: style)],
+      ),
+    );
+
+    Map<String, dynamic> mergeMap = {};
+    mergeMap.addAll(attributes);
+    mergeMap.addAll(categorizationProvider.objectsList.objects.firstWhere((obj) => obj.label == label).attributes);
+    List<AttributeType> displayAttributes = categorizationProvider.objectsList.attributes.where((attr) => mergeMap.keys.contains(attr.name)).toList() + categorizationProvider.rulesStructure.attributes.where((attr) => mergeMap.keys.contains(attr.name)).toList();
+    if (displayAttributes.isNotEmpty) {
+      wList.add(
+          Column(
+            children: <Widget>[
+              Text(AppLocalizations.of(context)!.attributes_title,
+                  style: style.copyWith(fontWeight: FontWeight.bold))
+            ] + displayAttributes.map((attr) =>
+                attr.getDisplayable(context, style, mergeMap[attr.name])).toList(),
+          )
+      );
+    }
+
+    return wList;
+  }
+
+  @override
+  String getName() {
+    return "Poseban otpad";
+  }
+
+  @override
+  List<AttributeType> objectAttributes(RulesStructure rulesStructure, String label) {
+    return <AttributeType>[];
   }
 }

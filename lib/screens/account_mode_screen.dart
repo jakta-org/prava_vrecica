@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:prava_vrecica/providers/theme_provider.dart';
 import 'package:prava_vrecica/screens/login_screen.dart';
+import 'package:prava_vrecica/screens/registration_screen.dart';
 import 'package:prava_vrecica/widgets/or_divider.dart';
 import 'package:provider/provider.dart';
-
 import '../providers/user_provider.dart';
 import 'main_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AccountModeScreen extends StatefulWidget {
   const AccountModeScreen({super.key});
@@ -18,7 +19,7 @@ class AccountModeScreenState extends State<AccountModeScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    themeProvider.toggleNavigationBar(false);
+    themeProvider.updateSystemUI(false);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -29,16 +30,14 @@ class AccountModeScreenState extends State<AccountModeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 userButton(
-                    const AccountModeScreen(),
-                    'Account',
-                    'Register',
+                    const RegistrationScreen(),
+                    AppLocalizations.of(context)!.register,
                     Theme.of(context).colorScheme.primary,
                     Icons.account_circle,
                     Colors.black),
                 userButton(
                     const LoginScreen(),
-                    'Login',
-                    'Sign in',
+                    AppLocalizations.of(context)!.login,
                     Theme.of(context).colorScheme.primary,
                     Icons.login,
                     Colors.black),
@@ -46,7 +45,7 @@ class AccountModeScreenState extends State<AccountModeScreen> {
                 guestModeButton(
                   const MainScreen(),
                   'Main',
-                  'Continue as Guest',
+                  AppLocalizations.of(context)!.guestmode,
                   Theme.of(context).colorScheme.surface,
                   Icons.no_accounts,
                   Colors.black,
@@ -59,7 +58,7 @@ class AccountModeScreenState extends State<AccountModeScreen> {
     );
   }
 
-  Widget userButton(Widget route, String routeName, String text,
+  Widget userButton(Widget route, String text,
       Color backgroundColor, IconData iconData, Color iconColor) {
     return Container(
       alignment: Alignment.center,
@@ -67,7 +66,7 @@ class AccountModeScreenState extends State<AccountModeScreen> {
       height: 60,
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: const BorderRadius.all(Radius.circular(50)),
+        borderRadius: const BorderRadius.all(Radius.circular(15)),
       ),
       margin: const EdgeInsetsDirectional.symmetric(vertical: 10),
       child: Row(
@@ -83,7 +82,6 @@ class AccountModeScreenState extends State<AccountModeScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => route,
-                  settings: RouteSettings(name: routeName),
                 ),
               );
             },
@@ -110,7 +108,7 @@ class AccountModeScreenState extends State<AccountModeScreen> {
       height: 60,
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: const BorderRadius.all(Radius.circular(50)),
+        borderRadius: const BorderRadius.all(Radius.circular(15)),
       ),
       margin: const EdgeInsetsDirectional.symmetric(vertical: 10),
       child: Row(

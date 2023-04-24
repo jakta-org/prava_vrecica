@@ -18,24 +18,16 @@ class ThemeProvider extends ChangeNotifier {
 
     themeMode = value ? ThemeMode.dark : ThemeMode.light;
     await sharedPreferences.setBool('is_dark', value);
-    updateSystemUI();
+    updateSystemUI(true);
 
     notifyListeners();
   }
 
-  void toggleNavigationBar(bool value) {
+  void updateSystemUI(bool value) {
     ThemeData theme = isDarkMode ? Themes.darkTheme : Themes.lightTheme;
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: value ? theme.colorScheme.surface : theme.colorScheme.background,
-    ));
-  }
-
-  void updateSystemUI() {
-    ThemeData theme = isDarkMode ? Themes.darkTheme : Themes.lightTheme;
-
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: theme.colorScheme.surface,
       systemNavigationBarIconBrightness: Brightness.light,
       systemNavigationBarDividerColor: Colors.transparent,
       statusBarColor: Colors.transparent,
