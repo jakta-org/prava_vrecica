@@ -25,6 +25,7 @@ dependencies:
   tflite_flutter_helper: ^0.3.1
   image: ^3.0.2
   fl_chart: ^0.61.0
+  image_picker: ^0.8.7+4
 
 dependency_overrides:
   camera_android:

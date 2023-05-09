@@ -1,6 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:prava_vrecica/providers/categorization_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 import '../models/user_model.dart';
 import '../providers/user_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -77,24 +79,37 @@ class StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   Widget categoriesMassChart() {
+    final categorizationProvider =
+        Provider.of<CategorizationProvider>(context, listen: false);
     // test data
-    var categories = <String>[
-      "MIXED",
-      "PLASTIC",
-      "PAPER",
-      "GLASS",
-      "TEXTILE",
-      //"BATTERIES"
+    List<String> categories = categorizationProvider.rulesStructure.categories
+            .map((c) => c.name)
+            .toList() +
+        categorizationProvider.rulesStructure.special
+            .map((s) => categorizationProvider.objectsList.objects
+                .firstWhere((obj) => obj.label == s.label)
+                .name)
+            .toList();
+    List<Color> colors = categorizationProvider.rulesStructure.categories
+            .map((c) => c.getColor())
+            .toList() +
+        categorizationProvider.rulesStructure.special
+            .map((s) => s.color)
+            .toList();
+    var totalMass = <double>[
+      5.613,
+      4.189,
+      2.056,
+      1.379,
+      0.405,
+      0.632,
+      0.101,
+      0.052,
+      0,
+      0
     ];
-    var colors = <Color>[
-      Colors.blueGrey.shade300,
-      Colors.yellow.shade700,
-      Colors.blue,
-      Colors.green,
-      Colors.redAccent,
-      //Colors.orangeAccent.shade400,
-    ];
-    var totalMass = <double>[5.613, 4.189, 2.056, 1.379, 0.405];
+
+    double chartWidth = categories.length * 58;
 
     var chartGroupsData = <BarChartGroupData>[];
     for (int i = 0; i < categories.length; i++) {
@@ -108,7 +123,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
               fromY: 0,
               toY: totalMass[0],
             ),
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
             toY: totalMass[i],
             width: 50,
             color: colors[i],
@@ -126,7 +141,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
         margin: const EdgeInsetsDirectional.only(top: 5, bottom: 10),
         decoration: BoxDecoration(
           color: colors[i],
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
         ),
         child: Center(
           child: Text(
@@ -146,30 +161,47 @@ class StatisticsScreenState extends State<StatisticsScreen> {
       decoration: childDecoration(),
       height: 250,
       padding: const EdgeInsetsDirectional.only(top: 20, end: 40),
-      child: BarChart(
-        BarChartData(
-          groupsSpace: 10,
-          backgroundColor: Colors.transparent,
-          titlesData: FlTitlesData(
-            show: true,
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                reservedSize: 30,
-                showTitles: true,
-                getTitlesWidget: getTitleData,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          SizedBox(
+            height: 200,
+            width: chartWidth,
+            child: BarChart(
+              BarChartData(
+                groupsSpace: 10,
+                backgroundColor: Colors.transparent,
+                titlesData: FlTitlesData(
+                  show: true,
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      reservedSize: 40,
+                      showTitles: true,
+                      getTitlesWidget: getTitleData,
+                    ),
+                  ),
+                  topTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                          reservedSize: 5,
+                          showTitles: true,
+                          getTitlesWidget: (double d, TitleMeta tm) {
+                            return const SizedBox();
+                          })),
+                  rightTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  leftTitles: AxisTitles(
+                      sideTitles:
+                          SideTitles(showTitles: true, reservedSize: 40)),
+                ),
+                borderData: FlBorderData(show: false),
+                barGroups: chartGroupsData,
+                gridData: FlGridData(show: false),
+                alignment: BarChartAlignment.spaceBetween,
+                maxY: totalMass[0],
               ),
             ),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            leftTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: true, reservedSize: 40)),
           ),
-          borderData: FlBorderData(show: false),
-          barGroups: chartGroupsData,
-          gridData: FlGridData(show: false),
-          alignment: BarChartAlignment.spaceBetween,
-          maxY: totalMass[0],
-        ),
+        ],
       ),
     );
   }

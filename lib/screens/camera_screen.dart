@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:prava_vrecica/screens/settings_screen.dart';
 import 'package:prava_vrecica/screens/user_info_screen.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,8 @@ class _CameraScreenState extends State<CameraScreen> {
   late Size size;
   late double scale;
   bool previewOn = false;
+  IconData flashIcon = Icons.flashlight_off;
+  bool flashOn = false;
 
   @override
   void initState() {
@@ -35,9 +38,9 @@ class _CameraScreenState extends State<CameraScreen> {
     preview = Container();
   }
 
-  Widget buildImagePreview() {
+  Widget buildImagePreview(Future<XFile> future) {
     return FutureBuilder(
-      future: cameraController.takePicture(),
+      future: future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -57,6 +60,35 @@ class _CameraScreenState extends State<CameraScreen> {
         return imagePreview(snapshot.data!.path);
       },
     );
+  }
+
+  void startRecognition(String path) {
+    final aiModelProvider = Provider.of<AiModelProvider>(
+        context,
+        listen: false);
+    final classifier = aiModelProvider.classifier;
+    List<int> imageBytes = File(path).readAsBytesSync();
+    final image = img.decodeImage(imageBytes);
+    List<Recognition> recognitions =
+    classifier.predict(image!);
+    recognitions.sort((a, b) =>
+        a.location.left.compareTo(b.location.left));
+    final factor =
+        MediaQuery.of(context).size.width / image.width;
+
+    if (recognitions.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PreviewScreen(
+              imagePath: path,
+              recognitions: recognitions,
+              factor: factor),
+        ),
+      );
+    }
+
+    setState(() => preview = Container());
   }
 
   Widget imagePreview(String path) {
@@ -123,34 +155,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                 ),
                                 IconButton(
                                   padding: EdgeInsetsDirectional.zero,
-                                  onPressed: () {
-                                    final aiModelProvider = Provider.of<AiModelProvider>(
-                                        context,
-                                        listen: false);
-                                    final classifier = aiModelProvider.classifier;
-                                    List<int> imageBytes = File(path).readAsBytesSync();
-                                    final image = img.decodeImage(imageBytes);
-                                    List<Recognition> recognitions =
-                                    classifier.predict(image!);
-                                    recognitions.sort((a, b) =>
-                                        a.location.left.compareTo(b.location.left));
-                                    final factor =
-                                        MediaQuery.of(context).size.width / image.width;
-
-                                    if (recognitions.isNotEmpty) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => PreviewScreen(
-                                              imagePath: path,
-                                              recognitions: recognitions,
-                                              factor: factor),
-                                        ),
-                                      );
-                                    }
-
-                                    setState(() => preview = Container());
-                                  },
+                                  onPressed: () => startRecognition(path),
                                   icon: Container(
                                     decoration: BoxDecoration(
                                       border: Border.all(color: Theme.of(context).primaryColor, width: 3),
@@ -328,7 +333,14 @@ class _CameraScreenState extends State<CameraScreen> {
                           margin: const EdgeInsetsDirectional.symmetric(
                               horizontal: 20),
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              XFile? picked = await cameraProvider.picker.pickImage(source: ImageSource.gallery);
+                              if (picked != null) {
+                                setState(() {
+                                  preview = imagePreview(picked.path);
+                                });
+                              }
+                            },
                             padding: EdgeInsets.zero,
                             iconSize: 30,
                             icon: Icon(
@@ -344,7 +356,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           child: IconButton(
                             onPressed: () {
                               setState(() {
-                                preview = buildImagePreview();
+                                preview = buildImagePreview(cameraController.takePicture());
                               });
                             },
                             padding: EdgeInsets.zero,
@@ -360,11 +372,17 @@ class _CameraScreenState extends State<CameraScreen> {
                           margin: const EdgeInsetsDirectional.symmetric(
                               horizontal: 20),
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              setState(() {
+                                flashOn = flashOn == true ? false : true;
+                                flashIcon = flashOn == true ? Icons.flashlight_on : Icons.flashlight_off;
+                                cameraController.setFlashMode(flashOn == true ? FlashMode.torch : FlashMode.off);
+                              });
+                            },
                             padding: EdgeInsets.zero,
                             iconSize: 30,
                             icon: Icon(
-                              Icons.flashlight_off,
+                              flashIcon,
                               color:
                                   Theme.of(context).colorScheme.surfaceVariant,
                             ),
