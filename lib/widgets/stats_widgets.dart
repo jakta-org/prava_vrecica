@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -27,11 +26,13 @@ Widget barChart(BuildContext context, List<ChartData> chartData) {
     chartGroupsData.add(currentGroupData);
   }
 
+  double chartWidth = chartGroupsData.length * 60;
+
   Widget getTitleData(double d, TitleMeta m) {
     int i = d.toInt();
     return Container(
       width: 50,
-      height: 20,
+      height: 15,
       margin: const EdgeInsetsDirectional.only(top: 5, bottom: 10),
       decoration: BoxDecoration(
         color: chartData[i].color,
@@ -55,30 +56,46 @@ Widget barChart(BuildContext context, List<ChartData> chartData) {
     decoration: childDecoration(context),
     height: 250,
     padding: const EdgeInsetsDirectional.only(top: 20, end: 40),
-    child: BarChart(
-      BarChartData(
-        groupsSpace: 10,
-        backgroundColor: Colors.transparent,
-        titlesData: FlTitlesData(
-          show: true,
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              reservedSize: 40,
-              showTitles: true,
-              getTitlesWidget: getTitleData,
+    child: ListView(
+      scrollDirection: Axis.horizontal,
+      children: [
+        SizedBox(
+          height: 200,
+          width: chartWidth,
+          child: BarChart(
+            BarChartData(
+              groupsSpace: 10,
+              backgroundColor: Colors.transparent,
+              titlesData: FlTitlesData(
+                show: true,
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    reservedSize: 40,
+                    showTitles: true,
+                    getTitlesWidget: getTitleData,
+                  ),
+                ),
+                topTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                        reservedSize: 5,
+                        showTitles: true,
+                        getTitlesWidget: (double d, TitleMeta tm) {
+                          return const SizedBox();
+                        })),
+                rightTitles:
+                    AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                leftTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: true, reservedSize: 40)),
+              ),
+              borderData: FlBorderData(show: false),
+              barGroups: chartGroupsData,
+              gridData: FlGridData(show: false),
+              alignment: BarChartAlignment.spaceBetween,
+              maxY: maxY,
             ),
           ),
-          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          leftTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: true, reservedSize: 40)),
         ),
-        borderData: FlBorderData(show: false),
-        barGroups: chartGroupsData,
-        gridData: FlGridData(show: false),
-        alignment: BarChartAlignment.spaceBetween,
-        maxY: maxY,
-      ),
+      ],
     ),
   );
 }
@@ -103,5 +120,3 @@ class ChartData {
     return 'ChartData{name: $name, value: $value, color: $color}';
   }
 }
-
-

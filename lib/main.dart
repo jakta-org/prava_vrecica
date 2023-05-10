@@ -90,7 +90,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => StatisticsProvider()),
+        ChangeNotifierProvider(create: (context) => StatisticsProvider(labels, userId)),
         ChangeNotifierProvider(create: (context) => UserProvider(userId, Provider.of<StatisticsProvider>(context, listen: false))),
         ChangeNotifierProvider(create: (context) => ThemeProvider(isDark)),
         ChangeNotifierProvider(create: (context) => DatabaseProvider()),

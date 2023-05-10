@@ -67,6 +67,9 @@ class PreviewStateSheet extends State<PreviewSheet> {
                 children: [
                   TextButton(
                     onPressed: () {
+                      if (widget.recognition.valid == false) {
+                        widget.recognition.updateStats(null, widget.recognition.label, context);
+                      }
                       setState(() {
                         widget.recognition.valid = true;
                         state = (state == 1) ? 0 : 1;
@@ -86,7 +89,7 @@ class PreviewStateSheet extends State<PreviewSheet> {
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          currentCategory.getName(),
+                          currentCategory.getName(context),
                           style: TextStyle(
                             color: currentCategory.getColor(),
                             fontSize: 15,
@@ -205,6 +208,9 @@ class PreviewStateSheet extends State<PreviewSheet> {
               shadowColor: Colors.transparent,
             ),
             onPressed: () {
+              if (widget.recognition.valid == true) {
+                widget.recognition.updateStats(widget.recognition.label, objectType.label, context);
+              }
               setState(() {
                 widget.recognition.label = objectType.label;
                 widget.recognition.valid = true;

@@ -1,10 +1,13 @@
 import 'dart:math';
-import 'dart:ui';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:image/image.dart' as img;
+import 'package:prava_vrecica/providers/statistics_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
+
+import '../models/object_stats_model.dart';
 
 class AiModelProvider extends ChangeNotifier {
   Interpreter interpreter;
@@ -167,5 +170,20 @@ class Recognition {
   @override
   String toString() {
     return 'Recognition(id: $id, label: $label, score: $score, location: $location)';
+  }
+
+  void updateStats(String? oldLabel, String newLabel, BuildContext context) {
+    var statisticsProvider = Provider.of<StatisticsProvider>(context, listen: false);
+    Map<String, ObjectStats> additional = {};
+
+    if (oldLabel != null) {
+      additional[oldLabel] = ObjectStats(recycledCount: -1,
+          recycledCountFromPhoto: -1);
+    }
+
+    additional[newLabel] = ObjectStats(recycledCount: 1,
+        recycledCountFromPhoto: 1);
+
+    statisticsProvider.updateStats(additional);
   }
 }
