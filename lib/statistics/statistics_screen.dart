@@ -33,23 +33,37 @@ class StatisticsScreenState extends State<StatisticsScreen> {
   void initState() {
     super.initState();
     userProvider = Provider.of<UserProvider>(context, listen: false);
-    categorizationProvider = Provider.of<CategorizationProvider>(context, listen: false);
-    statisticsProvider = Provider.of<StatisticsProvider>(context, listen: false);
+    categorizationProvider =
+        Provider.of<CategorizationProvider>(context, listen: false);
+    statisticsProvider =
+        Provider.of<StatisticsProvider>(context, listen: false);
     categories = categorizationProvider.rulesStructure.categories;
     special = categorizationProvider.rulesStructure.special;
-    _setCategoriesCountFuture = _setCategoriesCount();
   }
 
-  Future<void> _setCategoriesCount() async{
+  Future<void> _setCategoriesCount() async {
     await statisticsProvider.init();
     categoriesCount = statisticsProvider.allTimeCategoriesStats
-        .map((category) => ChartData(
-              category.categoryName,
-              category.recycledCount.toDouble(),
-              category.categoryColor
-    )).toList();
+        .map((category) => ChartData(displayCategoryName(category.categoryName),
+            category.recycledCount.toDouble(), category.categoryColor))
+        .toList();
     objectStats = statisticsProvider.allTimeObjectStats;
-    addObjectEntries = objectStats.map((key, value) => MapEntry(key, ObjectStats(recycledCount: 0, recycledCountFromPhoto: 0)));
+    addObjectEntries = objectStats.map((key, value) => MapEntry(
+        key, ObjectStats(recycledCount: 0, recycledCountFromPhoto: 0)));
+  }
+
+  String displayCategoryName(String label) {
+    for (var category in categorizationProvider.rulesStructure.categories) {
+      if (category.name == label) {
+        return label;
+      }
+    }
+    for (var special in categorizationProvider.rulesStructure.special) {
+      if (special.label == label) {
+        return special.getName(context);
+      }
+    }
+    return label;
   }
 
   List<Widget> _createChildren(BuildContext context) {
@@ -58,11 +72,22 @@ class StatisticsScreenState extends State<StatisticsScreen> {
     widgetList.add(barChart(context, categoriesCount));
     widgetList.add(FunFactsWidget());
     widgetList.add(ObjectEntryWidget(objectEntries: addObjectEntries, saveButtonFunction: updateStats));
+    widgetList.add(
+      ObjectEntryWidget(
+        objectEntries: addObjectEntries,
+        saveButtonFunction: (objectEntries) => updateScreen(objectEntries),
+      ),
+    );
     if (canGenerateOrder) {
       widgetList.add(GenerateOrderWidget());
     }
 
     return widgetList;
+  }
+
+  void updateScreen(dynamic objectEntries) {
+    statisticsProvider.updateStats(objectEntries);
+    setState(() {});
   }
 
   void updateStats(Map<String, ObjectStats> objectEntries) {
@@ -74,32 +99,29 @@ class StatisticsScreenState extends State<StatisticsScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: Container(
-        padding: const EdgeInsetsDirectional.symmetric(horizontal: 10),
-        child: FutureBuilder<void>(
-          future: _setCategoriesCountFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return ListView(
-                children: _createChildren(context)
-                    .map((child) =>
+      body: FutureBuilder<void>(
+        future: _setCategoriesCount(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return ListView(
+              padding: const EdgeInsetsDirectional.only(
+                  top: 100, start: 10, end: 10),
+              children: _createChildren(context)
+            .map((child) =>
                       Container(
                         margin: const EdgeInsetsDirectional.symmetric(vertical: 5),
                         decoration: childDecoration(context),
                         child: child,
                       )
-                    ).toList()
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
-        ),
+                    ).toList());
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       ),
     );
   }

@@ -4,6 +4,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
 import 'package:provider/provider.dart';
+
+import '../providers/categorization_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../providers/categorization_provider.dart';
@@ -113,7 +116,7 @@ class ObjectEntryWidget extends StatefulWidget {
   const ObjectEntryWidget({Key? key, required this.objectEntries, required this.saveButtonFunction}) : super(key: key);
 
   @override
-  _ObjectEntryWidgetState createState() => _ObjectEntryWidgetState();
+  State<ObjectEntryWidget> createState() => _ObjectEntryWidgetState();
 }
 
 class _ObjectEntryWidgetState extends State<ObjectEntryWidget> {
@@ -127,6 +130,8 @@ class _ObjectEntryWidgetState extends State<ObjectEntryWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final categorizationProvider = Provider.of<CategorizationProvider>(context, listen: false);
+
     final categorizationProvider = Provider.of<CategorizationProvider>(context);
 
     return Container(
@@ -143,6 +148,7 @@ class _ObjectEntryWidgetState extends State<ObjectEntryWidget> {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Text(categorizationProvider.getObjectByLabel(key)!.name),
                   Text(name),
                   Row(
                     children: [
@@ -192,7 +198,11 @@ Decoration childDecoration(BuildContext context) {
   return BoxDecoration(
     borderRadius: const BorderRadius.all(Radius.circular(10)),
     color: Theme.of(context).colorScheme.surface,
-    boxShadow: const <BoxShadow>[],
+    boxShadow: <BoxShadow>[
+      BoxShadow(
+          color: Theme.of(context).colorScheme.surfaceTint,
+          blurRadius: 5.0)
+    ],
   );
 }
 
