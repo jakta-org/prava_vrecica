@@ -123,7 +123,7 @@ class InfoScreenState extends State<InfoScreen> {
                             fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        currentCategory.getName(),
+                        currentCategory.getName(context),
                         style: TextStyle(
                           color: currentCategory.getColor(),
                           fontSize: 15,

@@ -86,7 +86,7 @@ class PreviewStateSheet extends State<PreviewSheet> {
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          currentCategory.getName(),
+                          currentCategory.getName(context),
                           style: TextStyle(
                             color: currentCategory.getColor(),
                             fontSize: 15,

@@ -2,7 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:prava_vrecica/screens/camera_screen.dart';
 import 'package:prava_vrecica/screens/info_screen.dart';
-import 'package:prava_vrecica/screens/statistics_screen.dart';
+import 'package:prava_vrecica/statistics/statistics_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
