@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:prava_vrecica/feedback/detection_entry_queue_provider.dart';
 import 'package:prava_vrecica/mode_status.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
 import 'package:prava_vrecica/providers/categorization_provider.dart';
@@ -93,7 +94,14 @@ class App extends StatelessWidget {
         ChangeNotifierProvider(
             create: (context) => CategorizationProvider(objectsListsSrc, ruleSrc, locale)),
         ChangeNotifierProvider(create: (context) => StatisticsProvider(userId, Provider.of<CategorizationProvider>(context, listen: false))),
-        ChangeNotifierProvider(create: (context) => UserProvider(userId, Provider.of<StatisticsProvider>(context, listen: false))),
+        ChangeNotifierProvider(create: (context) => DetectionEntryQueueProvider(userId, Provider.of<StatisticsProvider>(context, listen: false))),
+        ChangeNotifierProvider(
+            create: (context) =>
+                UserProvider(
+                    userId,
+                    Provider.of<StatisticsProvider>(context, listen: false),
+                    Provider.of<DetectionEntryQueueProvider>(context, listen: false)
+                )),
         ChangeNotifierProvider(create: (context) => ThemeProvider(isDark)),
         ChangeNotifierProvider(create: (context) => DatabaseProvider()),
         ChangeNotifierProvider(
@@ -109,6 +117,8 @@ class App extends StatelessWidget {
         themeProvider.updateSystemUI(false);
 
         final localizationProvider = Provider.of<LocalizationProvider>(context);
+        final detectionEntryQueueProvider = Provider.of<DetectionEntryQueueProvider>(context, listen: false);
+        detectionEntryQueueProvider.processEntries();
 
         return MaterialApp(
           title: 'Prava Vrećica',

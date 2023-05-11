@@ -52,8 +52,15 @@ class StatisticsScreenState extends State<StatisticsScreen> {
     List<Widget> widgetList = <Widget>[];
 
     widgetList.add(barChart(context, categoriesCount));
-    widgetList.add(ObjectEntryWidget(objectEntries: addObjectEntries, saveButtonFunction: (objectEntries) => statisticsProvider.updateStats(objectEntries)));
+    widgetList.add(ObjectEntryWidget(objectEntries: addObjectEntries, saveButtonFunction: updateStats));
     return widgetList;
+  }
+
+  void updateStats(Map<String, ObjectStats> objectEntries) {
+    statisticsProvider.updateStats(objectEntries);
+    setState(() {
+      _setCategoriesCountFuture = _setCategoriesCount();
+    });
   }
 
   @override
@@ -68,7 +75,14 @@ class StatisticsScreenState extends State<StatisticsScreen> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return ListView(
-                children: _createChildren(context),
+                children: _createChildren(context)
+                    .map((child) =>
+                      Container(
+                        margin: const EdgeInsetsDirectional.symmetric(vertical: 5),
+                        decoration: childDecoration(context),
+                        child: child,
+                      )
+                    ).toList()
               );
             } else {
               return const Center(
