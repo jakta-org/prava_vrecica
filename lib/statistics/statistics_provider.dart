@@ -11,6 +11,7 @@ class StatisticsProvider extends ChangeNotifier {
   CategorizationProvider categorizationProvider;
   int userId = -2;
   int initializedUser = -3;
+  bool started = false;
 
   late File userStatsFile;
   late List<ObjectStatsWithTime> objectStatsEntries;
@@ -25,6 +26,13 @@ class StatisticsProvider extends ChangeNotifier {
     if (initializedUser == userId) {
       return;
     }
+    if (started) {
+      while (initializedUser != userId) {
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+      return;
+    }
+    started = true;
     final directory = await getApplicationDocumentsDirectory();
     userStatsFile = File('${directory.path}/stats_$userId.json');
     final fileExists = await userStatsFile.exists();
@@ -36,6 +44,7 @@ class StatisticsProvider extends ChangeNotifier {
     calculateAllTimeObjectStats();
     calculateAllTimeCategoriesStats();
     initializedUser = userId;
+    started = false;
   }
 
   Future<List<ObjectStatsWithTime>> getStatsFromFile() async {
@@ -96,12 +105,10 @@ class StatisticsProvider extends ChangeNotifier {
 
   Future<void> updateStats(Map<String, ObjectStats> additionalStats) async {
     print('Updating stats with $additionalStats');
+    await init();
     final statsEntry = ObjectStatsWithTime(time: DateTime.now(), stats: additionalStats);
     objectStatsEntries.add(statsEntry);
     for (var object in additionalStats.entries) {
-      if (object.value.recycledCount == 0 && object.value.recycledCountFromPhoto == 0) {
-        continue;
-      }
       if (allTimeObjectStats.containsKey(object.key)) {
         allTimeObjectStats[object.key]!.recycledCount += object.value.recycledCount;
         allTimeObjectStats[object.key]!.recycledCountFromPhoto += object.value.recycledCountFromPhoto;
@@ -124,7 +131,14 @@ class StatisticsProvider extends ChangeNotifier {
   }
 
   Future<void> clearStats() async {
-    await userStatsFile.delete();
+    try {
+      await userStatsFile.writeAsString(jsonEncode([]));
+    } catch (e) {
+      print(e);
+    }
+    objectStatsEntries = [];
+    calculateAllTimeObjectStats();
+    calculateAllTimeCategoriesStats();
     notifyListeners();
   }
 

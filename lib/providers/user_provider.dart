@@ -3,11 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:prava_vrecica/statistics/statistics_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../feedback/detection_entry_queue_provider.dart';
+
 class UserProvider extends ChangeNotifier {
   int userId = -2;
   StatisticsProvider statisticsProvider;
+  DetectionEntryQueueProvider detectionEntryQueueProvider;
 
-  UserProvider(this.userId, this.statisticsProvider);
+  UserProvider(this.userId, this.statisticsProvider, this.detectionEntryQueueProvider);
 
   Future<void> setUser(int userId) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -17,6 +20,9 @@ class UserProvider extends ChangeNotifier {
 
     statisticsProvider.userId = userId;
     statisticsProvider.init();
+
+    detectionEntryQueueProvider.userId = userId;
+    detectionEntryQueueProvider.init();
 
     notifyListeners();
   }

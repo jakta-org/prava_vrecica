@@ -159,7 +159,14 @@ class _ObjectEntryWidgetState extends State<ObjectEntryWidget> {
               );
             }).toList(),
           ), IconButton(onPressed: () {
-            widget.saveButtonFunction(_objectEntries);
+            var newStats = <String, ObjectStats>{};
+            for (var object in _objectEntries.entries) {
+              if (object.value.recycledCount == 0 && object.value.recycledCountFromPhoto == 0) {
+                continue;
+              }
+              newStats[object.key] = ObjectStats(recycledCount: object.value.recycledCount, recycledCountFromPhoto: object.value.recycledCountFromPhoto);
+            }
+            widget.saveButtonFunction(newStats);
             for (String key in _objectEntries.keys) {
               setState(() {
                 _objectEntries[key]?.recycledCount = 0;

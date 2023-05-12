@@ -35,6 +35,10 @@
 
     "light_mode": "Svijetli način",
     "dark_mode": "Tamni način",
-    "detection_sensitivity": "Precioznost prepoznavanja",
-    "language": "Jezik"
+    "detection_sensitivity": "Preciznost prepoznavanja",
+    "language": "Jezik",
+    "clear_statistics": "Obriši statistiku",
+    "clear_statistics_text": "Jeste li sigurni da želite obrisati statistiku?",
+    "cancel": "Odustani",
+    "clear": "Obriši"
 }

@@ -83,7 +83,9 @@ class _CameraScreenState extends State<CameraScreen> {
           builder: (context) => PreviewScreen(
               imagePath: path,
               recognitions: recognitions,
-              factor: factor),
+              factor: factor,
+              dateTime: DateTime.now(),
+          ),
         ),
       );
     }
@@ -196,7 +198,7 @@ class _CameraScreenState extends State<CameraScreen> {
       scale = 1 / scale;
     }
 
-    int userScore = 0;
+    //int userScore = 0;
 
     return Scaffold(
       body: Stack(

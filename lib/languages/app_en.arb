@@ -36,5 +36,9 @@
   "light_mode": "Light mode",
   "dark_mode": "Dark mode",
   "detection_sensitivity": "Detection sensitivity",
-  "language": "Language"
+  "language": "Language",
+  "clear_statistics": "Clear statistics",
+  "clear_statistics_text": "Are you sure you want to clear statistics?",
+  "cancel": "Cancel",
+  "clear": "Clear"
 }

@@ -4,14 +4,16 @@ import 'package:prava_vrecica/providers/ai_model_provider.dart';
 import 'package:prava_vrecica/providers/categorization_provider.dart';
 import 'package:prava_vrecica/widgets/preview_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import '../feedback/detection_entry_queue_provider.dart';
 import '../widgets/recognition_widget.dart';
 
 class PreviewScreen extends StatefulWidget {
-  const PreviewScreen({super.key, required this.imagePath, required this.recognitions, required this.factor}) : super();
+  const PreviewScreen({super.key, required this.imagePath, required this.recognitions, required this.factor, required this.dateTime}) : super();
 
   final String imagePath;
   final List<Recognition> recognitions;
   final double factor;
+  final DateTime dateTime;
 
   @override
   State<PreviewScreen> createState() => _PreviewScreenState();
@@ -21,10 +23,13 @@ class _PreviewScreenState extends State<PreviewScreen> {
   int selected = 0;
   double iconSize = 50;
   double h = 50;
+  late DetectionEntryQueueProvider detectionEntryQueueProvider;
 
   @override
   Widget build(BuildContext context) {
     final categorizationProvider = Provider.of<CategorizationProvider>(context, listen: false);
+    detectionEntryQueueProvider = Provider.of<DetectionEntryQueueProvider>(context, listen: false);
+    updateDetectionQueue();
 
     return Scaffold(
       bottomSheet: PreviewSheet(context, widget.recognitions[selected], refreshState),
@@ -110,5 +115,17 @@ class _PreviewScreenState extends State<PreviewScreen> {
               ))
           .toList(),
     );
+  }
+
+  void updateDetectionQueue (){
+    final validRecognitions = widget.recognitions.where((recognition) => recognition.valid).toList();
+    final updatedEntry = DetectionsEntry(widget.imagePath, widget.dateTime, validRecognitions);
+    detectionEntryQueueProvider.updateEntryOrAdd(updatedEntry);
+  }
+
+  @override
+  void dispose() {
+    detectionEntryQueueProvider.processEntries();
+    super.dispose();
   }
 }

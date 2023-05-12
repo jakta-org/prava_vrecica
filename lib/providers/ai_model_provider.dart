@@ -168,4 +168,32 @@ class Recognition {
   String toString() {
     return 'Recognition(id: $id, label: $label, score: $score, location: $location)';
   }
+
+  factory Recognition.fromJson(Map<String, dynamic> json) {
+    return Recognition(
+      json['id'] as int,
+      json['label'] as String,
+      json['score'] as double,
+      Rect.fromLTWH(
+        json['location']['left'] as double,
+        json['location']['top'] as double,
+        json['location']['width'] as double,
+        json['location']['height'] as double,
+      ),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'label': label,
+      'score': score,
+      'location': {
+        'left': location.left,
+        'top': location.top,
+        'width': location.width,
+        'height': location.height,
+      },
+    };
+  }
 }
