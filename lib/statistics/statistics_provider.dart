@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:prava_vrecica/providers/categorization_provider.dart';
-
 import 'stats_models.dart';
 
 class StatisticsProvider extends ChangeNotifier {
@@ -44,6 +42,17 @@ class StatisticsProvider extends ChangeNotifier {
     calculateAllTimeCategoriesStats();
     initializedUser = userId;
     started = false;
+  }
+
+  Future<bool> appropriateFile(int userId) async {
+    final directory = await getApplicationDocumentsDirectory();
+    userStatsFile = File('${directory.path}/stats_-1.json');
+    final fileExists = await userStatsFile.exists();
+    if (fileExists) {
+      userStatsFile = await userStatsFile.rename('${directory.path}/stats_$userId.json');
+    }
+    this.userId = userId;
+    return true;
   }
 
   Future<List<ObjectStatsWithTime>> getStatsFromFile() async {

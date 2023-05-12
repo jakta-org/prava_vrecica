@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:prava_vrecica/database/database_provider.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
 import 'package:synchronized/synchronized.dart';
@@ -15,9 +17,11 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
   int userId = -2;
   int initializedUser = -3;
   StatisticsProvider statisticsProvider;
+  DatabaseProvider databaseProvider;
   bool started = false;
   Directory appDirectory;
 
+  DetectionEntryQueueProvider(this.userId, this.statisticsProvider, this.databaseProvider) {
   DetectionEntryQueueProvider(this.userId, this.statisticsProvider, this.appDirectory) {
     init();
   }
@@ -115,10 +119,10 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
       String newImagePath = '${appDirectory.path}/feedback_${DateTime.now().millisecondsSinceEpoch}_$userId.jpg';
       imageFile.renameSync(newImagePath);
       File newImageFile = File(newImagePath);
-  /*
+
       final image = base64Encode(newImageFile.readAsBytesSync());
       final fileName = newImageFile.path.split('/').last;
-      final objectsData = entry.detectedObjects.map((e) => e.toJson()).toList();
+      final objectsData = jsonEncode(entry.detectedObjects.map((e) => e.toJson()).toList());
 
       final response = await http.post(
         Uri.parse('https://karlo13.pythonanywhere.com/feedback/feedback/'),
@@ -135,11 +139,16 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
       );
 
       print (response.body);
+      print("before!");
+      bool success = await databaseProvider.sendFeedback(image, fileName, objectsData, null, true);
+      print("sent!");
 
-      if (response.statusCode != 200) {
-        throw Exception('Error sending feedback: ${response.body}');
+      if (!success) {
+        throw Exception('Error sending feedback!');
+      } else {
+        await newImageFile.delete();
       }
-*/
+
       newImageFile.deleteSync();
     } catch (e) {
       if (kDebugMode) {
@@ -163,6 +172,7 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
       }
     }
     await statisticsProvider.updateStats(stats);
+    await databaseProvider.updateUserData(userId, jsonEncode(stats));
     if (kDebugMode) {
       print('Updated stats: $stats');
     }

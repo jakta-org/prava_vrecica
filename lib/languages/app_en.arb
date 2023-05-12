@@ -27,12 +27,23 @@
   "entr_key_prompt": "Provide an entrance key",
   "continue_google": "Continue with Google",
   "continue_apple": "Continue with Apple",
+  "field_empty": "This field cannot be empty!",
+  "field_wrong": "Mail or password not right.",
+  "password_confirm": "Password confirmation does not match.",
 
   "guestmode_name": "Guest",
   "logout": "Sign out",
+  "username": "Username",
+  "email": "Email",
+  "first_name": "First name",
+  "last_name": "Last name",
+  "phone_number": "Phone number",
+  "not_set": "Not set",
+  "return_accounts": "Choose account",
 
   "photo_prompt": "Did you take a good photo? :)",
 
+  "special_category": "Special category",
   "wrong_object": "This isn't the right object",
   "create_ticket": "Create a ticket",
   "create_ticket_text": "Are you sure you want to create a ticket?",
@@ -83,5 +94,8 @@
   "entry_save_tooltip": "Save objects",
   "click_me": "Click me!",
 
-  "pdf_preview": "PDF preview"
+  "pdf_preview": "PDF preview",
+  "clear": "Clear",
+
+  "or": "or"
 }

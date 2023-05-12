@@ -16,7 +16,6 @@ class ModeStatusState extends State<ModeStatus> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     themeProvider.updateSystemUI(false);
 

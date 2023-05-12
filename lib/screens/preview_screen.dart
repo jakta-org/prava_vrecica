@@ -13,7 +13,13 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PreviewScreen extends StatefulWidget {
-  const PreviewScreen({super.key, required this.imagePath, required this.recognitions, required this.factor, required this.dateTime}) : super();
+  const PreviewScreen(
+      {super.key,
+      required this.imagePath,
+      required this.recognitions,
+      required this.factor,
+      required this.dateTime})
+      : super();
 
   final String imagePath;
   final List<Recognition> recognitions;
@@ -41,13 +47,18 @@ class _PreviewScreenState extends State<PreviewScreen> {
     detectionEntryQueueProvider = Provider.of<DetectionEntryQueueProvider>(context, listen: false);
     documentProvider = Provider.of<DocumentProvider>(context, listen: false);
     localizations = AppLocalizations.of(context)!;
+    final categorizationProvider =
+        Provider.of<CategorizationProvider>(context, listen: false);
+    detectionEntryQueueProvider =
+        Provider.of<DetectionEntryQueueProvider>(context, listen: false);
     updateDetectionQueue();
     final imageFile = File(widget.imagePath);
     memoryImage = pw.MemoryImage(imageFile.readAsBytesSync());
 
 
     return Scaffold(
-      bottomSheet: PreviewSheet(context, widget.recognitions[selected], refreshState),
+      bottomSheet:
+          PreviewSheet(context, widget.recognitions[selected], refreshState),
       body: Stack(
         children: <Widget>[
           Image.file(imageFile),
@@ -55,7 +66,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
           Align(
             alignment: Alignment.centerLeft,
             child: IconButton(
-              icon: const Icon(Icons.chevron_left),
+              icon: const Icon(Icons.arrow_circle_left_outlined),
               color: Theme.of(context).colorScheme.surfaceVariant,
               onPressed: () {
                 changeSelected((selected - 1) % widget.recognitions.length);
@@ -66,7 +77,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
           Align(
             alignment: Alignment.centerRight,
             child: IconButton(
-              icon: const Icon(Icons.chevron_right),
+              icon: const Icon(Icons.arrow_circle_right_outlined),
               color: Theme.of(context).colorScheme.surfaceVariant,
               onPressed: () {
                 changeSelected((selected + 1) % widget.recognitions.length);
@@ -83,7 +94,8 @@ class _PreviewScreenState extends State<PreviewScreen> {
                 children: widget.recognitions
                     .map((recognition) => GestureDetector(
                           onTap: () {
-                            changeSelected(widget.recognitions.indexOf(recognition));
+                            changeSelected(
+                                widget.recognitions.indexOf(recognition));
                           },
                           child: AnimatedContainer(
                             width: 15,
@@ -93,14 +105,42 @@ class _PreviewScreenState extends State<PreviewScreen> {
                               shape: BoxShape.circle,
                               color: widget.recognitions.indexOf(recognition) ==
                                       selected
-                                  ? categorizationProvider.getCategoryByLabel(recognition.label)!.getColor()
+                                  ? categorizationProvider
+                                      .getCategoryByLabel(recognition.label)!
+                                      .getColor()
                                   : Theme.of(context).colorScheme.surfaceTint,
-                              border: recognition.valid ? (recognition.label == recognition.recognizedLabel ? Border.all(color: Theme.of(context).colorScheme.primary) : Border.all(color: Colors.red)) : Border.all(color: Theme.of(context).colorScheme.surfaceVariant),
+                              border: recognition.valid
+                                  ? (recognition.label ==
+                                          recognition.recognizedLabel
+                                      ? Border.all(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary)
+                                      : Border.all(color: Colors.red))
+                                  : Border.all(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .surfaceVariant),
                             ),
                             duration: const Duration(milliseconds: 300),
                           ),
                         ))
                     .toList(),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              margin: const EdgeInsetsDirectional.only(bottom: 150),
+              child: IconButton(
+                icon: const Icon(Icons.check_circle_outline),
+                color: Theme.of(context).colorScheme.surfaceVariant,
+                onPressed: () {
+                  widget.recognitions[selected].valid = true;
+                  changeSelected((selected + 1) % widget.recognitions.length);
+                },
+                iconSize: iconSize,
               ),
             ),
           ),
@@ -202,20 +242,26 @@ class _PreviewScreenState extends State<PreviewScreen> {
 
   Widget boundingBoxes(
       List<Recognition> recognitions, num factor, int selected) {
+    int index = -1;
     return Stack(
-      children: recognitions
-          .map((recognition) => RecognitionWidget(
-                recognition: recognition,
-                factor: factor,
-                selected: recognition == recognitions[selected],
-              ))
-          .toList(),
+      children: recognitions.map((recognition) {
+        index++;
+        return RecognitionWidget(
+          recognition: recognition,
+          factor: factor,
+          selected: recognition == recognitions[selected],
+          index: index,
+          func: changeSelected,
+        );
+      }).toList(),
     );
   }
 
-  void updateDetectionQueue (){
-    final validRecognitions = widget.recognitions.where((recognition) => recognition.valid).toList();
-    final updatedEntry = DetectionsEntry(widget.imagePath, widget.dateTime, validRecognitions);
+  void updateDetectionQueue() {
+    final validRecognitions =
+        widget.recognitions.where((recognition) => recognition.valid).toList();
+    final updatedEntry =
+        DetectionsEntry(widget.imagePath, widget.dateTime, validRecognitions);
     detectionEntryQueueProvider.updateEntryOrAdd(updatedEntry);
   }
 

@@ -336,7 +336,7 @@ class MainScreenState extends State<MainScreen> {
         BottomNavigationBarItem(
           label: AppLocalizations.of(context)!.statistics_screen,
           icon: const Icon(
-            Icons.bar_chart,
+            Icons.widgets,
           ),
         ),
         BottomNavigationBarItem(
@@ -346,7 +346,7 @@ class MainScreenState extends State<MainScreen> {
           ),
         ),
         BottomNavigationBarItem(
-          label: AppLocalizations.of(context)!.statistics_screen,
+          label: AppLocalizations.of(context)!.info_screen,
           icon: const Icon(
             Icons.info,
           ),

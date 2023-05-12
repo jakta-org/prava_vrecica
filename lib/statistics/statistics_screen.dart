@@ -90,13 +90,6 @@ class StatisticsScreenState extends State<StatisticsScreen> {
     setState(() {});
   }
 
-  void updateStats(Map<String, ObjectStats> objectEntries) {
-    statisticsProvider.updateStats(objectEntries);
-    setState(() {
-      _setCategoriesCountFuture = _setCategoriesCount();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,14 +101,8 @@ class StatisticsScreenState extends State<StatisticsScreen> {
             return ListView(
               padding: const EdgeInsetsDirectional.only(
                   top: 100, start: 10, end: 10),
-              children: _createChildren(context)
-            .map((child) =>
-                      Container(
-                        margin: const EdgeInsetsDirectional.symmetric(vertical: 5),
-                        decoration: childDecoration(context),
-                        child: child,
-                      )
-                    ).toList());
+              children: _createChildren(context),
+            );
           } else {
             return const Center(
               child: CircularProgressIndicator(),

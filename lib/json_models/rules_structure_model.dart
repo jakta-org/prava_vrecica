@@ -82,6 +82,7 @@ abstract class SortingCategory {
   Color getColor();
   List<Widget> getDisplayable(TextStyle style, BuildContext context, String label);
   List<AttributeType> objectAttributes(RulesStructure rulesStructure, String label);
+  bool isSpecial();
 }
 
 class ObjectCategory implements SortingCategory {
@@ -122,14 +123,16 @@ class ObjectCategory implements SortingCategory {
     wList.add(
       Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[Text(AppLocalizations.of(context)!.recycle_where, style: style.copyWith(fontWeight: FontWeight.bold))] + parseInfo(where, style, 0),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[Container(margin: const EdgeInsetsDirectional.symmetric(vertical: 5), child: Text(AppLocalizations.of(context)!.recycle_where, style: style.copyWith(fontWeight: FontWeight.bold)))] + parseInfo(where, style, 0),
       ),
     );
 
     wList.add(
       Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[Text(AppLocalizations.of(context)!.object_info_title, style: style.copyWith(fontWeight: FontWeight.bold)), Text(categorizationProvider.getObjectByLabel(label)!.desc, textAlign: TextAlign.justify ,style: style)],
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[Container(margin: const EdgeInsetsDirectional.symmetric(vertical: 5), child: Text(AppLocalizations.of(context)!.object_info_title, style: style.copyWith(fontWeight: FontWeight.bold))), Text(categorizationProvider.getObjectByLabel(label)!.desc, style: style)],
       ),
     );
 
@@ -140,6 +143,8 @@ class ObjectCategory implements SortingCategory {
     if (displayAttributes.isNotEmpty) {
       wList.add(
           Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(AppLocalizations.of(context)!.attributes_title,
                   style: style.copyWith(fontWeight: FontWeight.bold))
@@ -166,6 +171,9 @@ class ObjectCategory implements SortingCategory {
   List<AttributeType> objectAttributes(RulesStructure rulesStructure, String label) {
     return rulesStructure.attributes.where((attr) => objects.firstWhere((obj) => obj.label == label).attributes.keys.contains(attr.name)).toList();
   }
+
+  @override
+  bool isSpecial() => false;
 }
 
 class CategoryObjectType {
@@ -223,14 +231,16 @@ class SpecialObjectType implements SortingCategory {
     wList.add(
       Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[Text(AppLocalizations.of(context)!.recycle_where, style: style.copyWith(fontWeight: FontWeight.bold))] + parseInfo(where, style, 0),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[Container(margin: const EdgeInsetsDirectional.symmetric(vertical: 5), child: Text(AppLocalizations.of(context)!.recycle_where, style: style.copyWith(fontWeight: FontWeight.bold)))] + parseInfo(where, style, 0),
       ),
     );
 
     wList.add(
       Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[Text(AppLocalizations.of(context)!.object_info_title, style: style.copyWith(fontWeight: FontWeight.bold)), Text(categorizationProvider.getObjectByLabel(label)!.desc, textAlign: TextAlign.justify, style: style)],
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[Container(margin: const EdgeInsetsDirectional.symmetric(vertical: 5), child: Text(AppLocalizations.of(context)!.object_info_title, style: style.copyWith(fontWeight: FontWeight.bold))), Text(categorizationProvider.getObjectByLabel(label)!.desc, style: style)],
       ),
     );
 
@@ -241,6 +251,8 @@ class SpecialObjectType implements SortingCategory {
     if (displayAttributes.isNotEmpty) {
       wList.add(
           Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(AppLocalizations.of(context)!.attributes_title,
                   style: style.copyWith(fontWeight: FontWeight.bold))
@@ -268,4 +280,7 @@ class SpecialObjectType implements SortingCategory {
   List<AttributeType> objectAttributes(RulesStructure rulesStructure, String label) {
     return <AttributeType>[];
   }
+
+  @override
+  bool isSpecial() => true;
 }

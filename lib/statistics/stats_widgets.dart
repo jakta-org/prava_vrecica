@@ -64,6 +64,7 @@ Widget barChart(BuildContext context, List<ChartData> chartData) {
     decoration: childDecoration(context),
     height: 250,
     padding: const EdgeInsetsDirectional.only(top: 20, end: 40),
+    margin: const EdgeInsetsDirectional.symmetric(vertical: 10),
     child: ListView(
       scrollDirection: Axis.horizontal,
       children: [
@@ -138,6 +139,7 @@ class _ObjectEntryWidgetState extends State<ObjectEntryWidget> {
         decoration: childDecoration(context),
         height: 600,
         padding: const EdgeInsetsDirectional.only(top: 20, end: 20, start: 20),
+        margin: const EdgeInsetsDirectional.symmetric(vertical: 10),
         child: Column(
           children: [
             Text(AppLocalizations.of(context)!.object_entry, style: Theme.of(context).textTheme.titleLarge),
@@ -174,7 +176,7 @@ class _ObjectEntryWidgetState extends State<ObjectEntryWidget> {
                 ],
               );
             }).toList(),
-          ), IconButton(onPressed: () {
+          ), IconButton(color: Theme.of(context).colorScheme.primary, onPressed: () {
             var newStats = <String, ObjectStats>{};
             for (var object in _objectEntries.entries) {
               if (object.value.recycledCount == 0 && object.value.recycledCountFromPhoto == 0) {

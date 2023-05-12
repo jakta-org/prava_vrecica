@@ -7,13 +7,17 @@ import '../providers/categorization_provider.dart';
 class RecognitionWidget extends StatelessWidget {
   final Recognition recognition;
   final num factor;
+  final int index;
   final bool selected;
+  final Function func;
 
   const RecognitionWidget(
       {Key? key,
       required this.recognition,
       required this.factor,
-      required this.selected})
+      required this.index,
+      required this.selected,
+      required this.func})
       : super(key: key);
 
   @override
@@ -24,53 +28,59 @@ class RecognitionWidget extends StatelessWidget {
   Widget selectedWidget(bool selected, BuildContext context) {
     final categorizationProvider =
         Provider.of<CategorizationProvider>(context, listen: false);
+
     return Positioned(
       left: recognition.renderLocation.left * factor,
       top: recognition.renderLocation.top * factor,
       width: recognition.renderLocation.width * factor,
       height: recognition.renderLocation.height * factor,
       child: Center(
-        child: AnimatedContainer(
-          curve: Curves.ease,
-          duration: const Duration(milliseconds: 300),
-          width: selected ? recognition.renderLocation.width * factor : 20,
-          height: selected ? recognition.renderLocation.height * factor : 20,
-          decoration: BoxDecoration(
-            color: selected ? Colors.white24 : Colors.transparent,
-            border: selected
-                ? Border.all(
-                    color: categorizationProvider
-                        .getCategoryByLabel(recognition.label)!
-                        .getColor(),
-                    width: 5)
-                : Border.all(
-                    color: Theme.of(context).colorScheme.surfaceVariant),
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-          ),
+        child: GestureDetector(
+          onTap: () => func(index),
           child: AnimatedContainer(
-            margin: const EdgeInsets.all(3),
+            curve: Curves.ease,
             duration: const Duration(milliseconds: 300),
-            child: Text(
-              recognition.score.toStringAsFixed(2),
-              style: TextStyle(
-                color: selected
-                    ? categorizationProvider
-                        .getCategoryByLabel(recognition.label)!
-                        .getColor()
-                    : Colors.transparent,
-                fontSize: 12,
-                shadows: selected
-                    ? const <Shadow>[
-                        BoxShadow(
-                          color: Colors.black26,
-                          offset: Offset(1, 1),
-                        ),
-                        BoxShadow(
-                          color: Colors.black26,
-                          offset: Offset(1, 1),
-                        ),
-                      ]
-                    : <Shadow>[],
+            width: selected ? recognition.renderLocation.width * factor : 40,
+            height: selected ? recognition.renderLocation.height * factor : 40,
+            decoration: BoxDecoration(
+              color: Colors.white24,
+              border: selected
+                  ? Border.all(
+                      color: categorizationProvider
+                          .getCategoryByLabel(recognition.label)!
+                          .getColor(),
+                      width: 5)
+                  : Border.all(
+                      color: Theme.of(context).colorScheme.surfaceVariant,
+                      width: 4,
+                    ),
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
+            ),
+            child: AnimatedContainer(
+              margin: const EdgeInsets.all(3),
+              duration: const Duration(milliseconds: 300),
+              child: Text(
+                recognition.score.toStringAsFixed(2),
+                style: TextStyle(
+                  color: selected
+                      ? categorizationProvider
+                          .getCategoryByLabel(recognition.label)!
+                          .getColor()
+                      : Colors.transparent,
+                  fontSize: 12,
+                  shadows: selected
+                      ? const <Shadow>[
+                          BoxShadow(
+                            color: Colors.black26,
+                            offset: Offset(1, 1),
+                          ),
+                          BoxShadow(
+                            color: Colors.black26,
+                            offset: Offset(1, 1),
+                          ),
+                        ]
+                      : <Shadow>[],
+                ),
               ),
             ),
           ),

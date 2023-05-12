@@ -27,7 +27,6 @@ class SettingsScreenState extends State<SettingsScreen> {
             modeSwitch(),
             thresholdSlider(),
             languageMenu(),
-            clearStatsButton(),
           ],
         ),
       ),
@@ -131,45 +130,6 @@ class SettingsScreenState extends State<SettingsScreen> {
             localizationProvider.setLocale(value.languageCode);
             categorizationProvider.setObjectsList(value.languageCode);
           }
-        },
-      ),
-    );
-  }
-
-  Widget clearStatsButton() {
-    return ListTile(
-      leading: const Icon(Icons.delete),
-      title: Text(AppLocalizations.of(context)!.clear_statistics),
-      trailing: IconButton(
-        icon: const Icon(Icons.delete, color: Colors.red),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(AppLocalizations.of(context)!.clear_statistics),
-                content: Text(AppLocalizations.of(context)!.clear_statistics_text),
-                actions: [
-                  TextButton(
-                    child: Text(AppLocalizations.of(context)!.cancel),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  TextButton(
-                    child: Text(AppLocalizations.of(context)!.clear),
-                    onPressed: () {
-                      Provider.of<StatisticsProvider>(context, listen: false).clearStats();
-                      Navigator.of(context).pop();
-                    },
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.red,
-                    )
-                  ),
-                ],
-              );
-            },
-          );
         },
       ),
     );
