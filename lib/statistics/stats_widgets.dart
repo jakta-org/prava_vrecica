@@ -3,6 +3,10 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../providers/categorization_provider.dart';
 
 Widget barChart(BuildContext context, List<ChartData> chartData) {
   double maxY = chartData.map((e) => e.value).reduce(max);
@@ -123,17 +127,23 @@ class _ObjectEntryWidgetState extends State<ObjectEntryWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final categorizationProvider = Provider.of<CategorizationProvider>(context);
+
     return Container(
         decoration: childDecoration(context),
-        height: 550,
+        height: 600,
         padding: const EdgeInsetsDirectional.only(top: 20, end: 20, start: 20),
         child: Column(
-          children: [Column(
+          children: [
+            Text(AppLocalizations.of(context)!.object_entry, style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 10),
+            Column(
             children: _objectEntries.keys.map((String key) {
+              final name = categorizationProvider.objectsList.objects.firstWhere((element) => element.label == key).name;
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(key),
+                  Text(name),
                   Row(
                     children: [
                       IconButton(
@@ -172,7 +182,7 @@ class _ObjectEntryWidgetState extends State<ObjectEntryWidget> {
                 _objectEntries[key]?.recycledCount = 0;
               });
             }
-         }, icon: const Icon(Icons.save))]
+         }, icon: const Icon(Icons.save, color: Colors.green, size: 40), tooltip: AppLocalizations.of(context)!.entry_save_tooltip,)]
     ));
   }
 }

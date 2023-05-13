@@ -26,6 +26,12 @@
     "photo_prompt": "Jeste li dobro fotografirali? :)",
 
     "wrong_object": "Ovo nije taj objekt",
+    "create_ticket": "Kreiraj kaznu",
+    "create_ticket_text": "Jeste li sigurni da želite kreirati kaznu?",
+    "ticket_title": "Naslov kazne",
+    "ticket_title_prompt": "Upišite naslov kazne",
+    "ticket_description": "Opis kazne",
+    "ticket_description_prompt": "Upišite opis kazne",
 
     "recycle_where": "Ovdje možete odložiti otpad:",
     "object_info_title": "Informacije o objektu:",
@@ -39,6 +45,34 @@
     "language": "Jezik",
     "clear_statistics": "Obriši statistiku",
     "clear_statistics_text": "Jeste li sigurni da želite obrisati statistiku?",
+
     "cancel": "Odustani",
-    "clear": "Obriši"
+    "clear": "Obriši",
+
+    "ticket": "Kazna",
+    "ticket_text": "Ovi otpadni predmeti su pronađeni u Vašem otpadu. Ovo je kazna za nepravilno odlaganje otpada. Molimo Vas da ubuduće pravilno odlažete otpad.",
+    "date": "Datum",
+    "time": "Vrijeme",
+    "count": "Količina",
+    "items": "Predmeti",
+    "description": "Opis",
+    "image": "Slika",
+    "order": "Narudžba",
+    "order_text": "Ovo je narudžba za reciklažu otpada iz navedenih kategorija. U nastavku su navedene kategorije i količine otpada koje je potrebno zbrinuti.",
+    "period": "Razdoblje",
+    "category": "Kategorija",
+
+    "select_period": "Odaberite razdoblje",
+    "start_date": "Početni datum",
+    "end_date": "Završni datum",
+    "order_title": "Naslov narudžbe",
+    "order_title_prompt": "Upišite naslov narudžbe",
+    "order_description": "Opis narudžbe",
+    "order_description_prompt": "Upišite opis narudžbe",
+    "create_order": "Kreiraj narudžbu",
+    "category_statistics": "Statistika kategorija",
+    "object_entry": "Upišite nove objekte",
+    "entry_save_tooltip": "Spremite objekte",
+
+    "pdf_preview": "Pregled PDF-a"
 }

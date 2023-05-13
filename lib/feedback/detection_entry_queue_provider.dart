@@ -1,12 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
 import 'package:synchronized/synchronized.dart';
-import 'package:http/http.dart' as http;
 
 import '../statistics/statistics_provider.dart';
 
@@ -19,8 +16,9 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
   int initializedUser = -3;
   StatisticsProvider statisticsProvider;
   bool started = false;
+  Directory appDirectory;
 
-  DetectionEntryQueueProvider(this.userId, this.statisticsProvider) {
+  DetectionEntryQueueProvider(this.userId, this.statisticsProvider, this.appDirectory) {
     init();
   }
 
@@ -35,8 +33,7 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
       return;
     }
     started = true;
-    final directory = await getApplicationDocumentsDirectory();
-    _path = '${(directory).path}/detections_queue_$userId.json';
+    _path = '${appDirectory.path}/detections_queue_$userId.json';
     _file = File(_path);
     if (_file.existsSync()) {
       final content = _file.readAsStringSync();
@@ -115,7 +112,7 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
   Future<void> _sendFeedback(DetectionsEntry entry) async {
     try {
       File imageFile = File(entry.imagePath);
-      String newImagePath = '${(await getApplicationDocumentsDirectory()).path}/feedback_${DateTime.now().millisecondsSinceEpoch}_$userId.jpg';
+      String newImagePath = '${appDirectory.path}/feedback_${DateTime.now().millisecondsSinceEpoch}_$userId.jpg';
       imageFile.renameSync(newImagePath);
       File newImageFile = File(newImagePath);
   /*
@@ -136,13 +133,13 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
           'string': "Test post request"
         }),
       );
-*/
+
       print (response.body);
 
       if (response.statusCode != 200) {
         throw Exception('Error sending feedback: ${response.body}');
       }
-
+*/
       newImageFile.deleteSync();
     } catch (e) {
       if (kDebugMode) {

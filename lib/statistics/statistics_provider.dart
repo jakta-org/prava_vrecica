@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:prava_vrecica/providers/categorization_provider.dart';
 
 import 'stats_models.dart';
@@ -12,13 +11,14 @@ class StatisticsProvider extends ChangeNotifier {
   int userId = -2;
   int initializedUser = -3;
   bool started = false;
+  Directory appDirectory;
 
   late File userStatsFile;
   late List<ObjectStatsWithTime> objectStatsEntries;
   late Map<String, ObjectStats> allTimeObjectStats;
   late List<CategoryStats> allTimeCategoriesStats;
 
-  StatisticsProvider(this.userId, this.categorizationProvider) {
+  StatisticsProvider(this.userId, this.categorizationProvider, this.appDirectory) {
     init();
   }
 
@@ -33,8 +33,7 @@ class StatisticsProvider extends ChangeNotifier {
       return;
     }
     started = true;
-    final directory = await getApplicationDocumentsDirectory();
-    userStatsFile = File('${directory.path}/stats_$userId.json');
+    userStatsFile = File('${appDirectory.path}/stats_$userId.json');
     final fileExists = await userStatsFile.exists();
     if (!fileExists) {
       await userStatsFile.create();
@@ -58,7 +57,7 @@ class StatisticsProvider extends ChangeNotifier {
   Map<String, ObjectStats> getFilteredObjectStats({Function? entryFilter, Function? objectFilter}) {
     final filteredStats = <String, ObjectStats>{};
     for (var entry in objectStatsEntries) {
-      if (entryFilter != null && entryFilter(entry)) {
+      if (entryFilter != null && !entryFilter(entry)) {
         continue;
       }
       for (var object in entry.stats.entries) {
@@ -90,7 +89,7 @@ class StatisticsProvider extends ChangeNotifier {
       category.recycledCountFromPhoto = 0;
     }
     for (var object in objectStats.entries) {
-      final category = getCategoryName(object.key);
+      final category = categorizationProvider.getCategoryByLabel(object.key)?.getNameWithProvider(categorizationProvider);
       if (category != null) {
         final categoryStats = allTimeCategoriesStats.firstWhere((element) => element.categoryName == category);
         categoryStats.recycledCount += object.value.recycledCount;
@@ -115,7 +114,7 @@ class StatisticsProvider extends ChangeNotifier {
       } else {
         allTimeObjectStats[object.key] = object.value;
       }
-      final category = getCategoryName(object.key);
+      final category = categorizationProvider.getCategoryByLabel(object.key)?.getNameWithProvider(categorizationProvider);
       if (category != null) {
         final categoryStats = allTimeCategoriesStats.firstWhere((element) => element.categoryName == category);
         categoryStats.recycledCount += object.value.recycledCount;
@@ -165,8 +164,9 @@ class StatisticsProvider extends ChangeNotifier {
   void calculateAllTimeCategoriesStats() {
     allTimeCategoriesStats = [];
     for (var category in categorizationProvider.rulesStructure.categories) {
+      final name = category.getNameWithProvider(categorizationProvider);
       var categoryStats = CategoryStats(
-        categoryName: category.name,
+        categoryName: name,
         recycledCount: 0,
         recycledCountFromPhoto: 0,
         categoryColor: category.color,
@@ -180,8 +180,9 @@ class StatisticsProvider extends ChangeNotifier {
       allTimeCategoriesStats.add(categoryStats);
     }
     for (var specialCategory in categorizationProvider.rulesStructure.special) {
+      final name = specialCategory.getNameWithProvider(categorizationProvider);
       var categoryStats = CategoryStats(
-        categoryName: specialCategory.label,
+        categoryName: name,
         recycledCount: allTimeObjectStats.containsKey(specialCategory.label)
             ? allTimeObjectStats[specialCategory.label]!.recycledCount : 0,
         recycledCountFromPhoto: allTimeObjectStats.containsKey(specialCategory.label)
@@ -190,21 +191,5 @@ class StatisticsProvider extends ChangeNotifier {
       );
       allTimeCategoriesStats.add(categoryStats);
     }
-  }
-
-  String? getCategoryName(String objectName) {
-    for (var category in categorizationProvider.rulesStructure.categories) {
-      for (var object in category.objects) {
-        if (object.label == objectName) {
-          return category.name;
-        }
-      }
-    }
-    for (var specialCategory in categorizationProvider.rulesStructure.special) {
-      if (specialCategory.label == objectName) {
-        return specialCategory.label;
-      }
-    }
-    return null;
   }
 }

@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:prava_vrecica/documents/document_provider.dart';
 import 'package:prava_vrecica/feedback/detection_entry_queue_provider.dart';
 import 'package:prava_vrecica/mode_status.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
@@ -16,6 +20,7 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 import 'providers/camera_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +53,10 @@ void main() async {
 
   final locale = sharedPreferences.getString('locale') ?? "hr";
 
+  final appDirectory = await getApplicationDocumentsDirectory();
+
+  pw.MemoryImage logo = await rootBundle.load("assets/images/V_logo_ns.png").then((value) => pw.MemoryImage(value.buffer.asUint8List()));
+
   runApp(App(
     isDark: isDark,
     userId: userId,
@@ -59,6 +68,8 @@ void main() async {
     objectsListsSrc: objectsListsSrc,
     ruleSrc: rulesSrc,
     locale: locale,
+    appDirectory: appDirectory,
+    logo: logo,
   ));
 }
 
@@ -73,6 +84,8 @@ class App extends StatelessWidget {
   final List<String> objectsListsSrc;
   final String ruleSrc;
   final String locale;
+  final Directory appDirectory;
+  final pw.MemoryImage logo;
 
   const App(
       {super.key,
@@ -85,7 +98,9 @@ class App extends StatelessWidget {
       required this.threshold,
       required this.objectsListsSrc,
       required this.ruleSrc,
-      required this.locale});
+      required this.locale,
+      required this.appDirectory,
+      required this.logo});
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +108,8 @@ class App extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
             create: (context) => CategorizationProvider(objectsListsSrc, ruleSrc, locale)),
-        ChangeNotifierProvider(create: (context) => StatisticsProvider(userId, Provider.of<CategorizationProvider>(context, listen: false))),
-        ChangeNotifierProvider(create: (context) => DetectionEntryQueueProvider(userId, Provider.of<StatisticsProvider>(context, listen: false))),
+        ChangeNotifierProvider(create: (context) => StatisticsProvider(userId, Provider.of<CategorizationProvider>(context, listen: false), appDirectory)),
+        ChangeNotifierProvider(create: (context) => DetectionEntryQueueProvider(userId, Provider.of<StatisticsProvider>(context, listen: false), appDirectory)),
         ChangeNotifierProvider(
             create: (context) =>
                 UserProvider(
@@ -111,6 +126,7 @@ class App extends StatelessWidget {
             create: (context) => CameraProvider(cameras, cameraController)),
         ChangeNotifierProvider(
             create: (context) => LocalizationProvider(locale)),
+        ChangeNotifierProvider(create: (context) => DocumentProvider(logo))
       ],
       builder: (context, _) {
         final themeProvider = Provider.of<ThemeProvider>(context);
