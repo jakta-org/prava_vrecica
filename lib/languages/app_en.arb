@@ -26,6 +26,12 @@
   "photo_prompt": "Did you take a good photo? :)",
 
   "wrong_object": "This isn't the right object",
+  "create_ticket": "Create a ticket",
+  "create_ticket_text": "Are you sure you want to create a ticket?",
+  "ticket_title": "Ticket title",
+  "ticket_title_prompt": "Provide a title for your ticket",
+  "ticket_description": "Ticket description",
+  "ticket_description_prompt": "Provide a description for your ticket",
 
   "recycle_where": "This object can be left in:",
   "object_info_title": "Additional info:",
@@ -39,6 +45,34 @@
   "language": "Language",
   "clear_statistics": "Clear statistics",
   "clear_statistics_text": "Are you sure you want to clear statistics?",
+
   "cancel": "Cancel",
-  "clear": "Clear"
+  "clear": "Clear",
+
+  "ticket": "Ticket",
+  "ticket_text": "These objects were found in your trash. This is a ticket for wrong sorting. Please, sort your trash correctly next time.",
+  "date": "Date",
+  "time": "Time",
+  "count": "Count",
+  "items": "Items",
+  "description": "Description",
+  "image": "Image",
+  "order": "Order",
+  "order_text": "This is an order for recycling of objects for these categories. Here are the categories and the number of objects you need to collect for recycling.",
+  "period": "Period",
+  "category": "Category",
+
+  "select_period": "Select period",
+  "start_date": "Start date",
+  "end_date": "End date",
+  "order_title": "Order title",
+  "order_title_prompt": "Provide a title for your order",
+  "order_description": "Order description",
+  "order_description_prompt": "Provide a description for your order",
+  "create_order": "Create order",
+  "category_statistics": "Category statistics",
+  "object_entry": "Enter new objects",
+  "entry_save_tooltip": "Save objects",
+
+  "pdf_preview": "PDF preview"
 }
