@@ -17,6 +17,7 @@ class MainScreen extends StatefulWidget {
 class MainScreenState extends State<MainScreen> {
   int pageIndex = 1;
   int oldPageIndex = -1;
+  int pageSensitivity = 5; // how many pixels to move to change page
   List<Widget> pageList = [
     const StatisticsScreen(),
     const CameraScreen(),
@@ -28,20 +29,44 @@ class MainScreenState extends State<MainScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     themeProvider.updateSystemUI(true);
 
-    return Scaffold(
-      body: PageTransitionSwitcher(
-        duration: const Duration(milliseconds: 300),
-        reverse: transitionOrientation(oldPageIndex, pageIndex),
-        transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
-            SharedAxisTransition(
-          animation: primaryAnimation,
-          secondaryAnimation: secondaryAnimation,
-          transitionType: SharedAxisTransitionType.horizontal,
-          child: child,
+    return GestureDetector(
+      onHorizontalDragUpdate: (details) {
+        if (details.delta.dx > pageSensitivity) {
+          // swipe right
+          if (pageIndex > 0 && oldPageIndex == -1) {
+            setState(() {
+              oldPageIndex = pageIndex;
+              pageIndex--;
+            });
+          }
+        } else if (details.delta.dx < -pageSensitivity) {
+          // swipe left
+          if (pageIndex < pageList.length - 1 && oldPageIndex == -1) {
+            setState(() {
+              oldPageIndex = pageIndex;
+              pageIndex++;
+            });
+          }
+        }
+      },
+      onHorizontalDragEnd: (_) {
+        oldPageIndex = -1;
+      },
+      child: Scaffold(
+        body: PageTransitionSwitcher(
+          duration: const Duration(milliseconds: 300),
+          reverse: transitionOrientation(oldPageIndex, pageIndex),
+          transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
+              SharedAxisTransition(
+                animation: primaryAnimation,
+                secondaryAnimation: secondaryAnimation,
+                transitionType: SharedAxisTransitionType.horizontal,
+                child: child,
+              ),
+          child: pageList[pageIndex],
         ),
-        child: pageList[pageIndex],
+        bottomNavigationBar: navbar(context, pageIndex),
       ),
-      bottomNavigationBar: navbar(context, pageIndex),
     );
   }
 

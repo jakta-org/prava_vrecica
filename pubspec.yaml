@@ -31,6 +31,7 @@ dependencies:
   synchronized: ^3.1.0
   pdf: ^3.6.0
   printing: ^5.6.0
+  smooth_page_indicator: ^1.0.0
 
 dependency_overrides:
   camera_android:
@@ -62,6 +63,8 @@ flutter:
     - assets/locale_objects/
     - assets/categorization_zagreb.json
     - assets/images/V_logo_ns.png
+    - assets/images/V_logo_s.png
+    - assets/fun_facts.json
 
   fonts:
     - family: Roboto

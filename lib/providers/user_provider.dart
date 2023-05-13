@@ -7,10 +7,11 @@ import '../feedback/detection_entry_queue_provider.dart';
 
 class UserProvider extends ChangeNotifier {
   int userId = -2;
+  bool wasIntroScreenShown = false;
   StatisticsProvider statisticsProvider;
   DetectionEntryQueueProvider detectionEntryQueueProvider;
 
-  UserProvider(this.userId, this.statisticsProvider, this.detectionEntryQueueProvider);
+  UserProvider(this.userId, this.statisticsProvider, this.detectionEntryQueueProvider, this.wasIntroScreenShown);
 
   Future<void> setUser(int userId) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -23,6 +24,15 @@ class UserProvider extends ChangeNotifier {
 
     detectionEntryQueueProvider.userId = userId;
     detectionEntryQueueProvider.init();
+
+    notifyListeners();
+  }
+
+  Future<void> setWasIntroScreenShown(bool wasIntroScreenShown) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    this.wasIntroScreenShown = wasIntroScreenShown;
+    sharedPreferences.setBool('was_intro_screen_shown', wasIntroScreenShown);
 
     notifyListeners();
   }
