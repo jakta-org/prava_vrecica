@@ -184,7 +184,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
             return;
           }
 
-          bool userCreated = await databaseProvider.createUser(mail!, passwordHash.toString(), null, null);
+          bool userCreated = await databaseProvider.createUser(mail!, passwordHash.toString(), null, entranceKey);
 
           if (userCreated) {
             int? userValid = await databaseProvider.authenticateUser(
@@ -197,7 +197,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const MainScreen(),
+                  builder: (context) => MainScreen(),
                 ),
               );
             }

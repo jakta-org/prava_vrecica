@@ -99,7 +99,7 @@ class UserInfoScreenState extends State<UserInfoScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            userProvider.userId == -1 ? Icons.logout : Icons.keyboard_return,
+            userProvider.userId == -1 ? Icons.supervisor_account_sharp : Icons.logout,
             color: Theme.of(context).colorScheme.onBackground,
           ),
           TextButton(

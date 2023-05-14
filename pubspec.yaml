@@ -66,6 +66,7 @@ flutter:
     - assets/images/V_logo_ns.png
     - assets/images/V_logo_s.png
     - assets/fun_facts.json
+    - assets/images/mascot_demo_noback.png
 
   fonts:
     - family: Roboto
@@ -82,6 +83,7 @@ flutter_native_splash:
   color: "#FFFFFF"
   color_dark: "#424242"
   image: "assets/images/V_logo_s_splash.png"
+  branding: "assets/images/J_logo_s_splash.png"
   android: true
   ios: true
 

@@ -6,7 +6,6 @@ import 'package:prava_vrecica/database/database_provider.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
 import 'package:synchronized/synchronized.dart';
-
 import '../statistics/statistics_provider.dart';
 
 class DetectionEntryQueueProvider extends ChangeNotifier {
@@ -21,10 +20,7 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
   bool started = false;
   Directory appDirectory;
 
-  DetectionEntryQueueProvider(this.userId, this.statisticsProvider, this.databaseProvider) {
-  DetectionEntryQueueProvider(this.userId, this.statisticsProvider, this.appDirectory) {
-    init();
-  }
+  DetectionEntryQueueProvider(this.userId, this.statisticsProvider, this.databaseProvider, this.appDirectory);
 
   Future<void> init() async {
     if (initializedUser == userId) {
@@ -37,7 +33,7 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
       return;
     }
     started = true;
-    _path = '${appDirectory.path}/detections_queue_$userId.json';
+    _path = '${(appDirectory).path}/detections_queue_$userId.json';
     _file = File(_path);
     if (_file.existsSync()) {
       final content = _file.readAsStringSync();
@@ -124,21 +120,6 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
       final fileName = newImageFile.path.split('/').last;
       final objectsData = jsonEncode(entry.detectedObjects.map((e) => e.toJson()).toList());
 
-      final response = await http.post(
-        Uri.parse('https://karlo13.pythonanywhere.com/feedback/feedback/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Token xxxxxxxxxxxxxxxxxxxxxxxx'
-        },
-        body: jsonEncode({
-          'image': image,
-          'file_name': fileName,
-          'objects_data': objectsData,
-          'string': "Test post request"
-        }),
-      );
-
-      print (response.body);
       print("before!");
       bool success = await databaseProvider.sendFeedback(image, fileName, objectsData, null, true);
       print("sent!");
@@ -146,10 +127,9 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
       if (!success) {
         throw Exception('Error sending feedback!');
       } else {
-        await newImageFile.delete();
+        newImageFile.deleteSync();
       }
 
-      newImageFile.deleteSync();
     } catch (e) {
       if (kDebugMode) {
         print('Error deleting image file: $e');

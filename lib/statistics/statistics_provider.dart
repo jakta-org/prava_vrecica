@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:prava_vrecica/providers/categorization_provider.dart';
 import 'stats_models.dart';
 
@@ -16,9 +17,7 @@ class StatisticsProvider extends ChangeNotifier {
   late Map<String, ObjectStats> allTimeObjectStats;
   late List<CategoryStats> allTimeCategoriesStats;
 
-  StatisticsProvider(this.userId, this.categorizationProvider, this.appDirectory) {
-    init();
-  }
+  StatisticsProvider(this.userId, this.categorizationProvider, this.appDirectory);
 
   Future<void> init() async {
     if (initializedUser == userId) {
@@ -98,7 +97,7 @@ class StatisticsProvider extends ChangeNotifier {
       category.recycledCountFromPhoto = 0;
     }
     for (var object in objectStats.entries) {
-      final category = categorizationProvider.getCategoryByLabel(object.key)?.getNameWithProvider(categorizationProvider);
+      final category = getCategoryName(object.key);
       if (category != null) {
         final categoryStats = allTimeCategoriesStats.firstWhere((element) => element.categoryName == category);
         categoryStats.recycledCount += object.value.recycledCount;
@@ -123,7 +122,7 @@ class StatisticsProvider extends ChangeNotifier {
       } else {
         allTimeObjectStats[object.key] = object.value;
       }
-      final category = categorizationProvider.getCategoryByLabel(object.key)?.getNameWithProvider(categorizationProvider);
+      final category = getCategoryName(object.key);
       if (category != null) {
         final categoryStats = allTimeCategoriesStats.firstWhere((element) => element.categoryName == category);
         categoryStats.recycledCount += object.value.recycledCount;
@@ -173,9 +172,8 @@ class StatisticsProvider extends ChangeNotifier {
   void calculateAllTimeCategoriesStats() {
     allTimeCategoriesStats = [];
     for (var category in categorizationProvider.rulesStructure.categories) {
-      final name = category.getNameWithProvider(categorizationProvider);
       var categoryStats = CategoryStats(
-        categoryName: name,
+        categoryName: category.name,
         recycledCount: 0,
         recycledCountFromPhoto: 0,
         categoryColor: category.color,
@@ -189,9 +187,8 @@ class StatisticsProvider extends ChangeNotifier {
       allTimeCategoriesStats.add(categoryStats);
     }
     for (var specialCategory in categorizationProvider.rulesStructure.special) {
-      final name = specialCategory.getNameWithProvider(categorizationProvider);
       var categoryStats = CategoryStats(
-        categoryName: name,
+        categoryName: specialCategory.label,
         recycledCount: allTimeObjectStats.containsKey(specialCategory.label)
             ? allTimeObjectStats[specialCategory.label]!.recycledCount : 0,
         recycledCountFromPhoto: allTimeObjectStats.containsKey(specialCategory.label)
@@ -200,5 +197,21 @@ class StatisticsProvider extends ChangeNotifier {
       );
       allTimeCategoriesStats.add(categoryStats);
     }
+  }
+
+  String? getCategoryName(String objectName) {
+    for (var category in categorizationProvider.rulesStructure.categories) {
+      for (var object in category.objects) {
+        if (object.label == objectName) {
+          return category.name;
+        }
+      }
+    }
+    for (var specialCategory in categorizationProvider.rulesStructure.special) {
+      if (specialCategory.label == objectName) {
+        return specialCategory.label;
+      }
+    }
+    return null;
   }
 }

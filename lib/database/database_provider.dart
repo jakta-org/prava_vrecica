@@ -40,14 +40,18 @@ class DatabaseProvider extends ChangeNotifier {
     if (username == null && entranceCode == null) {
       response = await post(url, body: {'email': email, 'password': hash});
     } else if (username == null) {
-      response = await post(url, body: {'email': email, 'password': hash, 'entranceCode': entranceCode});
+      print("da");
+      response = await post(url, body: {'email': email, 'password': hash, 'entrance_code': entranceCode});
     } else if (entranceCode == null) {
       response = await post(url, body: {'email': email, 'password': hash, 'username': username});
     } else {
-      response = await post(url, body: {'email': email, 'password': hash, 'username': username, 'entranceCode': entranceCode});
+      response = await post(url, body: {'email': email, 'password': hash, 'username': username, 'entrance_code': entranceCode});
     }
+    print(entranceCode);
+    print(jsonDecode(response.body));
 
     if (response.statusCode == 201) {
+      print("${jsonDecode(response.body)["token"]} $hash");
       token = jsonDecode(response.body)["token"];
       return true;
     } else {
@@ -82,10 +86,12 @@ class DatabaseProvider extends ChangeNotifier {
   }
 
   Future<bool> updateUserData(userId, String data) async {
-    var url = Uri.https(root, "accounts/user/$userId/meta-data");
+    var url = Uri.https(root, "accounts/user/$userId/meta_data/");
     Response response;
     response = await post(url, headers: {'Authorization': 'Token $token'}, body: {'meta_data': data});
 
+    print(data);
+    print("update user data!");
     print(response.body);
 
     return response.statusCode == 200;
@@ -95,7 +101,6 @@ class DatabaseProvider extends ChangeNotifier {
     var url = Uri.https(root, "feedback/feedback/");
     Response response;
 
-    print("create response");
     response = await post(
         url,
         headers: {'Authorization': 'Token $token'},
@@ -107,10 +112,60 @@ class DatabaseProvider extends ChangeNotifier {
           'is_trusted': isTrusted.toString(),
         },
     );
-
-    print(response.statusCode);
-    print(response.body);
+    print("feedback: ${response.statusCode}");
 
     return (response.statusCode == 200);
+  }
+
+  Future<String?> getUserGroups(userId) async {
+    var url = Uri.https(root, "accounts/user/$userId/group/");
+    Response response;
+
+    response = await get(url, headers: {'Authorization': 'Token $token'});
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      return null;
+    }
+  }
+
+  Future<String?> getGroupData(groupId) async {
+    var url = Uri.https(root, "accounts/group/$groupId/");
+    Response response;
+
+    response = await get(url, headers: {'Authorization': 'Token $token'});
+
+    if (response.statusCode == 200) {
+      return utf8.decode(response.bodyBytes);
+    } else {
+      return null;
+    }
+  }
+
+  Future<int?> createGroup(String type, String? settings, String? metaData) async {
+    var url = Uri.https(root, "accounts/group/");
+    Response response;
+
+    response = await post(url, headers: {'Authorization': 'Token $token'}, body: {'type': type, 'settings': settings, 'meta_data': metaData});
+
+    if (response.statusCode == 200) {
+      return int.parse(jsonDecode(response.body)['group_id']);
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> updateGroupData(groupId, String type, String? settings, String? metaData) async {
+    var url = Uri.https(root, "accounts/group/$groupId/");
+    Response response;
+
+    response = await put(url, headers: {'Authorization': 'Token $token'}, body: {'type': type, 'settings': settings, 'meta_data': metaData});
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

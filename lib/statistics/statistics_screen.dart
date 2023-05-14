@@ -4,6 +4,7 @@ import 'package:prava_vrecica/fun/fun_widgets.dart';
 import 'package:prava_vrecica/json_models/rules_structure_model.dart';
 import 'package:prava_vrecica/statistics/statistics_provider.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
+import 'package:prava_vrecica/widgets/modular_widgets.dart';
 import 'package:provider/provider.dart';
 import '../providers/categorization_provider.dart';
 import '../providers/user_provider.dart';
@@ -25,21 +26,6 @@ class StatisticsScreenState extends State<StatisticsScreen> {
   Map<String, ObjectStats> objectStats = {};
   List<ChartData> categoriesCount = [];
   Map<String, ObjectStats> addObjectEntries = {};
-  late Future<void> _setCategoriesCountFuture;
-  // TODO: this value should be set using the group's settings
-  bool canGenerateOrder = true;
-
-  @override
-  void initState() {
-    super.initState();
-    userProvider = Provider.of<UserProvider>(context, listen: false);
-    categorizationProvider =
-        Provider.of<CategorizationProvider>(context, listen: false);
-    statisticsProvider =
-        Provider.of<StatisticsProvider>(context, listen: false);
-    categories = categorizationProvider.rulesStructure.categories;
-    special = categorizationProvider.rulesStructure.special;
-  }
 
   Future<void> _setCategoriesCount() async {
     await statisticsProvider.init();
@@ -69,18 +55,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
   List<Widget> _createChildren(BuildContext context) {
     List<Widget> widgetList = <Widget>[];
 
-    widgetList.add(barChart(context, categoriesCount));
-    widgetList.add(FunFactsWidget());
-    widgetList.add(ObjectEntryWidget(objectEntries: addObjectEntries, saveButtonFunction: updateStats));
-    widgetList.add(
-      ObjectEntryWidget(
-        objectEntries: addObjectEntries,
-        saveButtonFunction: (objectEntries) => updateScreen(objectEntries),
-      ),
-    );
-    if (canGenerateOrder) {
-      widgetList.add(GenerateOrderWidget());
-    }
+    widgetList.addAll(ModularWidgets.getWidgetList(WidgetType.interactive, this, userProvider.setGroup.settings.widgets));
 
     return widgetList;
   }
@@ -92,6 +67,14 @@ class StatisticsScreenState extends State<StatisticsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    userProvider = Provider.of<UserProvider>(context, listen: true);
+    categorizationProvider =
+        Provider.of<CategorizationProvider>(context, listen: false);
+    statisticsProvider =
+        Provider.of<StatisticsProvider>(context, listen: false);
+    categories = categorizationProvider.rulesStructure.categories;
+    special = categorizationProvider.rulesStructure.special;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: FutureBuilder<void>(

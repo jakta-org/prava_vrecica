@@ -6,8 +6,10 @@ import 'package:prava_vrecica/screens/settings_screen.dart';
 import 'package:prava_vrecica/statistics/statistics_screen.dart';
 import 'package:prava_vrecica/screens/user_info_screen.dart';
 import 'package:provider/provider.dart';
+import '../models/group_model.dart';
 import '../providers/theme_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../providers/user_provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key}) : super();
@@ -19,16 +21,16 @@ class MainScreen extends StatefulWidget {
 class MainScreenState extends State<MainScreen> {
   int pageIndex = 1;
   int oldPageIndex = -1;
-  int pageSensitivity = 5; // how many pixels to move to change page
-  List<Widget> pageList = [
+  late UserProvider userProvider;
+  int pageSensitivity = 5; // how m
+
+  bool groupsEnabled = false;
+
+  List<StatefulWidget> pageList = [
     const StatisticsScreen(),
     const CameraScreen(),
     const InfoScreen(),
   ];
-
-  int setGroup = 0;
-  late List<DropdownMenuItem> userGroupsMenuItems;
-  bool groupsEnabled = false;
 
   @override
   void initState() {
@@ -40,124 +42,7 @@ class MainScreenState extends State<MainScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     themeProvider.updateSystemUI(true);
 
-    userGroupsMenuItems = [
-      DropdownMenuItem(
-        value: 0,
-        alignment: AlignmentDirectional.centerStart,
-        child: Wrap(
-          direction: Axis.horizontal,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Container(
-              margin: const EdgeInsetsDirectional.only(end: 10),
-              child: const Icon(
-                Icons.person,
-                color: Colors.blue,
-              ),
-            ),
-            Container(
-              child: Text(
-                "Osobni",
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Theme.of(context).colorScheme.shadow,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      DropdownMenuItem(
-        value: 1,
-        alignment: AlignmentDirectional.centerStart,
-        child: Wrap(
-          direction: Axis.horizontal,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Container(
-              margin: const EdgeInsetsDirectional.only(end: 10),
-              child: const Icon(
-                Icons.family_restroom,
-                color: Colors.pink,
-              ),
-            ),
-            Container(
-              child: Text(
-                "Obiteljska grupa",
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Theme.of(context).colorScheme.shadow,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      DropdownMenuItem(
-        value: 2,
-        alignment: AlignmentDirectional.centerStart,
-        child: Wrap(
-          direction: Axis.horizontal,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Container(
-              margin: const EdgeInsetsDirectional.only(end: 10),
-              child: const Icon(
-                Icons.business,
-                color: Colors.blueGrey,
-              ),
-            ),
-            Container(
-              child: Text(
-                "Posao",
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Theme.of(context).colorScheme.shadow,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      DropdownMenuItem(
-        value: 3,
-        alignment: AlignmentDirectional.centerStart,
-        child: Wrap(
-          direction: Axis.horizontal,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Container(
-              margin: const EdgeInsetsDirectional.only(end: 10),
-              child: const Icon(
-                Icons.school,
-                color: Colors.green,
-              ),
-            ),
-            Container(
-              child: Text(
-                "Škola",
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Theme.of(context).colorScheme.shadow,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ];
+    userProvider = Provider.of<UserProvider>(context, listen: true);
 
     return GestureDetector(
       onHorizontalDragUpdate: (details) {
@@ -183,115 +68,117 @@ class MainScreenState extends State<MainScreen> {
         oldPageIndex = -1;
       },
       child: Scaffold(
-      floatingActionButton: Container(
-        margin: const EdgeInsetsDirectional.only(top: 10, start: 10, end: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            AnimatedContainer(
-              height: 30,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                      color: Theme.of(context).colorScheme.surfaceTint,
-                      blurRadius: 15.0)
-                ],
-              ),
-              margin: const EdgeInsetsDirectional.symmetric(horizontal: 13),
-              padding: EdgeInsets.zero,
-              duration: const Duration(milliseconds: 300),
-              child: DropdownButtonHideUnderline(
-                child: ButtonTheme(
-                  alignedDropdown: true,
-                  child: DropdownButton(
-                    value: setGroup,
-                    borderRadius: BorderRadius.circular(15),
-                    iconEnabledColor: Theme.of(context).colorScheme.shadow,
-                    iconDisabledColor: Theme.of(context).colorScheme.shadow,
-                    iconSize: 30,
-                    dropdownColor: Theme.of(context).colorScheme.surfaceVariant,
-                    elevation: 0,
-                    items: userGroupsMenuItems,
-                    onChanged: (value) {
-                      setState(() {
-                        setGroup = value;
-                      });
-                    },
+        floatingActionButton: Container(
+          margin: const EdgeInsetsDirectional.only(top: 10, start: 10, end: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              userProvider.userId < 0 ? Container(height: 30) : AnimatedContainer(
+                height: 30,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(18),
+                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Theme.of(context).colorScheme.surfaceTint,
+                        blurRadius: 15.0)
+                  ],
+                ),
+                margin: const EdgeInsetsDirectional.symmetric(horizontal: 13),
+                padding: EdgeInsets.zero,
+                duration: const Duration(milliseconds: 300),
+                child: DropdownButtonHideUnderline(
+                  child: ButtonTheme(
+                    alignedDropdown: true,
+                    child: DropdownButton<Group>(
+                      value: userProvider.setGroup,
+                      borderRadius: BorderRadius.circular(15),
+                      iconEnabledColor: Theme.of(context).colorScheme.shadow,
+                      iconDisabledColor: Theme.of(context).colorScheme.shadow,
+                      iconSize: 30,
+                      dropdownColor: Theme.of(context).colorScheme.surfaceVariant,
+                      elevation: 0,
+                      items: createGroupProfiles(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            userProvider.setNewGroup(value);
+                          });
+                        }
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                OpenContainer(
-                  closedElevation: 0,
-                  openElevation: 0,
-                  transitionType: ContainerTransitionType.fadeThrough,
-                  closedColor: Colors.transparent,
-                  transitionDuration: const Duration(milliseconds: 300),
-                  routeSettings: const RouteSettings(name: 'User'),
-                  openBuilder: (context, action) => const UserInfoScreen(),
-                  closedBuilder: (context, VoidCallback openContainer) =>
-                      IconButton(
-                        onPressed: openContainer,
-                        padding: EdgeInsets.zero,
-                        iconSize: 35,
-                        icon: Icon(
-                          Icons.account_circle,
-                          color: Theme.of(context).colorScheme.surfaceVariant,
-                          shadows: <Shadow>[
-                            Shadow(
-                                color: Theme.of(context).colorScheme.surfaceTint,
-                                blurRadius: 15.0)
-                          ],
-                        ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  OpenContainer(
+                    closedElevation: 0,
+                    openElevation: 0,
+                    transitionType: ContainerTransitionType.fadeThrough,
+                    closedColor: Colors.transparent,
+                    transitionDuration: const Duration(milliseconds: 300),
+                    routeSettings: const RouteSettings(name: 'User'),
+                    openBuilder: (context, action) => const UserInfoScreen(),
+                    closedBuilder: (context, VoidCallback openContainer) =>
+                        IconButton(
+                      onPressed: openContainer,
+                      padding: EdgeInsets.zero,
+                      iconSize: 35,
+                      icon: Icon(
+                        Icons.account_circle,
+                        color: Theme.of(context).colorScheme.surfaceVariant,
+                        shadows: <Shadow>[
+                          Shadow(
+                              color: Theme.of(context).colorScheme.surfaceTint,
+                              blurRadius: 15.0)
+                        ],
                       ),
-                ),
-                OpenContainer(
-                  closedElevation: 0,
-                  openElevation: 0,
-                  transitionType: ContainerTransitionType.fadeThrough,
-                  closedColor: Colors.transparent,
-                  transitionDuration: const Duration(milliseconds: 300),
-                  routeSettings: const RouteSettings(name: 'Settings'),
-                  openBuilder: (context, action) => const SettingsScreen(),
-                  closedBuilder: (context, VoidCallback openContainer) =>
-                      IconButton(
-                        onPressed: openContainer,
-                        padding: EdgeInsets.zero,
-                        iconSize: 35,
-                        icon: Icon(
-                          Icons.settings,
-                          color: Theme.of(context).colorScheme.surfaceVariant,
-                          shadows: <Shadow>[
-                            Shadow(
-                                color: Theme.of(context).colorScheme.surfaceTint,
-                                blurRadius: 15.0)
-                          ],
-                        ),
+                    ),
+                  ),
+                  OpenContainer(
+                    closedElevation: 0,
+                    openElevation: 0,
+                    transitionType: ContainerTransitionType.fadeThrough,
+                    closedColor: Colors.transparent,
+                    transitionDuration: const Duration(milliseconds: 300),
+                    routeSettings: const RouteSettings(name: 'Settings'),
+                    openBuilder: (context, action) => const SettingsScreen(),
+                    closedBuilder: (context, VoidCallback openContainer) =>
+                        IconButton(
+                      onPressed: openContainer,
+                      padding: EdgeInsets.zero,
+                      iconSize: 35,
+                      icon: Icon(
+                        Icons.settings,
+                        color: Theme.of(context).colorScheme.surfaceVariant,
+                        shadows: <Shadow>[
+                          Shadow(
+                              color: Theme.of(context).colorScheme.surfaceTint,
+                              blurRadius: 15.0)
+                        ],
                       ),
-                ),
-              ],
-            ),
-          ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerTop,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerTop,
         body: PageTransitionSwitcher(
           duration: const Duration(milliseconds: 300),
           reverse: transitionOrientation(oldPageIndex, pageIndex),
           transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
               SharedAxisTransition(
-                animation: primaryAnimation,
-                secondaryAnimation: secondaryAnimation,
-                transitionType: SharedAxisTransitionType.horizontal,
-                child: child,
-              ),
+            animation: primaryAnimation,
+            secondaryAnimation: secondaryAnimation,
+            transitionType: SharedAxisTransitionType.horizontal,
+            child: child,
+          ),
           child: pageList[pageIndex],
         ),
         bottomNavigationBar: navbar(context, pageIndex),
@@ -309,6 +196,51 @@ class MainScreenState extends State<MainScreen> {
     } else {
       return true;
     }
+  }
+
+  List<DropdownMenuItem<Group>> createGroupProfiles() {
+    DropdownMenuItem<Group> createSingle(Group value, {String? override}) {
+      return DropdownMenuItem<Group>(
+        value: value,
+        alignment: AlignmentDirectional.centerStart,
+        child: Wrap(
+          direction: Axis.horizontal,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Container(
+              margin: const EdgeInsetsDirectional.only(end: 10),
+              child: Icon(
+                value.settings.iconData,
+                color: value.settings.iconColor,
+              ),
+            ),
+            Text(
+              override ?? value.settings.name,
+              softWrap: true,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).colorScheme.shadow,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    List<DropdownMenuItem<Group>> rList = [];
+
+    rList.add(createSingle(Group.personal(),
+        override: AppLocalizations.of(context)!.personal));
+
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    for (Group group in userProvider.groups) {
+      rList.add(createSingle(group));
+    }
+
+    return rList;
   }
 
   Widget navbar(BuildContext context, int currentIndex) {

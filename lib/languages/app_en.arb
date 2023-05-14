@@ -31,6 +31,8 @@
   "field_wrong": "Mail or password not right.",
   "password_confirm": "Password confirmation does not match.",
 
+  "personal": "Private",
+
   "guestmode_name": "Guest",
   "logout": "Sign out",
   "username": "Username",
@@ -64,9 +66,10 @@
   "language": "Language",
   "clear_statistics": "Clear statistics",
   "clear_statistics_text": "Are you sure you want to clear statistics?",
-
   "cancel": "Cancel",
   "clear": "Clear",
+
+  "or": "or",
 
   "ticket": "Ticket",
   "ticket_text": "These objects were found in your trash. This is a ticket for wrong sorting. Please, sort your trash correctly next time.",
@@ -94,8 +97,5 @@
   "entry_save_tooltip": "Save objects",
   "click_me": "Click me!",
 
-  "pdf_preview": "PDF preview",
-  "clear": "Clear",
-
-  "or": "or"
+  "pdf_preview": "PDF preview"
 }

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -108,11 +107,10 @@ class App extends StatelessWidget {
       required this.objectsListsSrc,
       required this.ruleSrc,
       required this.locale,
-      required this.token});
-      required this.locale,
+      required this.token,
       required this.appDirectory,
-      required this.logo,
-      required this.wasIntroScreenShown});
+        required this.logo,
+        required this.wasIntroScreenShown});
 
   @override
   Widget build(BuildContext context) {
@@ -120,22 +118,17 @@ class App extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
             create: (context) => CategorizationProvider(objectsListsSrc, ruleSrc, locale)),
-        ChangeNotifierProvider(create: (context) => StatisticsProvider(userId, Provider.of<CategorizationProvider>(context, listen: false), appDirectory)),
-        ChangeNotifierProvider(create: (context) => DetectionEntryQueueProvider(userId, Provider.of<StatisticsProvider>(context, listen: false), appDirectory)),
         ChangeNotifierProvider(create: (context) => DatabaseProvider(token)),
-        ChangeNotifierProvider(create: (context) => StatisticsProvider(userId, Provider.of<CategorizationProvider>(context, listen: false))),
-        ChangeNotifierProvider(create: (context) => DetectionEntryQueueProvider(userId, Provider.of<StatisticsProvider>(context, listen: false), Provider.of<DatabaseProvider>(context, listen: false))),
+        ChangeNotifierProvider(create: (context) => StatisticsProvider(userId, Provider.of<CategorizationProvider>(context, listen: false), appDirectory)),
+        ChangeNotifierProvider(create: (context) => DetectionEntryQueueProvider(userId, Provider.of<StatisticsProvider>(context, listen: false), Provider.of<DatabaseProvider>(context, listen: false), appDirectory)),
         ChangeNotifierProvider(
             create: (context) =>
                 UserProvider(
                     userId,
                     Provider.of<StatisticsProvider>(context, listen: false),
-                    Provider.of<DetectionEntryQueueProvider>(context, listen: false),
-                    wasIntroScreenShown
-                )
-        ),
                     Provider.of<DatabaseProvider>(context, listen: false),
                     Provider.of<DetectionEntryQueueProvider>(context, listen: false),
+                  wasIntroScreenShown,
                 )),
         ChangeNotifierProvider(create: (context) => ThemeProvider(isDark)),
         ChangeNotifierProvider(

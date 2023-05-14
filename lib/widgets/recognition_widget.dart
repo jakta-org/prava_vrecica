@@ -36,7 +36,8 @@ class RecognitionWidget extends StatelessWidget {
       height: recognition.renderLocation.height * factor,
       child: Center(
         child: GestureDetector(
-          onTap: () => func(index),
+          behavior: selected ? HitTestBehavior.translucent : HitTestBehavior.opaque,
+          onTap: selected ? null : () => func(index),
           child: AnimatedContainer(
             curve: Curves.ease,
             duration: const Duration(milliseconds: 300),
