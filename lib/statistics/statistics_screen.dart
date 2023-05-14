@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:prava_vrecica/database/database_provider.dart';
 import 'package:prava_vrecica/json_models/rules_structure_model.dart';
 import 'package:prava_vrecica/statistics/statistics_provider.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
 import 'package:prava_vrecica/widgets/modular_widgets.dart';
 import 'package:provider/provider.dart';
+import '../fun/fun_models.dart';
 import '../providers/categorization_provider.dart';
 import '../providers/user_provider.dart';
 import 'stats_widgets.dart';
@@ -19,11 +21,13 @@ class StatisticsScreenState extends State<StatisticsScreen> {
   late StatisticsProvider statisticsProvider;
   late UserProvider userProvider;
   late CategorizationProvider categorizationProvider;
+  late DatabaseProvider databaseProvider;
   late List<ObjectCategory> categories;
   late List<SpecialObjectType> special;
   Map<String, ObjectStats> objectStats = {};
   List<ChartData> categoriesCount = [];
   Map<String, ObjectStats> addObjectEntries = {};
+  List<Score> scores = [];
 
   Future<void> _setCategoriesCount() async {
     print("da0 sc");
@@ -38,6 +42,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
     objectStats = statisticsProvider.allTimeObjectStats;
     addObjectEntries = objectStats.map((key, value) => MapEntry(
         key, ObjectStats(recycledCount: 0, recycledCountFromPhoto: 0)));
+    scores = await statisticsProvider.getGroupScores(userProvider.setGroup.id);
   }
 
   String displayCategoryName(String label) {
@@ -74,6 +79,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
         Provider.of<CategorizationProvider>(context, listen: false);
     statisticsProvider =
         Provider.of<StatisticsProvider>(context, listen: false);
+    databaseProvider = Provider.of<DatabaseProvider>(context, listen: false);
     categories = categorizationProvider.rulesStructure.categories;
     special = categorizationProvider.rulesStructure.special;
 

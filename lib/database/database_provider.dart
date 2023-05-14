@@ -145,6 +145,19 @@ class DatabaseProvider extends ChangeNotifier {
     }
   }
 
+  Future<String?> getGroupUsers(groupId) async {
+    var url = Uri.https(root, "accounts/group/$groupId/user/");
+    Response response;
+
+    response = await get(url, headers: {'Authorization': 'Token $token'});
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      return null;
+    }
+  }
+
   Future<int?> createGroup(String type, String? settings, String? metaData) async {
     var url = Uri.https(root, "accounts/group/");
     Response response;
@@ -155,6 +168,19 @@ class DatabaseProvider extends ChangeNotifier {
       return int.parse(jsonDecode(response.body)['group_id']);
     } else {
       return null;
+    }
+  }
+
+  Future<void> updateGroupScore(userId, groupId, score) async {
+    var url = Uri.https(root, "accounts/group/$groupId/user/$userId/");
+    Response response;
+
+    response = await patch(url, headers: {'Authorization': 'Token $token'}, body: {'score': score.toString()});
+
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      return;
     }
   }
 
