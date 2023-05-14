@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:prava_vrecica/database/database_provider.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
@@ -152,7 +151,7 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
       }
     }
     await statisticsProvider.updateStats(stats);
-    await databaseProvider.updateUserData(userId, jsonEncode(stats));
+    await databaseProvider.updateUserData(userId, jsonEncode(statisticsProvider.objectStatsEntries));
     if (kDebugMode) {
       print('Updated stats: $stats');
     }

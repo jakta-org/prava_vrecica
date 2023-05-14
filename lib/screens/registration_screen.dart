@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:prava_vrecica/database/database_provider.dart';
+import 'package:prava_vrecica/mode_status.dart';
 import 'package:prava_vrecica/providers/user_provider.dart';
 import 'package:prava_vrecica/statistics/statistics_provider.dart';
-import 'package:prava_vrecica/widgets/or_divider.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'main_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -20,6 +19,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
   int? passwordHash;
   int? passwordConfirm;
   String? entranceKey;
+  bool registrationAccess = true;
   final loginFormKey = GlobalKey<FormState>();
 
   @override
@@ -36,6 +36,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 loginForm(),
+                /*
                 orDivider(context),
                 userButton(
                     const RegistrationScreen(),
@@ -49,6 +50,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                     Theme.of(context).colorScheme.surface,
                     Icons.apple,
                     Colors.black),
+                 */
               ],
             ),
           ),
@@ -162,8 +164,15 @@ class RegistrationScreenState extends State<RegistrationScreen> {
         borderRadius: const BorderRadius.all(Radius.circular(15)),
       ),
       margin: const EdgeInsetsDirectional.symmetric(vertical: 30),
-      child: TextButton(
-        onPressed: () async {
+      child: GestureDetector(
+        onTap: () async {
+          if (!registrationAccess) {
+            return;
+          } else {
+            setState(() {
+              registrationAccess = false;
+            });
+          }
           final databaseProvider =
           Provider.of<DatabaseProvider>(context, listen: false);
           final userProvider =
@@ -197,11 +206,15 @@ class RegistrationScreenState extends State<RegistrationScreen> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MainScreen(),
+                  builder: (context) => const ModeStatus(),
                 ),
               );
             }
           }
+
+          setState(() {
+            registrationAccess = true;
+          });
 
         },
         child: Text(

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:prava_vrecica/documents/document_widgets.dart';
-import 'package:prava_vrecica/fun/fun_widgets.dart';
 import 'package:prava_vrecica/json_models/rules_structure_model.dart';
 import 'package:prava_vrecica/statistics/statistics_provider.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
@@ -28,7 +26,11 @@ class StatisticsScreenState extends State<StatisticsScreen> {
   Map<String, ObjectStats> addObjectEntries = {};
 
   Future<void> _setCategoriesCount() async {
+    print("da0 sc");
     await statisticsProvider.init();
+    print("da1 sc");
+    print(statisticsProvider.allTimeCategoriesStats.toString());
+    print("da2 sc");
     categoriesCount = statisticsProvider.allTimeCategoriesStats
         .map((category) => ChartData(displayCategoryName(category.categoryName),
             category.recycledCount.toDouble(), category.categoryColor))

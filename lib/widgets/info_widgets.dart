@@ -11,7 +11,7 @@ Widget authorInfoOverview(InfoScreenState state) {
   BuildContext context = state.context;
 
   final categorizationProvider =
-  Provider.of<CategorizationProvider>(context, listen: false);
+      Provider.of<CategorizationProvider>(context, listen: false);
 
   return Container(
     decoration: BoxDecoration(
@@ -19,8 +19,7 @@ Widget authorInfoOverview(InfoScreenState state) {
       borderRadius: BorderRadius.circular(10),
       boxShadow: <BoxShadow>[
         BoxShadow(
-            color: Theme.of(context).colorScheme.surfaceTint,
-            blurRadius: 5.0)
+            color: Theme.of(context).colorScheme.surfaceTint, blurRadius: 5.0)
       ],
     ),
     padding: const EdgeInsetsDirectional.all(10),
@@ -28,29 +27,29 @@ Widget authorInfoOverview(InfoScreenState state) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 5),
-          child: Text(
-            categorizationProvider.rulesStructure.name,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 5),
+              child: Text(
+                categorizationProvider.rulesStructure.name,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 5),
-          child: Text(
-            "- ${categorizationProvider.rulesStructure.author}",
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 5),
+              child: Text(
+                "- ${categorizationProvider.rulesStructure.author}",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          ),
-        ),
-      ] +
+          ] +
           parseInfo(
             categorizationProvider.rulesStructure.authorInfo,
             TextStyle(
@@ -68,7 +67,7 @@ Widget objectsOverview(InfoScreenState state) {
   BuildContext context = state.context;
 
   final categorizationProvider =
-  Provider.of<CategorizationProvider>(context, listen: false);
+      Provider.of<CategorizationProvider>(context, listen: false);
 
   Widget info(
       ObjectType currentObject, SortingCategory currentCategory, int index) {
@@ -88,11 +87,7 @@ Widget objectsOverview(InfoScreenState state) {
             widthFactor: 0.9,
             child: Container(
               padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceTint,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              margin: const EdgeInsetsDirectional.symmetric(vertical: 5),
+              margin: const EdgeInsetsDirectional.symmetric(vertical: 10),
               child: widget,
             ),
           ),
@@ -113,7 +108,13 @@ Widget objectsOverview(InfoScreenState state) {
           borderRadius: BorderRadius.circular(10),
         ),
         child: ListView(
-          children: wrapWidgets(),
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: wrapWidgets(),
+            ),
+          ],
         ),
       ),
     );
@@ -138,40 +139,67 @@ Widget objectsOverview(InfoScreenState state) {
           margin: const EdgeInsetsDirectional.symmetric(vertical: 5),
           child: Column(
             children: [
-              TextButton(
-                onPressed: () {
+              GestureDetector(
+                onTap: () {
                   state.setState(() {
-                    state.scrollHeights[i] = (state.scrollHeights[i] == 400) ? 0 : 400;
+                    state.scrollHeights[i] =
+                        (state.scrollHeights[i] == 500) ? 0 : 500;
                   });
                 },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
                   children: [
-                    Text(
-                      "${objects[i].name}: ",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      currentCategory.getName(context),
-                      style: TextStyle(
-                        color: currentCategory.getColor(),
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        shadows: const <Shadow>[
-                          Shadow(
-                            color: Colors.black26,
-                            offset: Offset(1, 1),
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "${objects[i].name}: ",
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  currentCategory.isSpecial()
+                                      ? AppLocalizations.of(context)!
+                                          .special_category
+                                      : currentCategory.getName(context),
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Align(
+                            alignment: AlignmentDirectional.centerEnd,
+                            child: AnimatedContainer(
+                              width: 15,
+                              height: 15,
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: currentCategory.getColor(),
+                              ),
+                              duration: const Duration(milliseconds: 300),
+                            ),
                           ),
                         ],
                       ),
                     ),
+                    info(objects[i], currentCategory, i),
                   ],
                 ),
               ),
-              info(objects[i], currentCategory, i),
             ],
           ),
         ),
@@ -188,37 +216,35 @@ Widget objectsOverview(InfoScreenState state) {
       color: Theme.of(context).colorScheme.surface,
       boxShadow: <BoxShadow>[
         BoxShadow(
-            color: Theme.of(context).colorScheme.surfaceTint,
-            blurRadius: 5.0)
+            color: Theme.of(context).colorScheme.surfaceTint, blurRadius: 5.0)
       ],
     ),
     margin: const EdgeInsetsDirectional.symmetric(vertical: 10),
     child: Column(
       children: [
-        TextButton(
-          onPressed: () {
+        GestureDetector(
+          onTap: () {
             state.setState(() {
-              state.objectsOpen = (state.objectsOpen == 0) ? 600 : 0;
+              state.objectsOpen = (state.objectsOpen == 0) ? 300 : 0;
             });
           },
-          child: Text(
-            AppLocalizations.of(context)!.objects_info_list,
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
-                fontSize: 15,
-                fontWeight: FontWeight.bold),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            child: Text(
+              AppLocalizations.of(context)!.objects_info_list,
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold),
+            ),
           ),
         ),
         AnimatedContainer(
           curve: Curves.easeIn,
           duration: const Duration(milliseconds: 500),
           height: state.objectsOpen,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.background,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          margin:
-          const EdgeInsetsDirectional.only(start: 5, end: 5, bottom: 5),
+          margin: const EdgeInsetsDirectional.only(
+              top: 0, start: 5, end: 5, bottom: 5),
           child: ListView(
             children: wrapObjects(),
           ),

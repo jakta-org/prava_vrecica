@@ -27,7 +27,7 @@ class ModeStatusState extends State<ModeStatus> {
     if (userProvider.userId == -2) {
       child = const AccountModeScreen();
     } else {
-      child = MainScreen();
+      child = const MainScreen();
     }
 
     return FutureBuilder(

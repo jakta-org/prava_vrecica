@@ -40,9 +40,8 @@ class UserProvider extends ChangeNotifier {
     if (groupsIdJson == null) {
       groups = [];
     } else {
-      List<int> groupsIdList = (jsonDecode(groupsIdJson) as List<dynamic>).map((e) => e['group'] as int).toList();
+      List<int> groupsIdList = (jsonDecode(groupsIdJson) as List<dynamic>).map((e) => e['id'] as int).toList();
       for (int groupId in groupsIdList) {
-        print("saljem: " + groupId.toString());
         String? newGroupJson = await databaseProvider.getGroupData(groupId);
 
         if (newGroupJson != null) {
@@ -60,11 +59,9 @@ class UserProvider extends ChangeNotifier {
 
     this.userId = userId;
     sharedPreferences.setInt('user_id', userId);
-    await init();
 
     statisticsProvider.userId = userId;
     detectionEntryQueueProvider.userId = userId;
-    detectionEntryQueueProvider.init();
 
     notifyListeners();
   }

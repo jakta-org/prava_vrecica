@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:prava_vrecica/database/database_provider.dart';
+import 'package:prava_vrecica/mode_status.dart';
 import 'package:prava_vrecica/providers/user_provider.dart';
-import 'package:prava_vrecica/widgets/or_divider.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -18,6 +17,7 @@ class LoginScreenState extends State<LoginScreen> {
   String? mail;
   int? passwordHash;
   final loginFormKey = GlobalKey<FormState>();
+  bool loginAccess = true;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +33,7 @@ class LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 loginForm(),
+                /*
                 orDivider(context),
                 userButton(
                     const LoginScreen(),
@@ -46,6 +47,8 @@ class LoginScreenState extends State<LoginScreen> {
                     Theme.of(context).colorScheme.surface,
                     Icons.apple,
                     Colors.black),
+
+                 */
               ],
             ),
           ),
@@ -121,8 +124,15 @@ class LoginScreenState extends State<LoginScreen> {
         borderRadius: const BorderRadius.all(Radius.circular(15)),
       ),
       margin: const EdgeInsetsDirectional.symmetric(vertical: 30),
-      child: TextButton(
-        onPressed: () async {
+      child: GestureDetector(
+        onTap: () async {
+          if (!loginAccess) {
+            return;
+          } else {
+            setState(() {
+              loginAccess = false;
+            });
+          }
           final databaseProvider =
               Provider.of<DatabaseProvider>(context, listen: false);
           final userProvider =
@@ -144,17 +154,21 @@ class LoginScreenState extends State<LoginScreen> {
               ));
             }
           } else {
-            userProvider.setUser(userValid);
+            await userProvider.setUser(userValid);
 
             if (context.mounted) {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MainScreen(),
+                  builder: (context) => const ModeStatus(),
                 ),
               );
             }
           }
+
+          setState(() {
+            loginAccess = false;
+          });
         },
         child: Text(
           AppLocalizations.of(context)!.login,
