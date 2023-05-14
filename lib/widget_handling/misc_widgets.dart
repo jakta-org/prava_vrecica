@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../documents/document_model.dart';
 import '../documents/document_preview_screen.dart';
-import '../screens/preview_screen.dart';
+import '../ai/preview_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Widget createTicketButton(PreviewScreenState state) {

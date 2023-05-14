@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:prava_vrecica/database/database_provider.dart';
-import 'package:prava_vrecica/mode_status.dart';
-import 'package:prava_vrecica/providers/user_provider.dart';
+import 'package:prava_vrecica/boot_handler/mode_status.dart';
+import 'package:prava_vrecica/user/user_provider.dart';
 import 'package:prava_vrecica/statistics/statistics_provider.dart';
 import 'package:provider/provider.dart';
-import '../providers/theme_provider.dart';
+import 'theme_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegistrationScreen extends StatefulWidget {

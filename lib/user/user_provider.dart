@@ -5,8 +5,8 @@ import 'package:prava_vrecica/database/database_provider.dart';
 import 'package:prava_vrecica/statistics/statistics_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../feedback/detection_entry_queue_provider.dart';
-import '../models/group_model.dart';
-import '../models/user_model.dart';
+import '../group_profile/group_model.dart';
+import 'user_model.dart';
 
 class UserProvider extends ChangeNotifier {
   int userId = -2;

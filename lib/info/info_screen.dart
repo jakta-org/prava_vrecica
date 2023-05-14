@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/user_provider.dart';
-import '../widgets/modular_widgets.dart';
+import '../user/user_provider.dart';
+import '../widget_handling/modular_widgets.dart';
 
 class InfoScreen extends StatefulWidget {
   const InfoScreen({super.key});

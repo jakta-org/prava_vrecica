@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:prava_vrecica/providers/categorization_provider.dart';
+import 'package:prava_vrecica/ai/categorization_provider.dart';
 import 'package:provider/provider.dart';
-import '../helping_classes.dart';
+import '../misc/helping_classes.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'object_list_model.dart';

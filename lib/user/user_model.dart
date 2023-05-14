@@ -13,9 +13,9 @@ class User {
       json['id'] as int,
       json['email'] as String,
       json['username'],
-      json['firstName'],
-      json['lastName'],
-      json['passwordHash'],
+      json['first_name'],
+      json['last_name'],
+      json['phone_number'],
     );
   }
 }

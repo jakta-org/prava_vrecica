@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:prava_vrecica/providers/ai_model_provider.dart';
+import 'package:prava_vrecica/ai/ai_model_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/categorization_provider.dart';
+import 'categorization_provider.dart';
 
 class RecognitionWidget extends StatelessWidget {
   final Recognition recognition;

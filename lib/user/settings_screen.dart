@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:prava_vrecica/providers/ai_model_provider.dart';
-import 'package:prava_vrecica/providers/categorization_provider.dart';
-import 'package:prava_vrecica/providers/localization_provider.dart';
-import 'package:prava_vrecica/statistics/statistics_provider.dart';
-import 'package:prava_vrecica/widgets/normal_appbar.dart';
-import 'package:prava_vrecica/providers/theme_provider.dart';
+import 'package:prava_vrecica/ai/ai_model_provider.dart';
+import 'package:prava_vrecica/ai/categorization_provider.dart';
+import 'package:prava_vrecica/languages/localization_provider.dart';
+import 'package:prava_vrecica/design_components/normal_appbar.dart';
+import 'package:prava_vrecica/user/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

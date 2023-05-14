@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../json_models/object_list_model.dart';
 import '../json_models/rules_structure_model.dart';
-import '../providers/ai_model_provider.dart';
-import '../providers/categorization_provider.dart';
+import 'ai_model_provider.dart';
+import 'categorization_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PreviewSheet extends StatefulWidget {

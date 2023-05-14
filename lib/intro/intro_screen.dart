@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:prava_vrecica/intro_screen/intro_page.dart';
-import 'package:prava_vrecica/mode_status.dart';
-import 'package:prava_vrecica/providers/theme_provider.dart';
+import 'package:prava_vrecica/intro/intro_page.dart';
+import 'package:prava_vrecica/boot_handler/mode_status.dart';
+import 'package:prava_vrecica/user/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../providers/user_provider.dart';
+import '../user/user_provider.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({Key? key}) : super(key: key);
