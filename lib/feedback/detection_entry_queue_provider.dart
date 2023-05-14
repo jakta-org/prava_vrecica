@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:prava_vrecica/database/database_provider.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
 import 'package:synchronized/synchronized.dart';
-
 import '../statistics/statistics_provider.dart';
 
 class DetectionEntryQueueProvider extends ChangeNotifier {
@@ -15,12 +16,11 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
   int userId = -2;
   int initializedUser = -3;
   StatisticsProvider statisticsProvider;
+  DatabaseProvider databaseProvider;
   bool started = false;
   Directory appDirectory;
 
-  DetectionEntryQueueProvider(this.userId, this.statisticsProvider, this.appDirectory) {
-    init();
-  }
+  DetectionEntryQueueProvider(this.userId, this.statisticsProvider, this.databaseProvider, this.appDirectory);
 
   Future<void> init() async {
     if (initializedUser == userId) {
@@ -33,7 +33,7 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
       return;
     }
     started = true;
-    _path = '${appDirectory.path}/detections_queue_$userId.json';
+    _path = '${(appDirectory).path}/detections_queue_$userId.json';
     _file = File(_path);
     if (_file.existsSync()) {
       final content = _file.readAsStringSync();
@@ -115,32 +115,21 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
       String newImagePath = '${appDirectory.path}/feedback_${DateTime.now().millisecondsSinceEpoch}_$userId.jpg';
       imageFile.renameSync(newImagePath);
       File newImageFile = File(newImagePath);
-  /*
+
       final image = base64Encode(newImageFile.readAsBytesSync());
       final fileName = newImageFile.path.split('/').last;
-      final objectsData = entry.detectedObjects.map((e) => e.toJson()).toList();
+      final objectsData = jsonEncode(entry.detectedObjects.map((e) => e.toJson()).toList());
 
-      final response = await http.post(
-        Uri.parse('https://karlo13.pythonanywhere.com/feedback/feedback/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Token xxxxxxxxxxxxxxxxxxxxxxxx'
-        },
-        body: jsonEncode({
-          'image': image,
-          'file_name': fileName,
-          'objects_data': objectsData,
-          'string': "Test post request"
-        }),
-      );
+      print("before!");
+      bool success = await databaseProvider.sendFeedback(image, fileName, objectsData, null, true);
+      print("sent!");
 
-      print (response.body);
-
-      if (response.statusCode != 200) {
-        throw Exception('Error sending feedback: ${response.body}');
+      if (!success) {
+        throw Exception('Error sending feedback!');
+      } else {
+        newImageFile.deleteSync();
       }
-*/
-      newImageFile.deleteSync();
+
     } catch (e) {
       if (kDebugMode) {
         print('Error deleting image file: $e');
@@ -163,6 +152,7 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
       }
     }
     await statisticsProvider.updateStats(stats);
+    await databaseProvider.updateUserData(userId, jsonEncode(stats));
     if (kDebugMode) {
       print('Updated stats: $stats');
     }

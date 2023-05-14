@@ -2,13 +2,17 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:prava_vrecica/statistics/statistics_screen.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../providers/categorization_provider.dart';
 
-Widget barChart(BuildContext context, List<ChartData> chartData) {
+Widget barChart(StatisticsScreenState state) {
+  BuildContext context = state.context;
+  List<ChartData> chartData = state.categoriesCount;
+
   double maxY = chartData.map((e) => e.value).reduce(max);
   var chartWidth = 58.0 * chartData.length;
   var chartGroupsData = <BarChartGroupData>[];
@@ -61,6 +65,7 @@ Widget barChart(BuildContext context, List<ChartData> chartData) {
     decoration: childDecoration(context),
     height: 250,
     padding: const EdgeInsetsDirectional.only(top: 20, end: 40),
+    margin: const EdgeInsetsDirectional.symmetric(vertical: 10),
     child: ListView(
       scrollDirection: Axis.horizontal,
       children: [
@@ -107,58 +112,56 @@ Widget barChart(BuildContext context, List<ChartData> chartData) {
 }
 
 class ObjectEntryWidget extends StatefulWidget {
-  final Map<String, ObjectStats> objectEntries;
-  final Function saveButtonFunction;
+  final StatisticsScreenState state;
 
-  const ObjectEntryWidget({Key? key, required this.objectEntries, required this.saveButtonFunction}) : super(key: key);
+  const ObjectEntryWidget({Key? key, required this.state}) : super(key: key);
 
   @override
-  _ObjectEntryWidgetState createState() => _ObjectEntryWidgetState();
+  State<ObjectEntryWidget> createState() => _ObjectEntryWidgetState();
 }
 
 class _ObjectEntryWidgetState extends State<ObjectEntryWidget> {
-  late Map<String, ObjectStats> _objectEntries;
+  late Map<String, ObjectStats> objectEntries;
+  late Function saveButtonFunction;
 
   @override
   void initState() {
     super.initState();
-    _objectEntries = widget.objectEntries;
+    objectEntries = widget.state.addObjectEntries;
+    saveButtonFunction = (objectEntries) => widget.state.updateScreen(objectEntries);
   }
 
   @override
   Widget build(BuildContext context) {
-    final categorizationProvider = Provider.of<CategorizationProvider>(context);
+    final categorizationProvider = Provider.of<CategorizationProvider>(context, listen: false);
 
     return Container(
         decoration: childDecoration(context),
         height: 600,
         padding: const EdgeInsetsDirectional.only(top: 20, end: 20, start: 20),
+        margin: const EdgeInsetsDirectional.symmetric(vertical: 10),
         child: Column(
-          children: [
-            Text(AppLocalizations.of(context)!.object_entry, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 10),
-            Column(
-            children: _objectEntries.keys.map((String key) {
-              final name = categorizationProvider.objectsList.objects.firstWhere((element) => element.label == key).name;
+          children: [Column(
+            children: objectEntries.keys.map((String key) {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(name),
+                  Text(categorizationProvider.getObjectByLabel(key)!.name),
                   Row(
                     children: [
                       IconButton(
                         onPressed: () {
                           setState(() {
-                            _objectEntries[key]?.recycledCount = max((_objectEntries[key]!.recycledCount - 1), 0);
+                            objectEntries[key]?.recycledCount = max((objectEntries[key]!.recycledCount - 1), 0);
                           });
                         },
                         icon: const Icon(Icons.remove),
                       ),
-                      Text('${_objectEntries[key]?.recycledCount}'),
+                      Text('${objectEntries[key]?.recycledCount}'),
                       IconButton(
                         onPressed: () {
                           setState(() {
-                            _objectEntries[key]?.recycledCount = (_objectEntries[key]!.recycledCount + 1);
+                            objectEntries[key]?.recycledCount = (objectEntries[key]!.recycledCount + 1);
                           });
                         },
                         icon: const Icon(Icons.add),
@@ -168,21 +171,21 @@ class _ObjectEntryWidgetState extends State<ObjectEntryWidget> {
                 ],
               );
             }).toList(),
-          ), IconButton(onPressed: () {
+          ), IconButton(color: Theme.of(context).colorScheme.primary, onPressed: () {
             var newStats = <String, ObjectStats>{};
-            for (var object in _objectEntries.entries) {
+            for (var object in objectEntries.entries) {
               if (object.value.recycledCount == 0 && object.value.recycledCountFromPhoto == 0) {
                 continue;
               }
               newStats[object.key] = ObjectStats(recycledCount: object.value.recycledCount, recycledCountFromPhoto: object.value.recycledCountFromPhoto);
             }
-            widget.saveButtonFunction(newStats);
-            for (String key in _objectEntries.keys) {
+            saveButtonFunction(newStats);
+            for (String key in objectEntries.keys) {
               setState(() {
-                _objectEntries[key]?.recycledCount = 0;
+                objectEntries[key]?.recycledCount = 0;
               });
             }
-         }, icon: const Icon(Icons.save, color: Colors.green, size: 40), tooltip: AppLocalizations.of(context)!.entry_save_tooltip,)]
+         }, icon: const Icon(Icons.save, color: Colors.blue, size: 40), tooltip: AppLocalizations.of(context)!.entry_save_tooltip,)]
     ));
   }
 }
@@ -192,7 +195,11 @@ Decoration childDecoration(BuildContext context) {
   return BoxDecoration(
     borderRadius: const BorderRadius.all(Radius.circular(10)),
     color: Theme.of(context).colorScheme.surface,
-    boxShadow: const <BoxShadow>[],
+    boxShadow: <BoxShadow>[
+      BoxShadow(
+          color: Theme.of(context).colorScheme.surfaceTint,
+          blurRadius: 5.0)
+    ],
   );
 }
 

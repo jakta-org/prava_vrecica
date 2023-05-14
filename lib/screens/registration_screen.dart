@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:prava_vrecica/providers/database_provider.dart';
+import 'package:prava_vrecica/database/database_provider.dart';
 import 'package:prava_vrecica/providers/user_provider.dart';
+import 'package:prava_vrecica/statistics/statistics_provider.dart';
 import 'package:prava_vrecica/widgets/or_divider.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'main_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -16,6 +18,8 @@ class RegistrationScreen extends StatefulWidget {
 class RegistrationScreenState extends State<RegistrationScreen> {
   String? mail;
   int? passwordHash;
+  int? passwordConfirm;
+  String? entranceKey;
   final loginFormKey = GlobalKey<FormState>();
 
   @override
@@ -78,7 +82,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
               },
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
-                  return "This field cannot be empty!";
+                  return AppLocalizations.of(context)!.field_empty;
                 }
                 return null;
               },
@@ -98,12 +102,13 @@ class RegistrationScreenState extends State<RegistrationScreen> {
               },
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
-                  return "This field cannot be empty!";
+                  return AppLocalizations.of(context)!.field_empty;
                 }
                 return null;
               },
             ),
             TextFormField(
+              obscureText: true,
               decoration: InputDecoration(
                 icon: const Icon(Icons.lock),
                 focusColor: Theme.of(context).primaryColor,
@@ -111,17 +116,16 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                 labelText: AppLocalizations.of(context)!.confirm_pass,
               ),
               onSaved: (String? value) {
-                mail = value;
+                passwordConfirm = value.hashCode;
               },
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
-                  return "This field cannot be empty!";
+                  return AppLocalizations.of(context)!.field_empty;
                 }
                 return null;
               },
             ),
             TextFormField(
-              obscureText: true,
               decoration: InputDecoration(
                 icon: const Icon(Icons.key),
                 focusedBorder: UnderlineInputBorder(
@@ -131,11 +135,11 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                 labelText: AppLocalizations.of(context)!.entrance_key,
               ),
               onSaved: (String? value) {
-                passwordHash = value.hashCode;
+                entranceKey = value;
               },
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
-                  return "This field cannot be empty!";
+                  return AppLocalizations.of(context)!.field_empty;
                 }
                 return null;
               },
@@ -148,8 +152,6 @@ class RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   Widget registerButton() {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final db = Provider.of<DatabaseProvider>(context, listen: false).database;
 
     return Container(
       alignment: Alignment.center,
@@ -161,31 +163,46 @@ class RegistrationScreenState extends State<RegistrationScreen> {
       ),
       margin: const EdgeInsetsDirectional.symmetric(vertical: 30),
       child: TextButton(
-        onPressed: () {
-          /*
+        onPressed: () async {
+          final databaseProvider =
+          Provider.of<DatabaseProvider>(context, listen: false);
+          final userProvider =
+          Provider.of<UserProvider>(context, listen: false);
+          final statisticsProvider =
+          Provider.of<StatisticsProvider>(context, listen: false);
+
           if (loginFormKey.currentState!.validate()) {
             loginFormKey.currentState!.save();
+            if (passwordHash != passwordConfirm) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(
+                  content: Text(AppLocalizations.of(context)!.password_confirm),
+                ));
+              return;
+            }
           } else {
             return;
           }
 
-          int userId = db.authenticateUser(mail!, passwordHash!);
-          if (userId == -1) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Mail or password not right."),
-            ));
-          } else {
-            userProvider.setUser(userId);
+          bool userCreated = await databaseProvider.createUser(mail!, passwordHash.toString(), null, entranceKey);
 
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MainScreen(),
-                settings: const RouteSettings(name: 'Main'),
-              ),
-            );
+          if (userCreated) {
+            int? userValid = await databaseProvider.authenticateUser(
+                null, mail, passwordHash.toString());
+
+            userProvider.setUser(userValid!);
+            bool appropriated = await statisticsProvider.appropriateFile(userValid);
+
+            if (appropriated && context.mounted) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MainScreen(),
+                ),
+              );
+            }
           }
-           */
+
         },
         child: Text(
           AppLocalizations.of(context)!.register,

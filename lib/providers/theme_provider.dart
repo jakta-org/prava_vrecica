@@ -48,6 +48,7 @@ class Themes {
       surfaceTint: Colors.black12,
       surfaceVariant: Colors.white,
       onSurface: Colors.black,
+      secondary: Colors.transparent,
     ),
     scrollbarTheme: ScrollbarThemeData(
       thumbColor: MaterialStateProperty.all(Colors.blue),
@@ -57,6 +58,7 @@ class Themes {
     ),
     splashColor: Colors.blue,
     secondaryHeaderColor: Colors.blue,
+    highlightColor: Colors.transparent,
   );
   static final darkTheme = ThemeData(
     primarySwatch: Colors.blue,
@@ -69,11 +71,13 @@ class Themes {
       surfaceTint: Colors.white12,
       surfaceVariant: Colors.grey.shade300,
       onSurface: Colors.grey.shade300,
+      secondary: Colors.transparent,
     ),
     buttonTheme: const ButtonThemeData(
       buttonColor: Colors.white,
     ),
     splashColor: Colors.blue,
     secondaryHeaderColor: Colors.blue,
+    highlightColor: Colors.transparent,
   );
 }

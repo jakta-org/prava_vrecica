@@ -43,7 +43,7 @@ class AccountModeScreenState extends State<AccountModeScreen> {
                     Colors.black),
                 orDivider(context),
                 guestModeButton(
-                  const MainScreen(),
+                  MainScreen(),
                   'Main',
                   AppLocalizations.of(context)!.guestmode,
                   Theme.of(context).colorScheme.surface,

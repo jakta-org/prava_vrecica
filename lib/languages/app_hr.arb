@@ -27,12 +27,25 @@
     "entr_key_prompt": "Upišite ulazni ključ",
     "continue_google": "Nastavi s Google računom",
     "continue_apple": "Nastavi s AppleId računom",
+    "field_empty": "Ovo polje ne može biti prazno!",
+    "field_wrong": "Neki od podataka nije valjan.",
+    "password_confirm": "Potvrda zaporke nije valjana.",
+
+    "personal": "Privatni",
 
     "guestmode_name": "Gost",
     "logout": "Odjavi se",
+    "username": "Korisničko ime",
+    "email": "Mejl",
+    "first_name": "Ime",
+    "last_name": "Prezime",
+    "phone_number": "Broj telefona",
+    "not_set": "Nije postavljeno",
+    "return_accounts": "Postavi račun",
 
     "photo_prompt": "Jeste li dobro fotografirali? :)",
 
+    "special_category": "Poseban otpad",
     "wrong_object": "Ovo nije taj objekt",
     "create_ticket": "Kreiraj kaznu",
     "create_ticket_text": "Jeste li sigurni da želite kreirati kaznu?",
@@ -53,9 +66,10 @@
     "language": "Jezik",
     "clear_statistics": "Obriši statistiku",
     "clear_statistics_text": "Jeste li sigurni da želite obrisati statistiku?",
-
     "cancel": "Odustani",
     "clear": "Obriši",
+
+    "or": "ili",
 
     "ticket": "Kazna",
     "ticket_text": "Ovi otpadni predmeti su pronađeni u Vašem otpadu. Ovo je kazna za nepravilno odlaganje otpada. Molimo Vas da ubuduće pravilno odlažete otpad.",

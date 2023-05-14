@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -7,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:prava_vrecica/screens/settings_screen.dart';
 import 'package:prava_vrecica/screens/user_info_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 import '../providers/ai_model_provider.dart';
 import '../providers/camera_provider.dart';
 import 'preview_screen.dart';
@@ -38,7 +38,7 @@ class _CameraScreenState extends State<CameraScreen> {
     preview = Container();
   }
 
-  Widget buildImagePreview(Future<XFile> future) {
+  Widget loading(Future<XFile> future) {
     return FutureBuilder(
       future: future,
       builder: (context, snapshot) {
@@ -57,34 +57,31 @@ class _CameraScreenState extends State<CameraScreen> {
           );
         }
 
-        return imagePreview(snapshot.data!.path);
+        return Container();
       },
     );
   }
 
   void startRecognition(String path) {
-    final aiModelProvider = Provider.of<AiModelProvider>(
-        context,
-        listen: false);
+    print("da");
+    final aiModelProvider =
+        Provider.of<AiModelProvider>(context, listen: false);
     final classifier = aiModelProvider.classifier;
     List<int> imageBytes = File(path).readAsBytesSync();
     final image = img.decodeImage(imageBytes);
-    List<Recognition> recognitions =
-    classifier.predict(image!);
-    recognitions.sort((a, b) =>
-        a.location.left.compareTo(b.location.left));
-    final factor =
-        MediaQuery.of(context).size.width / image.width;
+    List<Recognition> recognitions = classifier.predict(image!);
+    recognitions.sort((a, b) => a.location.left.compareTo(b.location.left));
+    final factor = MediaQuery.of(context).size.width / image.width;
 
     if (recognitions.isNotEmpty) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => PreviewScreen(
-              imagePath: path,
-              recognitions: recognitions,
-              factor: factor,
-              dateTime: DateTime.now(),
+            imagePath: path,
+            recognitions: recognitions,
+            factor: factor,
+            dateTime: DateTime.now(),
           ),
         ),
       );
@@ -93,97 +90,83 @@ class _CameraScreenState extends State<CameraScreen> {
     setState(() => preview = Container());
   }
 
-  Widget imagePreview(String path) {
-    File file = File(path);
-    Image image = Image.file(file);
-
-    return Center(
-      child: Stack(
-        children: [
-          FractionallySizedBox(
-            widthFactor: 1,
-            heightFactor: 1,
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+  Widget imagePreview(String path, Image image) {
+    return AlertDialog(
+        titlePadding: EdgeInsets.zero,
+        contentPadding: EdgeInsets.zero,
+        buttonPadding: EdgeInsets.zero,
+        iconPadding: EdgeInsets.zero,
+        backgroundColor: Colors.transparent,
+        content: Stack(
+          children: [
+            image,
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
               child: Container(
                 color: Colors.black54,
-              ),
-            ),
-          ),
-          Center(
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              child: FractionallySizedBox(
-                widthFactor: 0.8,
-                child: Stack(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    image,
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding:
-                        const EdgeInsetsDirectional.only(start: 10),
-                        color: Theme.of(context).colorScheme.surfaceTint,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.photo_prompt,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.surface,
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  padding: EdgeInsetsDirectional.zero,
-                                  onPressed: () {
-                                    setState(() => preview = Container());
-                                  },
-                                  icon: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.red, width: 3),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: const Icon(
-                                      Icons.close,
-                                      size: 30,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  padding: EdgeInsetsDirectional.zero,
-                                  onPressed: () => startRecognition(path),
-                                  icon: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Theme.of(context).primaryColor, width: 3),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Icon(
-                                      Icons.check,
-                                      size: 30,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                    Text(
+                      AppLocalizations.of(context)!.photo_prompt,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
                       ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          padding: EdgeInsetsDirectional.zero,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          icon: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.red, width: 3),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              size: 25,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          padding: EdgeInsetsDirectional.zero,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            startRecognition(path);
+                          },
+                          icon: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 3),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Icon(
+                              Icons.check,
+                              size: 25,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ));
   }
 
   @override
@@ -210,116 +193,6 @@ class _CameraScreenState extends State<CameraScreen> {
             ),
           ),
           Positioned(
-            top: 50,
-            child: SizedBox(
-              width: size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    margin:
-                        const EdgeInsetsDirectional.symmetric(horizontal: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        OpenContainer(
-                          closedElevation: 0,
-                          openElevation: 0,
-                          transitionType: ContainerTransitionType.fadeThrough,
-                          closedColor: Colors.transparent,
-                          transitionDuration: const Duration(milliseconds: 300),
-                          routeSettings: const RouteSettings(name: 'Settings'),
-                          openBuilder: (context, action) =>
-                              const SettingsScreen(),
-                          closedBuilder:
-                              (context, VoidCallback openContainer) =>
-                                  IconButton(
-                            onPressed: openContainer,
-                            padding: EdgeInsets.zero,
-                            iconSize: 35,
-                            icon: Icon(
-                              Icons.settings,
-                              color:
-                                  Theme.of(context).colorScheme.surfaceVariant,
-                            ),
-                          ),
-                        ),
-                        OpenContainer(
-                          closedElevation: 0,
-                          openElevation: 0,
-                          transitionType: ContainerTransitionType.fadeThrough,
-                          closedColor: Colors.transparent,
-                          transitionDuration: const Duration(milliseconds: 300),
-                          routeSettings: const RouteSettings(name: 'User'),
-                          openBuilder: (context, action) =>
-                              const UserInfoScreen(),
-                          closedBuilder:
-                              (context, VoidCallback openContainer) =>
-                                  IconButton(
-                            onPressed: openContainer,
-                            padding: EdgeInsets.zero,
-                            iconSize: 35,
-                            icon: Icon(
-                              Icons.account_circle,
-                              color:
-                                  Theme.of(context).colorScheme.surfaceVariant,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  /*
-                  Container(
-                    margin:
-                        const EdgeInsetsDirectional.symmetric(horizontal: 20),
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(12)),
-                      color: Theme.of(context).colorScheme.surface,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          margin: const EdgeInsetsDirectional.symmetric(
-                              horizontal: 2),
-                          child: Center(
-                            child: Icon(
-                              Icons.recycling,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 90,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(12)),
-                            border: Border.all(
-                                width: 2,
-                                color: Theme.of(context).colorScheme.surface),
-                            color: Theme.of(context).colorScheme.surfaceTint,
-                          ),
-                          child: Center(
-                            child: Text(
-                              userScore.toString(),
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurface,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),*/
-                ],
-              ),
-            ),
-          ),
-          Positioned(
             bottom: 0,
             child: SizedBox(
               width: size.width,
@@ -336,11 +209,15 @@ class _CameraScreenState extends State<CameraScreen> {
                               horizontal: 20),
                           child: IconButton(
                             onPressed: () async {
-                              XFile? picked = await cameraProvider.picker.pickImage(source: ImageSource.gallery);
-                              if (picked != null) {
-                                setState(() {
-                                  preview = imagePreview(picked.path);
-                                });
+                              XFile? picked = await cameraProvider.picker
+                                  .pickImage(source: ImageSource.gallery);
+                              if (picked != null && context.mounted) {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return imagePreview(picked.path,
+                                          Image.file(File(picked.path)));
+                                    });
                               }
                             },
                             padding: EdgeInsets.zero,
@@ -356,10 +233,21 @@ class _CameraScreenState extends State<CameraScreen> {
                           margin: const EdgeInsetsDirectional.symmetric(
                               horizontal: 20),
                           child: IconButton(
-                            onPressed: () {
+                            onPressed: () async {
+                              Future<XFile> pick =
+                                  cameraController.takePicture();
                               setState(() {
-                                preview = buildImagePreview(cameraController.takePicture());
+                                preview = loading(pick);
                               });
+                              XFile picked = await pick;
+                              if (context.mounted) {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return imagePreview(picked.path,
+                                          Image.file(File(picked.path)));
+                                    });
+                              }
                             },
                             padding: EdgeInsets.zero,
                             iconSize: 80,
@@ -377,8 +265,12 @@ class _CameraScreenState extends State<CameraScreen> {
                             onPressed: () {
                               setState(() {
                                 flashOn = flashOn == true ? false : true;
-                                flashIcon = flashOn == true ? Icons.flashlight_on : Icons.flashlight_off;
-                                cameraController.setFlashMode(flashOn == true ? FlashMode.torch : FlashMode.off);
+                                flashIcon = flashOn == true
+                                    ? Icons.flashlight_on
+                                    : Icons.flashlight_off;
+                                cameraController.setFlashMode(flashOn == true
+                                    ? FlashMode.torch
+                                    : FlashMode.off);
                               });
                             },
                             padding: EdgeInsets.zero,

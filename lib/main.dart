@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +9,7 @@ import 'package:prava_vrecica/intro_screen/intro_screen.dart';
 import 'package:prava_vrecica/mode_status.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
 import 'package:prava_vrecica/providers/categorization_provider.dart';
-import 'package:prava_vrecica/providers/database_provider.dart';
+import 'package:prava_vrecica/database/database_provider.dart';
 import 'package:prava_vrecica/statistics/statistics_provider.dart';
 import 'package:prava_vrecica/providers/localization_provider.dart';
 import 'package:prava_vrecica/providers/user_provider.dart';
@@ -56,6 +55,8 @@ void main() async {
 
   final locale = sharedPreferences.getString('locale') ?? "hr";
 
+  final token = sharedPreferences.getString('token') ?? "void";
+
   final appDirectory = await getApplicationDocumentsDirectory();
 
   pw.MemoryImage logo = await rootBundle.load("assets/images/V_logo_ns.png").then((value) => pw.MemoryImage(value.buffer.asUint8List()));
@@ -71,6 +72,7 @@ void main() async {
     objectsListsSrc: objectsListsSrc,
     ruleSrc: rulesSrc,
     locale: locale,
+    token: token,
     appDirectory: appDirectory,
     logo: logo,
     wasIntroScreenShown: wasIntroScreenShown,
@@ -88,6 +90,7 @@ class App extends StatelessWidget {
   final List<String> objectsListsSrc;
   final String ruleSrc;
   final String locale;
+  final String token;
   final Directory appDirectory;
   final pw.MemoryImage logo;
   final bool wasIntroScreenShown;
@@ -104,9 +107,10 @@ class App extends StatelessWidget {
       required this.objectsListsSrc,
       required this.ruleSrc,
       required this.locale,
+      required this.token,
       required this.appDirectory,
-      required this.logo,
-      required this.wasIntroScreenShown});
+        required this.logo,
+        required this.wasIntroScreenShown});
 
   @override
   Widget build(BuildContext context) {
@@ -114,19 +118,19 @@ class App extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
             create: (context) => CategorizationProvider(objectsListsSrc, ruleSrc, locale)),
+        ChangeNotifierProvider(create: (context) => DatabaseProvider(token)),
         ChangeNotifierProvider(create: (context) => StatisticsProvider(userId, Provider.of<CategorizationProvider>(context, listen: false), appDirectory)),
-        ChangeNotifierProvider(create: (context) => DetectionEntryQueueProvider(userId, Provider.of<StatisticsProvider>(context, listen: false), appDirectory)),
+        ChangeNotifierProvider(create: (context) => DetectionEntryQueueProvider(userId, Provider.of<StatisticsProvider>(context, listen: false), Provider.of<DatabaseProvider>(context, listen: false), appDirectory)),
         ChangeNotifierProvider(
             create: (context) =>
                 UserProvider(
                     userId,
                     Provider.of<StatisticsProvider>(context, listen: false),
+                    Provider.of<DatabaseProvider>(context, listen: false),
                     Provider.of<DetectionEntryQueueProvider>(context, listen: false),
-                    wasIntroScreenShown
-                )
-        ),
+                  wasIntroScreenShown,
+                )),
         ChangeNotifierProvider(create: (context) => ThemeProvider(isDark)),
-        ChangeNotifierProvider(create: (context) => DatabaseProvider()),
         ChangeNotifierProvider(
             create: (context) =>
                 AiModelProvider(interpreter, labels, threshold)),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Widget orDivider(BuildContext context) {
   return Stack(
@@ -17,7 +18,7 @@ Widget orDivider(BuildContext context) {
           color: Theme.of(context).colorScheme.background,
           width: 26,
           child: Text(
-            "or",
+            AppLocalizations.of(context)!.or,
             style: TextStyle(
               color: Theme.of(context).colorScheme.surfaceTint,
               fontSize: 18,

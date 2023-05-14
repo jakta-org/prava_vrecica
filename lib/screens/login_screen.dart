@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:prava_vrecica/providers/database_provider.dart';
+import 'package:prava_vrecica/database/database_provider.dart';
 import 'package:prava_vrecica/providers/user_provider.dart';
 import 'package:prava_vrecica/widgets/or_divider.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -78,7 +79,7 @@ class LoginScreenState extends State<LoginScreen> {
               },
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
-                  return "This field cannot be empty!";
+                  return AppLocalizations.of(context)!.field_empty;
                 }
                 return null;
               },
@@ -98,7 +99,7 @@ class LoginScreenState extends State<LoginScreen> {
               },
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
-                  return "This field cannot be empty!";
+                  return AppLocalizations.of(context)!.field_empty;
                 }
                 return null;
               },
@@ -111,9 +112,6 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   Widget loginButton() {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final db = Provider.of<DatabaseProvider>(context, listen: false).database;
-
     return Container(
       alignment: Alignment.center,
       width: 300,
@@ -124,31 +122,39 @@ class LoginScreenState extends State<LoginScreen> {
       ),
       margin: const EdgeInsetsDirectional.symmetric(vertical: 30),
       child: TextButton(
-        onPressed: () {
-          /*
+        onPressed: () async {
+          final databaseProvider =
+              Provider.of<DatabaseProvider>(context, listen: false);
+          final userProvider =
+              Provider.of<UserProvider>(context, listen: false);
+
           if (loginFormKey.currentState!.validate()) {
             loginFormKey.currentState!.save();
           } else {
             return;
           }
 
-          int userId = db.authenticateUser(mail!, passwordHash!);
-          if (userId == -1) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Mail or password not right."),
-            ));
+          int? userValid = await databaseProvider.authenticateUser(
+              null, mail, passwordHash.toString());
+          if (userValid == null) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(
+                content: Text(AppLocalizations.of(context)!.field_wrong),
+              ));
+            }
           } else {
-            userProvider.setUser(userId);
+            userProvider.setUser(userValid);
 
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MainScreen(),
-                settings: const RouteSettings(name: 'Main'),
-              ),
-            );
+            if (context.mounted) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MainScreen(),
+                ),
+              );
+            }
           }
-           */
         },
         child: Text(
           AppLocalizations.of(context)!.login,
@@ -161,8 +167,8 @@ class LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget userButton(Widget route, String text,
-      Color backgroundColor, IconData iconData, Color iconColor) {
+  Widget userButton(Widget route, String text, Color backgroundColor,
+      IconData iconData, Color iconColor) {
     return Container(
       alignment: Alignment.center,
       width: 300,

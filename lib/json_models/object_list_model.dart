@@ -6,19 +6,33 @@ class ObjectList {
   final List<ObjectType> objects;
   final List<AttributeType> attributes;
 
-  ObjectList({required this.id, required this.language, required this.objects, required this.attributes});
+  ObjectList(
+      {required this.id,
+      required this.language,
+      required this.objects,
+      required this.attributes});
 
   factory ObjectList.fromJson(Map<String, dynamic> json) {
     return ObjectList(
       id: json["id"] as int,
       language: json["language"] as String,
-      objects: (json["objects"] as List).map<ObjectType>((json) => ObjectType.fromJson(json)).toList(),
-      attributes: (json["attribute-info"] as List).map<AttributeType>((json) => AttributeType.fromJson(json)).toList(),
+      objects: (json["objects"] as List)
+          .map<ObjectType>((json) => ObjectType.fromJson(json))
+          .toList(),
+      attributes: (json["attribute-info"] as List)
+          .map<AttributeType>((json) => AttributeType.fromJson(json))
+          .toList(),
     );
   }
-  
+
   List<AttributeType> objectAttributes(ObjectType object) {
-    return attributes.where((attr) => objects.firstWhere((obj) => obj == object).attributes.keys.contains(attr.name)).toList();
+    return attributes
+        .where((attr) => objects
+            .firstWhere((obj) => obj == object)
+            .attributes
+            .keys
+            .contains(attr.name))
+        .toList();
   }
 }
 
@@ -27,7 +41,8 @@ class AttributeType {
   final int importance;
   final String info;
 
-  AttributeType({required this.importance, required this.name, required this.info});
+  AttributeType(
+      {required this.importance, required this.name, required this.info});
 
   factory AttributeType.fromJson(Map<String, dynamic> json) {
     return AttributeType(
@@ -47,35 +62,44 @@ class AttributeType {
     return r;
   }
 
-  Widget getDisplayable(BuildContext context, TextStyle style, Map<String, dynamic> vars) {
-    List<Color> importanceColors = [Theme.of(context).colorScheme.primary, Colors.green, Colors.yellow, Colors.red];
+  Widget getDisplayable(
+      BuildContext context, TextStyle style, Map<String, dynamic> vars) {
+    List<Color> importanceColors = [
+      Theme.of(context).colorScheme.primary,
+      Colors.green,
+      Colors.yellow,
+      Colors.red
+    ];
 
     return Container(
       margin: const EdgeInsetsDirectional.symmetric(vertical: 5),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-            width: 50,
-            child: Container(
-              padding: EdgeInsetsDirectional.zero,
-              child: Icon(
-                Icons.info,
-                color: importanceColors[importance],
-                shadows: const <Shadow>[
-                  Shadow(
-                    color: Colors.black26,
-                    offset: Offset(1, 1),
-                  ),
-                ],
-              ),
+          Container(
+            margin: const EdgeInsetsDirectional.only(end: 25),
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Theme.of(context).colorScheme.surfaceTint,
+            ),
+            child: Icon(
+              Icons.info,
+              size: 40,
+              color: importanceColors[importance],
+              shadows: const <Shadow>[
+                Shadow(
+                  color: Colors.black26,
+                  offset: Offset(1, 1),
+                ),
+              ],
             ),
           ),
-          SizedBox(
-            width: 220,
+          Expanded(
             child: Text(
               formatWithVars(vars),
-              textAlign: TextAlign.justify,
+              softWrap: true,
               style: style,
             ),
           )
@@ -91,7 +115,11 @@ class ObjectType {
   final String desc;
   final Map<String, dynamic> attributes;
 
-  ObjectType({required this.label, required this.name, required this.desc, required this.attributes});
+  ObjectType(
+      {required this.label,
+      required this.name,
+      required this.desc,
+      required this.attributes});
 
   factory ObjectType.fromJson(Map<String, dynamic> json) {
     return ObjectType(

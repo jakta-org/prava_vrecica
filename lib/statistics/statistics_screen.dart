@@ -4,6 +4,7 @@ import 'package:prava_vrecica/fun/fun_widgets.dart';
 import 'package:prava_vrecica/json_models/rules_structure_model.dart';
 import 'package:prava_vrecica/statistics/statistics_provider.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
+import 'package:prava_vrecica/widgets/modular_widgets.dart';
 import 'package:provider/provider.dart';
 import '../providers/categorization_provider.dart';
 import '../providers/user_provider.dart';
@@ -25,81 +26,72 @@ class StatisticsScreenState extends State<StatisticsScreen> {
   Map<String, ObjectStats> objectStats = {};
   List<ChartData> categoriesCount = [];
   Map<String, ObjectStats> addObjectEntries = {};
-  late Future<void> _setCategoriesCountFuture;
-  // TODO: this value should be set using the group's settings
-  bool canGenerateOrder = true;
 
-  @override
-  void initState() {
-    super.initState();
-    userProvider = Provider.of<UserProvider>(context, listen: false);
-    categorizationProvider = Provider.of<CategorizationProvider>(context, listen: false);
-    statisticsProvider = Provider.of<StatisticsProvider>(context, listen: false);
-    categories = categorizationProvider.rulesStructure.categories;
-    special = categorizationProvider.rulesStructure.special;
-    _setCategoriesCountFuture = _setCategoriesCount();
-  }
-
-  Future<void> _setCategoriesCount() async{
+  Future<void> _setCategoriesCount() async {
     await statisticsProvider.init();
     categoriesCount = statisticsProvider.allTimeCategoriesStats
-        .map((category) => ChartData(
-              category.categoryName,
-              category.recycledCount.toDouble(),
-              category.categoryColor
-    )).toList();
+        .map((category) => ChartData(displayCategoryName(category.categoryName),
+            category.recycledCount.toDouble(), category.categoryColor))
+        .toList();
     objectStats = statisticsProvider.allTimeObjectStats;
-    addObjectEntries = objectStats.map((key, value) => MapEntry(key, ObjectStats(recycledCount: 0, recycledCountFromPhoto: 0)));
+    addObjectEntries = objectStats.map((key, value) => MapEntry(
+        key, ObjectStats(recycledCount: 0, recycledCountFromPhoto: 0)));
+  }
+
+  String displayCategoryName(String label) {
+    for (var category in categorizationProvider.rulesStructure.categories) {
+      if (category.name == label) {
+        return label;
+      }
+    }
+    for (var special in categorizationProvider.rulesStructure.special) {
+      if (special.label == label) {
+        return special.getName(context);
+      }
+    }
+    return label;
   }
 
   List<Widget> _createChildren(BuildContext context) {
     List<Widget> widgetList = <Widget>[];
 
-    widgetList.add(barChart(context, categoriesCount));
-    widgetList.add(FunFactsWidget());
-    widgetList.add(ObjectEntryWidget(objectEntries: addObjectEntries, saveButtonFunction: updateStats));
-    if (canGenerateOrder) {
-      widgetList.add(GenerateOrderWidget());
-    }
+    widgetList.addAll(ModularWidgets.getWidgetList(WidgetType.interactive, this, userProvider.setGroup.settings.widgets));
 
     return widgetList;
   }
 
-  void updateStats(Map<String, ObjectStats> objectEntries) {
+  void updateScreen(dynamic objectEntries) {
     statisticsProvider.updateStats(objectEntries);
-    setState(() {
-      _setCategoriesCountFuture = _setCategoriesCount();
-    });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    userProvider = Provider.of<UserProvider>(context, listen: true);
+    categorizationProvider =
+        Provider.of<CategorizationProvider>(context, listen: false);
+    statisticsProvider =
+        Provider.of<StatisticsProvider>(context, listen: false);
+    categories = categorizationProvider.rulesStructure.categories;
+    special = categorizationProvider.rulesStructure.special;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: Container(
-        padding: const EdgeInsetsDirectional.symmetric(horizontal: 10),
-        child: FutureBuilder<void>(
-          future: _setCategoriesCountFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return ListView(
-                children: _createChildren(context)
-                    .map((child) =>
-                      Container(
-                        margin: const EdgeInsetsDirectional.symmetric(vertical: 5),
-                        decoration: childDecoration(context),
-                        child: child,
-                      )
-                    ).toList()
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
-        ),
+      body: FutureBuilder<void>(
+        future: _setCategoriesCount(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return ListView(
+              padding: const EdgeInsetsDirectional.only(
+                  top: 100, start: 10, end: 10),
+              children: _createChildren(context),
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       ),
     );
   }

@@ -31,6 +31,7 @@ class _GenerateOrderWidgetState extends State<GenerateOrderWidget> {
     return Container(
       decoration: childDecoration(context),
       padding: const EdgeInsets.all(8.0),
+      margin: const EdgeInsetsDirectional.symmetric(vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -126,7 +127,7 @@ class _GenerateOrderWidgetState extends State<GenerateOrderWidget> {
             child: TextButton(
               onPressed: () {
                 _periodEnd ??= DateTime.now();
-                _periodStart ??= DateTime.now().subtract(const Duration(days: 7));
+                _periodStart ??= _periodEnd?.subtract(const Duration(days: 7));
                 //TODO: Should be changed so the statistics are fetched from the group statistics
                 final categoryStats = statisticsProvider.getFilteredCategoryStats(entryFilter: (entry) => entry.time.isAfter(_periodStart!) && entry.time.isBefore(_periodEnd!));
                 Map<String, int> categoriesCounts = {};
