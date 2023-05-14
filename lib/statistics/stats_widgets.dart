@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:prava_vrecica/statistics/statistics_screen.dart';
@@ -11,7 +10,9 @@ import '../providers/categorization_provider.dart';
 
 Widget barChart(StatisticsScreenState state) {
   BuildContext context = state.context;
+  print("da!");
   List<ChartData> chartData = state.categoriesCount;
+  print(chartData.toString());
 
   double maxY = chartData.map((e) => e.value).reduce(max);
   var chartWidth = 58.0 * chartData.length;

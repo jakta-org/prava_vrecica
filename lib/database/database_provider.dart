@@ -74,12 +74,14 @@ class DatabaseProvider extends ChangeNotifier {
   }
 
   Future<String?> getUserData(userId) async {
-    var url = Uri.https(root, "accounts/user/$userId/meta-data/");
+    var url = Uri.https(root, "accounts/user/$userId/meta_data/");
     Response response;
     response = await get(url, headers: {'Authorization': 'Token $token'});
 
+    print(response.body.toString());
+
     if (response.statusCode == 200) {
-      return response.body;
+      return jsonDecode(response.body)['meta_data'];
     } else {
       return null;
     }

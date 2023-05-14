@@ -119,7 +119,7 @@ class App extends StatelessWidget {
         ChangeNotifierProvider(
             create: (context) => CategorizationProvider(objectsListsSrc, ruleSrc, locale)),
         ChangeNotifierProvider(create: (context) => DatabaseProvider(token)),
-        ChangeNotifierProvider(create: (context) => StatisticsProvider(userId, Provider.of<CategorizationProvider>(context, listen: false), appDirectory)),
+        ChangeNotifierProvider(create: (context) => StatisticsProvider(userId, Provider.of<CategorizationProvider>(context, listen: false), Provider.of<DatabaseProvider>(context, listen: false), appDirectory)),
         ChangeNotifierProvider(create: (context) => DetectionEntryQueueProvider(userId, Provider.of<StatisticsProvider>(context, listen: false), Provider.of<DatabaseProvider>(context, listen: false), appDirectory)),
         ChangeNotifierProvider(
             create: (context) =>

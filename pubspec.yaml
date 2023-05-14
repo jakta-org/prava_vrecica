@@ -65,8 +65,13 @@ flutter:
     - assets/categorization_zagreb.json
     - assets/images/V_logo_ns.png
     - assets/images/V_logo_s.png
+    - assets/images/V_logo_s_splash.png
+    - assets/images/J_logo_s_splash.png
     - assets/fun_facts.json
     - assets/images/mascot_demo_noback.png
+    - assets/images/onboard_1.jpg
+    - assets/images/onboard_2.jpg
+    - assets/images/onboard_3.jpg
 
   fonts:
     - family: Roboto

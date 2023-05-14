@@ -2,14 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:prava_vrecica/database/database_provider.dart';
 import 'package:prava_vrecica/providers/categorization_provider.dart';
 import 'stats_models.dart';
 
 class StatisticsProvider extends ChangeNotifier {
   CategorizationProvider categorizationProvider;
+  DatabaseProvider databaseProvider;
   int userId = -2;
   int initializedUser = -3;
-  bool started = false;
   Directory appDirectory;
 
   late File userStatsFile;
@@ -17,30 +18,28 @@ class StatisticsProvider extends ChangeNotifier {
   late Map<String, ObjectStats> allTimeObjectStats;
   late List<CategoryStats> allTimeCategoriesStats;
 
-  StatisticsProvider(this.userId, this.categorizationProvider, this.appDirectory);
+  StatisticsProvider(this.userId, this.categorizationProvider, this.databaseProvider, this.appDirectory);
 
   Future<void> init() async {
     if (initializedUser == userId) {
       return;
     }
-    if (started) {
-      while (initializedUser != userId) {
-        await Future.delayed(const Duration(milliseconds: 100));
-      }
-      return;
-    }
-    started = true;
     userStatsFile = File('${appDirectory.path}/stats_$userId.json');
     final fileExists = await userStatsFile.exists();
     if (!fileExists) {
       await userStatsFile.create();
-      await userStatsFile.writeAsString(jsonEncode([]));
+      if (userId < 0) {
+        await userStatsFile.writeAsString(jsonEncode([]));
+      } else {
+        await userStatsFile.writeAsString(await databaseProvider.getUserData(userId) ?? jsonEncode([]));
+      }
     }
+    print("awaiting");
     objectStatsEntries = await getStatsFromFile();
+    print("awaited");
     calculateAllTimeObjectStats();
     calculateAllTimeCategoriesStats();
     initializedUser = userId;
-    started = false;
   }
 
   Future<bool> appropriateFile(int userId) async {
@@ -55,7 +54,9 @@ class StatisticsProvider extends ChangeNotifier {
   }
 
   Future<List<ObjectStatsWithTime>> getStatsFromFile() async {
+    print("gsff");
     final stats = await userStatsFile.readAsString();
+    print("gsff: " + stats.toString());
     if (stats == '') {
       return [];
     }

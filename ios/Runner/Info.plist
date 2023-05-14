@@ -50,10 +50,10 @@
 		<key>UIStatusBarHidden</key>
 		<false/>
 		<key>NSPhotoLibraryUsageDescription</key>
-        <string>Upload images for object detection</string>
-        <key>NSCameraUsageDescription</key>
-        <string>Upload image from camera for object detection</string>
-        <key>NSMicrophoneUsageDescription</key>
-        <string>For object detection</string>
+		<string>Upload images for object detection</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Upload image from camera for object detection</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>For object detection</string>
 	</dict>
 </plist>
