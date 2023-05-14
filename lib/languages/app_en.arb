@@ -1,4 +1,12 @@
 {
+  "skip": "Skip",
+  "next": "Next",
+  "start": "Start",
+  "intro_1": "Welcome to Prava Vrećica!",
+  "intro_2": "This app will help you sort your trash correctly.",
+  "intro_3": "You can take a photo of your trash and the app will tell you how to sort it.",
+  "intro_4": "Let's get started with helping the environment!",
+
   "camera_screen": "Camera",
   "statistics_screen": "Statistics",
   "info_screen": "Info",
@@ -73,6 +81,7 @@
   "category_statistics": "Category statistics",
   "object_entry": "Enter new objects",
   "entry_save_tooltip": "Save objects",
+  "click_me": "Click me!",
 
   "pdf_preview": "PDF preview"
 }

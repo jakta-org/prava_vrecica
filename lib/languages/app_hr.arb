@@ -1,4 +1,12 @@
 {
+    "skip": "Preskoči",
+    "next": "Sljedeće",
+    "start": "Krenimo",
+    "intro_1": "Dobrodošli u Pravu Vrećicu!",
+    "intro_2": "Ova aplikacija Vam pomaže u pravilnom odlaganju otpada.",
+    "intro_3": "Slikajte otpad i saznajte kako ga pravilno zbrinuti.",
+    "intro_4": "Krenimo s pomaganjem okolišu!",
+
     "camera_screen": "Kamera",
     "statistics_screen": "Statistika",
     "info_screen": "Informacije",
@@ -71,8 +79,9 @@
     "order_description_prompt": "Upišite opis narudžbe",
     "create_order": "Kreiraj narudžbu",
     "category_statistics": "Statistika kategorija",
-    "object_entry": "Upišite nove objekte",
+    "object_entry": "Unesite nove objekte",
     "entry_save_tooltip": "Spremite objekte",
+    "click_me": "Klikni me!",
 
     "pdf_preview": "Pregled PDF-a"
 }

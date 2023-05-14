@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prava_vrecica/documents/document_widgets.dart';
+import 'package:prava_vrecica/fun/fun_widgets.dart';
 import 'package:prava_vrecica/json_models/rules_structure_model.dart';
 import 'package:prava_vrecica/statistics/statistics_provider.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
@@ -55,6 +56,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
     List<Widget> widgetList = <Widget>[];
 
     widgetList.add(barChart(context, categoriesCount));
+    widgetList.add(FunFactsWidget());
     widgetList.add(ObjectEntryWidget(objectEntries: addObjectEntries, saveButtonFunction: updateStats));
     if (canGenerateOrder) {
       widgetList.add(GenerateOrderWidget());

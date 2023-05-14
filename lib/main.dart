@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:prava_vrecica/documents/document_provider.dart';
 import 'package:prava_vrecica/feedback/detection_entry_queue_provider.dart';
+import 'package:prava_vrecica/intro_screen/intro_screen.dart';
 import 'package:prava_vrecica/mode_status.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
 import 'package:prava_vrecica/providers/categorization_provider.dart';
@@ -29,6 +30,8 @@ void main() async {
   final isDark = sharedPreferences.getBool('is_dark') ??
       (ThemeMode.system == ThemeMode.dark);
   final userId = sharedPreferences.getInt('user_id') ?? -2;
+  final wasIntroScreenShown = sharedPreferences.getBool('was_intro_screen_shown') ?? false;
+  //const wasIntroScreenShown = false;
 
   final cameras = await availableCameras();
   final cameraController = CameraController(
@@ -70,6 +73,7 @@ void main() async {
     locale: locale,
     appDirectory: appDirectory,
     logo: logo,
+    wasIntroScreenShown: wasIntroScreenShown,
   ));
 }
 
@@ -86,6 +90,7 @@ class App extends StatelessWidget {
   final String locale;
   final Directory appDirectory;
   final pw.MemoryImage logo;
+  final bool wasIntroScreenShown;
 
   const App(
       {super.key,
@@ -100,7 +105,8 @@ class App extends StatelessWidget {
       required this.ruleSrc,
       required this.locale,
       required this.appDirectory,
-      required this.logo});
+      required this.logo,
+      required this.wasIntroScreenShown});
 
   @override
   Widget build(BuildContext context) {
@@ -115,8 +121,10 @@ class App extends StatelessWidget {
                 UserProvider(
                     userId,
                     Provider.of<StatisticsProvider>(context, listen: false),
-                    Provider.of<DetectionEntryQueueProvider>(context, listen: false)
-                )),
+                    Provider.of<DetectionEntryQueueProvider>(context, listen: false),
+                    wasIntroScreenShown
+                )
+        ),
         ChangeNotifierProvider(create: (context) => ThemeProvider(isDark)),
         ChangeNotifierProvider(create: (context) => DatabaseProvider()),
         ChangeNotifierProvider(
@@ -141,7 +149,7 @@ class App extends StatelessWidget {
           themeMode: themeProvider.themeMode,
           theme: Themes.lightTheme,
           darkTheme: Themes.darkTheme,
-          home: const ModeStatus(),
+          home: wasIntroScreenShown ? const ModeStatus() : const IntroScreen(),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: Locale(localizationProvider.locale),
