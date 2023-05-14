@@ -19,3 +19,11 @@ class FunFact {
     );
   }
 }
+
+class Score {
+  int id;
+  int score;
+  String name;
+
+  Score({required this.score, required this.name, required this.id});
+}

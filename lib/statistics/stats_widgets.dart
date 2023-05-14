@@ -8,12 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../providers/categorization_provider.dart';
 
-Widget barChart(StatisticsScreenState state) {
-  BuildContext context = state.context;
-  print("da!");
-  List<ChartData> chartData = state.categoriesCount;
-  print(chartData.toString());
-
+Widget barChart(BuildContext context, List<ChartData> chartData) {
   double maxY = chartData.map((e) => e.value).reduce(max);
   var chartWidth = 58.0 * chartData.length;
   var chartGroupsData = <BarChartGroupData>[];
@@ -112,6 +107,14 @@ Widget barChart(StatisticsScreenState state) {
   );
 }
 
+Widget barChartUser(StatisticsScreenState state) {
+  BuildContext context = state.context;
+  List<ChartData> chartData = state.categoriesCount;
+  print(chartData.toString());
+
+  return barChart(context, chartData);
+}
+
 class ObjectEntryWidget extends StatefulWidget {
   final StatisticsScreenState state;
 
@@ -188,6 +191,93 @@ class _ObjectEntryWidgetState extends State<ObjectEntryWidget> {
             }
          }, icon: const Icon(Icons.save, color: Colors.blue, size: 40), tooltip: AppLocalizations.of(context)!.entry_save_tooltip,)]
     ));
+  }
+}
+
+class LeaderboardWidget extends StatefulWidget {
+  final StatisticsScreenState state;
+
+  const LeaderboardWidget({Key? key, required this.state}) : super(key: key);
+
+  @override
+  State<LeaderboardWidget> createState() => _LeaderboardWidgetState();
+}
+
+class _LeaderboardWidgetState extends State<LeaderboardWidget> {
+  late final List<Score> scores;
+  late final int userScoreIndex;
+  late final List<Score> topScores;
+
+  @override
+  void initState() {
+    super.initState();
+    scores = widget.state.scores;
+    scores.sort((a, b) => b.score.compareTo(a.score));
+    userScoreIndex = scores.indexWhere((element) => element.id == widget.state.userProvider.userId);
+    topScores = scores.sublist(0, min(5, scores.length));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: childDecoration(context),
+        height: (userScoreIndex >= 5 ? 450 : topScores.length * 50 + 100),
+        padding: const EdgeInsetsDirectional.only(top: 15, end: 20, start: 20),
+        margin: const EdgeInsetsDirectional.symmetric(vertical: 10),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Text(AppLocalizations.of(context)!.leaderboard, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+            ),
+            Column(
+              children: topScores.map((value) {
+                final index = topScores.indexOf(value);
+                return getLeaderboardEntry(context, index);
+              }).toList(),
+            ),
+            if (userScoreIndex >= 5) Column(
+              children: [
+                const Center(child: Text("...", style: TextStyle(fontSize: 40),)),
+                getLeaderboardEntry(context, userScoreIndex),
+              ],
+            ),
+          ]
+    ));
+  }
+
+  Widget getLeaderboardEntry(BuildContext context, int index) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          color: index != userScoreIndex ? Theme.of(context).colorScheme.surfaceTint : Theme.of(context).colorScheme.primary,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Stack(
+            children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                    width: 50,
+                    child: Text((index + 1).toString(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20))
+                ),
+              ),
+              Container(alignment: Alignment.center, child: Text(index != userScoreIndex ? scores[index].name : AppLocalizations.of(context)!.you, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20))),
+              Container(
+                alignment: Alignment.centerRight,
+                child: SizedBox(
+                    width: 100,
+                    child: Center(child: Text(scores[index].score.toString(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)))
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

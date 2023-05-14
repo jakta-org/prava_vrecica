@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:prava_vrecica/database/database_provider.dart';
 import 'package:prava_vrecica/providers/categorization_provider.dart';
+import '../fun/fun_models.dart';
 import 'stats_models.dart';
 
 class StatisticsProvider extends ChangeNotifier {
@@ -148,6 +149,24 @@ class StatisticsProvider extends ChangeNotifier {
     calculateAllTimeObjectStats();
     calculateAllTimeCategoriesStats();
     notifyListeners();
+  }
+
+  Future<List<Score>> getGroupScores(groupId) async {
+    final scores = <Score>[];
+    try {
+      final response = jsonDecode(
+          (await databaseProvider.getGroupUsers(groupId))!);
+      for (var user in response) {
+        scores.add(Score(
+            id: user['user']['id'],
+            name: user['user']['username'],
+            score: int.parse(user['group_score'])
+        ));
+      }
+    } catch (e) {
+      print(e);
+    }
+    return scores;
   }
 
   void calculateAllTimeObjectStats() {

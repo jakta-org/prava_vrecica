@@ -36,6 +36,7 @@ class PreviewScreenState extends State<PreviewScreen> {
   late Widget generateTicket;
 
   late DetectionEntryQueueProvider detectionEntryQueueProvider;
+  late UserProvider userProvider;
   late pw.MemoryImage memoryImage;
 
   @override
@@ -44,7 +45,7 @@ class PreviewScreenState extends State<PreviewScreen> {
         Provider.of<CategorizationProvider>(context, listen: false);
     detectionEntryQueueProvider =
         Provider.of<DetectionEntryQueueProvider>(context, listen: false);
-    final userProvider = Provider.of<UserProvider>(context, listen: true);
+    userProvider = Provider.of<UserProvider>(context, listen: true);
     generateTicket = userProvider.setGroup.settings.widgets.contains("generate_ticket") ? ModularWidgets.miscWidgets["generate_ticket"]!(this) : Container();
     updateDetectionQueue();
     final imageFile = File(widget.imagePath);
@@ -178,7 +179,7 @@ class PreviewScreenState extends State<PreviewScreen> {
     final validRecognitions =
         widget.recognitions.where((recognition) => recognition.valid).toList();
     final updatedEntry =
-        DetectionsEntry(widget.imagePath, widget.dateTime, validRecognitions);
+        DetectionsEntry(widget.imagePath, widget.dateTime, validRecognitions, userProvider.setGroup.id);
     detectionEntryQueueProvider.updateEntryOrAdd(updatedEntry);
   }
 

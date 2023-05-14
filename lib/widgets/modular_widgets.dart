@@ -7,10 +7,11 @@ import 'misc_widgets.dart';
 
 abstract class ModularWidgets {
   static Map<String, Function> interactiveWidgets = {
-    "statistics_chart": barChart,
+    "statistics_chart": barChartUser,
     "manual_add_statistics": (state) => (ObjectEntryWidget(state: state)),
     "fun_facts": (state) => const FunFactsWidget(),
     "generate_order": (state) => const GenerateOrderWidget(),
+    "leaderboard": (state) => LeaderboardWidget(state: state),
   };
 
   static Map<String, Function> infoWidgets = {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:prava_vrecica/database/database_provider.dart';
 import 'package:prava_vrecica/providers/ai_model_provider.dart';
@@ -142,16 +143,22 @@ class DetectionEntryQueueProvider extends ChangeNotifier {
 
   Future<void> _addToStats(DetectionsEntry entry) async {
     Map<String, ObjectStats> stats = {};
+    int score = 0;
+    Random random = Random();
+    int groupId = entry.groupId;
     for (var object in entry.detectedObjects) {
+      score += random.nextInt(10);
       if (stats.containsKey(object.label)) {
         stats[object.label]!.recycledCount++;
         stats[object.label]!.recycledCountFromPhoto++;
       } else {
         stats[object.label] = ObjectStats(recycledCount: 1, recycledCountFromPhoto: 1);
+        score += 5;
       }
     }
     await statisticsProvider.updateStats(stats);
     await databaseProvider.updateUserData(userId, jsonEncode(statisticsProvider.objectStatsEntries));
+    await databaseProvider.updateGroupScore(userId, groupId, score);
     if (kDebugMode) {
       print('Updated stats: $stats');
     }
@@ -162,14 +169,16 @@ class DetectionsEntry {
   final String imagePath;
   final DateTime dateTime;
   final List<Recognition> detectedObjects;
+  final int groupId;
 
-  DetectionsEntry(this.imagePath, this.dateTime, this.detectedObjects);
+  DetectionsEntry(this.imagePath, this.dateTime, this.detectedObjects, this.groupId);
 
   factory DetectionsEntry.fromJson(Map<String, dynamic> json) {
     return DetectionsEntry(
       json['imagePath'],
       DateTime.parse(json['dateTime']),
       (json['detectedObjects'] as List<dynamic>).map((e) => Recognition.fromJson(e)).toList(),
+      json['groupId'],
     );
   }
 
@@ -178,11 +187,12 @@ class DetectionsEntry {
       'imagePath': imagePath,
       'dateTime': dateTime.toIso8601String(),
       'detectedObjects': detectedObjects.map((e) => e.toJson()).toList(),
+      'groupId': groupId,
     };
   }
 
   @override
   String toString() {
-    return "DetectionsEntry(imagePath: $imagePath, dateTime: $dateTime, detectedObjects: $detectedObjects)";
+    return "DetectionsEntry(imagePath: $imagePath, dateTime: $dateTime, detectedObjects: $detectedObjects, groupId: $groupId)";
   }
 }

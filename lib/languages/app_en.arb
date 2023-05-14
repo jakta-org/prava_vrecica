@@ -96,6 +96,8 @@
   "object_entry": "Enter new objects",
   "entry_save_tooltip": "Save objects",
   "click_me": "Click me!",
+  "leaderboard": "Leaderboard",
+  "you": "You",
 
   "pdf_preview": "PDF preview"
 }

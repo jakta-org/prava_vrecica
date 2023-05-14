@@ -54,7 +54,7 @@ class GroupSettings {
 
   factory GroupSettings.personal() {
     return GroupSettings("", "", const IconData(58094, fontFamily: 'MaterialIcons'), Colors.blue, [
-      "statistics_chart", "manual_add_statistics", "author_info", "objects_overview",
+      "statistics_chart", "manual_add_statistics", "author_info", "objects_overview"
     ]);
   }
 }
