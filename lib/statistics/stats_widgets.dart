@@ -1,11 +1,13 @@
 import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:prava_vrecica/statistics/statistics_screen.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../fun/fun_models.dart';
 import '../providers/categorization_provider.dart';
 
 Widget barChart(BuildContext context, List<ChartData> chartData) {
@@ -110,7 +112,9 @@ Widget barChart(BuildContext context, List<ChartData> chartData) {
 Widget barChartUser(StatisticsScreenState state) {
   BuildContext context = state.context;
   List<ChartData> chartData = state.categoriesCount;
-  print(chartData.toString());
+  if (kDebugMode) {
+    print(chartData.toString());
+  }
 
   return barChart(context, chartData);
 }
