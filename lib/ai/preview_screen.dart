@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:prava_vrecica/providers/ai_model_provider.dart';
-import 'package:prava_vrecica/providers/categorization_provider.dart';
-import 'package:prava_vrecica/providers/user_provider.dart';
-import 'package:prava_vrecica/widgets/preview_bottom_sheet.dart';
+import 'package:prava_vrecica/ai/ai_model_provider.dart';
+import 'package:prava_vrecica/ai/categorization_provider.dart';
+import 'package:prava_vrecica/user/user_provider.dart';
+import 'package:prava_vrecica/ai/preview_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '../feedback/detection_entry_queue_provider.dart';
-import '../widgets/modular_widgets.dart';
-import '../widgets/recognition_widget.dart';
+import '../widget_handling/modular_widgets.dart';
+import 'recognition_widget.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 

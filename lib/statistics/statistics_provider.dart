@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:prava_vrecica/database/database_provider.dart';
-import 'package:prava_vrecica/providers/categorization_provider.dart';
+import 'package:prava_vrecica/ai/categorization_provider.dart';
 import '../fun/fun_models.dart';
 import 'stats_models.dart';
 

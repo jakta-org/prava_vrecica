@@ -1,15 +1,15 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:prava_vrecica/screens/camera_screen.dart';
-import 'package:prava_vrecica/screens/info_screen.dart';
-import 'package:prava_vrecica/screens/settings_screen.dart';
+import 'package:prava_vrecica/ai/camera_screen.dart';
+import 'package:prava_vrecica/info/info_screen.dart';
+import 'package:prava_vrecica/user/settings_screen.dart';
 import 'package:prava_vrecica/statistics/statistics_screen.dart';
-import 'package:prava_vrecica/screens/user_info_screen.dart';
+import 'package:prava_vrecica/user/user_info_screen.dart';
 import 'package:provider/provider.dart';
-import '../models/group_model.dart';
-import '../providers/theme_provider.dart';
+import '../group_profile/group_model.dart';
+import '../user/theme_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../providers/user_provider.dart';
+import '../user/user_provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key}) : super();

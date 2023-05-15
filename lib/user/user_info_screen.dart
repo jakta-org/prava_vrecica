@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:prava_vrecica/providers/user_provider.dart';
-import 'package:prava_vrecica/screens/account_mode_screen.dart';
+import 'package:prava_vrecica/user/user_provider.dart';
+import 'package:prava_vrecica/user/account_mode_screen.dart';
 import 'package:provider/provider.dart';
-import '../models/user_model.dart';
-import '../providers/theme_provider.dart';
+import 'user_model.dart';
+import 'theme_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../statistics/statistics_provider.dart';

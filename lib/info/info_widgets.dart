@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:prava_vrecica/screens/info_screen.dart';
+import 'package:prava_vrecica/info/info_screen.dart';
 import 'package:provider/provider.dart';
-import '../helping_classes.dart';
+import '../misc/helping_classes.dart';
 import '../json_models/object_list_model.dart';
 import '../json_models/rules_structure_model.dart';
-import '../providers/categorization_provider.dart';
+import '../ai/categorization_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Widget authorInfoOverview(InfoScreenState state) {

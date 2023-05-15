@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:prava_vrecica/feedback/detection_entry_queue_provider.dart';
-import 'package:prava_vrecica/providers/theme_provider.dart';
-import 'package:prava_vrecica/providers/user_provider.dart';
-import 'package:prava_vrecica/screens/account_mode_screen.dart';
-import 'package:prava_vrecica/screens/loading_screen.dart';
-import 'package:prava_vrecica/screens/main_screen.dart';
+import 'package:prava_vrecica/user/theme_provider.dart';
+import 'package:prava_vrecica/user/user_provider.dart';
+import 'package:prava_vrecica/user/account_mode_screen.dart';
+import 'package:prava_vrecica/design_components/loading_screen.dart';
+import 'package:prava_vrecica/boot_handler/main_screen.dart';
 import 'package:prava_vrecica/statistics/statistics_provider.dart';
 import 'package:provider/provider.dart';
 

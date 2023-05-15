@@ -1,17 +1,13 @@
 import 'dart:io';
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:prava_vrecica/screens/settings_screen.dart';
-import 'package:prava_vrecica/screens/user_info_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
-import '../providers/ai_model_provider.dart';
-import '../providers/camera_provider.dart';
+import 'ai_model_provider.dart';
+import 'camera_provider.dart';
 import 'preview_screen.dart';
 import 'package:image/image.dart' as img;
-import '../providers/theme_provider.dart';
+import '../user/theme_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CameraScreen extends StatefulWidget {

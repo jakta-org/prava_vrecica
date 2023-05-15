@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:prava_vrecica/documents/document_model.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:prava_vrecica/providers/categorization_provider.dart';
+import 'package:prava_vrecica/ai/categorization_provider.dart';
 
 class DocumentProvider extends ChangeNotifier {
   pw.MemoryImage logo;

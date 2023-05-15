@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:prava_vrecica/database/database_provider.dart';
-import 'package:prava_vrecica/providers/ai_model_provider.dart';
+import 'package:prava_vrecica/ai/ai_model_provider.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
 import 'package:synchronized/synchronized.dart';
 import '../statistics/statistics_provider.dart';

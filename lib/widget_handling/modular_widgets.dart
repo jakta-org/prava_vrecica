@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prava_vrecica/fun/fun_widgets.dart';
 import '../documents/document_widgets.dart';
 import '../statistics/stats_widgets.dart';
-import 'info_widgets.dart';
+import '../info/info_widgets.dart';
 import 'misc_widgets.dart';
 
 abstract class ModularWidgets {

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:prava_vrecica/providers/theme_provider.dart';
-import 'package:prava_vrecica/screens/login_screen.dart';
-import 'package:prava_vrecica/screens/registration_screen.dart';
-import 'package:prava_vrecica/widgets/or_divider.dart';
+import 'package:prava_vrecica/user/theme_provider.dart';
+import 'package:prava_vrecica/user/login_screen.dart';
+import 'package:prava_vrecica/user/registration_screen.dart';
+import 'package:prava_vrecica/design_components/or_divider.dart';
 import 'package:provider/provider.dart';
-import '../providers/user_provider.dart';
-import 'main_screen.dart';
+import 'user_provider.dart';
+import '../boot_handler/main_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AccountModeScreen extends StatefulWidget {

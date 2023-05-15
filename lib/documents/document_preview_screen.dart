@@ -5,7 +5,7 @@ import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../providers/categorization_provider.dart';
+import '../ai/categorization_provider.dart';
 import 'document_provider.dart';
 
 class DocumentPreviewScreen extends StatelessWidget {

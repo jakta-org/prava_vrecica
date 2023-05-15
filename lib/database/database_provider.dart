@@ -67,7 +67,7 @@ class DatabaseProvider extends ChangeNotifier {
     print(response.body);
 
     if (response.statusCode == 200) {
-      return response.body;
+      return utf8.decode(response.bodyBytes);
     } else {
       return null;
     }

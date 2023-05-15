@@ -3,11 +3,11 @@ import 'package:prava_vrecica/database/database_provider.dart';
 import 'package:prava_vrecica/json_models/rules_structure_model.dart';
 import 'package:prava_vrecica/statistics/statistics_provider.dart';
 import 'package:prava_vrecica/statistics/stats_models.dart';
-import 'package:prava_vrecica/widgets/modular_widgets.dart';
+import 'package:prava_vrecica/widget_handling/modular_widgets.dart';
 import 'package:provider/provider.dart';
 import '../fun/fun_models.dart';
-import '../providers/categorization_provider.dart';
-import '../providers/user_provider.dart';
+import '../ai/categorization_provider.dart';
+import '../user/user_provider.dart';
 import 'stats_widgets.dart';
 
 class StatisticsScreen extends StatefulWidget {

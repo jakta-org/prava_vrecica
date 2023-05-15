@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:prava_vrecica/fun/fun_models.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../providers/localization_provider.dart';
+import '../languages/localization_provider.dart';
 import '../statistics/stats_widgets.dart';
 
 class FunFactsWidget extends StatefulWidget {

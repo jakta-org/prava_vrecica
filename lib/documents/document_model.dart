@@ -1,4 +1,4 @@
-import '../providers/ai_model_provider.dart';
+import '../ai/ai_model_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class CustomDocument {
