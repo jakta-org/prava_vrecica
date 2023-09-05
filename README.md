@@ -1,16 +1,2 @@
-# prava_vrecica
-
-Project for LUMEN development competition.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Overview
+Prava Vrećica is your go-to mobile app for simplifying recycling. Whether you're an environmentally-conscious individual, a household, a school, or a business, Prava Vrećica is designed to make recycling easier, more accessible, and more impactful. Our app empowers you to take control of your recycling habits, learn how to properly recycle a wide range of objects, and even collaborate with others to promote sustainability.
